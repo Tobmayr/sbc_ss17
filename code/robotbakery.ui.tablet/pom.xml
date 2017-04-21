@@ -7,4 +7,11 @@
   </parent>
   <artifactId>robotbakery.ui.tablet</artifactId>
   <name>Robotbakery UI Tablet</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>at.ac.tuwien.sbc.g06</groupId>
+  		<artifactId>robotbakery.core</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
