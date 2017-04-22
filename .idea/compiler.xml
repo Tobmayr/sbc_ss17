@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="robotbakery.core" />
+        <module name="robotbakery.jsm" />
+        <module name="robotbakery.ui" />
+        <module name="robotbakery.ui.tablet" />
+        <module name="robotbakery.xvsm" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="robotbakery" target="1.8" />
+      <module name="robotbakery.core" target="1.8" />
+      <module name="robotbakery.jsm" target="1.8" />
+      <module name="robotbakery.ui" target="1.8" />
+      <module name="robotbakery.ui.tablet" target="1.8" />
+      <module name="robotbakery.xvsm" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

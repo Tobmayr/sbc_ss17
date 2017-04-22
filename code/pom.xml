@@ -17,6 +17,12 @@
 		<module>robotbakery.ui</module>
 		<module>robotbakery.ui.tablet</module>
 	</modules>
+	<repositories>
+		<repository>
+			<id>mozartspaces</id>
+			<url>http://www.mozartspaces.org/maven-snapshots</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -33,6 +39,12 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mozartspaces</groupId>
+			<artifactId>mozartspaces-runtime</artifactId>
+			<version>2.3-SNAPSHOT</version>
+		</dependency>
+
 
 	</dependencies>
 </project>
