@@ -1,8 +1,12 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class Recipe {
+import org.apache.log4j.Logger;
+
+public class Recipe extends Entity {
+	private static Logger logger = Logger.getLogger(Recipe.class);
 
 	public enum Ingredient {
 		FLOUR, WATER, EGGS, BACKING_MIX_SPICY, BACKING_MIX_SWEET;
@@ -11,11 +15,12 @@ public class Recipe {
 	private Map<Ingredient, Integer> ingredientAmountMap;
 
 	private String productName;
+	private double pricePerUnit;
 
 	public Recipe(String productName) {
 		super();
 		this.productName = productName;
-
+		ingredientAmountMap = new HashMap<>();
 	}
 
 	public String getProductName() {
@@ -29,4 +34,13 @@ public class Recipe {
 	public int getAmount(Ingredient ingredient) {
 		return ingredientAmountMap.get(ingredient);
 	}
+
+	public double getPricePerUnit() {
+		return pricePerUnit;
+	}
+
+	public void setPricePerUnit(double pricePerUnit) {
+		this.pricePerUnit = pricePerUnit;
+	}
+
 }

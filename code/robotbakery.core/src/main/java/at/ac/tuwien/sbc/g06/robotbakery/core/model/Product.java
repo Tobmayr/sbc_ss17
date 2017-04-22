@@ -1,38 +1,39 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
-import java.util.UUID;
+public class Product extends Entity {
+	public static final int DOUGH_IN_STORAGE = 1;
+	public static final int DOUGH_IN_BAKEROOM = 2;
+	public static final int PRODUCT_IN_STORAGE = 3;
+	public static final int PRODUCT_IN_COUNTER = 4;
+	public static final int PRODUCT_IN_TERMINAL = 5;
+	public static final int PRODUCT_SOLD = 6;
 
-public class Product {
-
-	public enum State {
-		UNDEFINED, BASE_DOUGH_IN_STORAGE, DOUGH_IN_BAKERY, FINAL_PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD
-	}
-
-	private UUID id;
-	private String name;
-	private State state;
-
-	public Product(String name) {
+	public Product() {
 		super();
-		this.name = name;
-		id = UUID.randomUUID();
+	}
+
+	private String productName;
+	private Recipe recipe;
+	private int state;
+	//TODO : add Contributions
+
+	public Product(String productName) {
+		super();
+		this.productName = productName;
+		recipe = RecipeRegistry.INSTANCE.getRecipeForProduct(this);
 
 	}
 
-	public State getState() {
+	public int getState() {
 		return state;
 	}
 
-	public void setState(State state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 
-	public UUID getId() {
-		return id;
-	}
-
 	public String getName() {
-		return name;
+		return productName;
 	}
 
 }

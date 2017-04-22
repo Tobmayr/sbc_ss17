@@ -4,17 +4,15 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class Actor implements Serializable,Runnable {
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Entity;
 
-	private UUID id;
+public abstract class Actor extends Entity implements Serializable, Runnable {
+
 	private static final Random RANDOM = new Random();
+	private boolean stop;
 
-	public Actor() {
-		this.id = UUID.randomUUID();
-	}
-
-	public UUID getId() {
-		return id;
+	protected Actor() {
+		super();
 	}
 
 	protected void sleepForSeconds(int secs) {
@@ -32,6 +30,18 @@ public abstract class Actor implements Serializable,Runnable {
 		} catch (InterruptedException e) {
 			// ignore InterrupedException for now
 		}
+	}
+
+	public boolean isStop() {
+		return stop;
+	}
+
+	public void setStop(boolean stop) {
+		this.stop = stop;
+	}
+
+	public static Random getRandom() {
+		return RANDOM;
 	}
 
 }
