@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -8,6 +9,8 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Actor;
+import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Customer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.IBakeRoomCoordinator;
 import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.ICounterCoordinator;
@@ -16,7 +19,11 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.ITerminalCoordinator;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.RecipeRegistry;
-
+/**
+ * 
+ * @author Tobias Ortmayr (1026279)
+ *
+ */
 public abstract class Bakery {
 	private static Logger logger = Logger.getLogger(Bakery.class);
 	private ExecutorService executor = Executors.newCachedThreadPool();
@@ -25,7 +32,7 @@ public abstract class Bakery {
 	private ICounterCoordinator counter;
 	private IBakeRoomCoordinator bakeRoom;
 	private IStorageCoordinator storage;
-	private Map<UUID, Robot> activeRobots;
+	private Map<UUID, Actor> activeActors;
 
 	public Bakery(ITerminalCoordinator terminal, ICounterCoordinator counter, IBakeRoomCoordinator bakeRoom,
 			IStorageCoordinator storage) {
@@ -34,6 +41,7 @@ public abstract class Bakery {
 		this.counter = counter;
 		this.bakeRoom = bakeRoom;
 		this.storage = storage;
+		activeActors= new HashMap<>();
 		initializeRecipes();
 
 	}
@@ -63,17 +71,15 @@ public abstract class Bakery {
 
 	}
 
-	public Bakery() {
-		activeRobots = new HashMap<UUID, Robot>();
-	}
+	
 
-	public UUID addRobot(Class<? extends Robot> type) {
-		Robot robot;
+	public UUID addActor(Class<? extends Actor> type) {
+		Actor actor;
 		try {
-			robot = type.newInstance();
-			executor.submit(robot);
-			activeRobots.put(robot.getId(), robot);
-			return robot.getId();
+			actor = type.newInstance();
+			executor.submit(actor);
+			activeActors.put(actor.getId(), actor);
+			return actor.getId();
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error(e);
 			return null;
@@ -81,18 +87,19 @@ public abstract class Bakery {
 
 	}
 
-	public boolean removeRobot(Robot robot) {
-		if (activeRobots.remove(robot.getId(), robot)) {
-			robot.setStop(true);
+
+	public boolean removeActor(Actor actor) {
+		if (activeActors.remove(actor.getId(), actor)) {
+			actor.setStop(true);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean removeRobot(UUID id) {
-		Robot robot = activeRobots.remove(id);
-		if (robot != null) {
-			robot.setStop(true);
+	public boolean removeActor(UUID id) {
+		Actor actor = activeActors.remove(id);
+		if (actor != null) {
+			actor.setStop(true);
 			return true;
 		}
 		return false;

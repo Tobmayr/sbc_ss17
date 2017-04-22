@@ -1,5 +1,9 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
-
+/**
+ * 
+ * @author Tobias Ortmayr (1026279)
+ *
+ */
 public class Product extends Entity {
 	public static final int DOUGH_IN_STORAGE = 1;
 	public static final int DOUGH_IN_BAKEROOM = 2;

@@ -6,7 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.Ingredient;
-
+/**
+ * 
+ * @author Tobias Ortmayr (1026279)
+ *
+ */
 public class RecipeRegistry {
 
 	public static RecipeRegistry INSTANCE = new RecipeRegistry();

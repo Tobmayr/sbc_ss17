@@ -1,7 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
 public class Customer extends Actor {
-	protected Customer() {
+	public Customer() {
 		super();
 	};
 

@@ -3,7 +3,11 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
+/**
+ * 
+ * @author Tobias Ortmayr (1026279)
+ *
+ */
 public class Order extends Entity {
 	public static final int OPEN = 1;
 	public static final int DELIVERED = 2;
