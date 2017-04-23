@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ICounterService;
 
 public class Customer extends Actor {
@@ -12,7 +13,10 @@ public class Customer extends Actor {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		Order order= new Order();
+		order.addItem("Kaisersemmel",2 );
+		order.setCustomerId(getId());
+		counterService.addOrder(order);
 
 	}
 

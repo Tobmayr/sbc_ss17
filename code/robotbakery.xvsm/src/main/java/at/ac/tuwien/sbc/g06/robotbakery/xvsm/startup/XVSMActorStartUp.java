@@ -20,7 +20,7 @@ public class XVSMActorStartUp {
 			startActor(new Customer(new XVSMCounterService()));
 			break;
 		case "service":
-			startActor(new ServiceRobot());
+			startActor(new ServiceRobot(new XVSMCounterService()));
 			break;
 		case "knead":
 			startActor(new KneadRobot());

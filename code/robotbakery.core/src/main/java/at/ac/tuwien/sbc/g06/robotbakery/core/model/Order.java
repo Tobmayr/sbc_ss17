@@ -3,6 +3,8 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
 /**
  * 
  * @author Tobias Ortmayr (1026279)
@@ -27,7 +29,7 @@ public class Order extends Entity {
 
 	public void addItem(String productName, Integer amount) {
 
-		items.put(RecipeRegistry.INSTANCE.getRecipeByName(productName), amount);
+		items.put(RecipeRegistry.getInstance().getRecipeByName(productName), amount);
 	}
 
 	public void resetItems() {

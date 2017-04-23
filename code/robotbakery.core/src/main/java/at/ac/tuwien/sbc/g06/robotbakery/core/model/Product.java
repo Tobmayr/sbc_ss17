@@ -1,4 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
+
 /**
  * 
  * @author Tobias Ortmayr (1026279)
@@ -24,7 +27,7 @@ public class Product extends Entity {
 	public Product(String productName) {
 		super();
 		this.productName = productName;
-		recipe = RecipeRegistry.INSTANCE.getRecipeForProduct(this);
+		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
 	}
 

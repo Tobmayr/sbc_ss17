@@ -1,30 +1,24 @@
-package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
+package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
 import java.util.Arrays;
-
 
 import org.mozartspaces.capi3.Coordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
-import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsConstants;
-import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
-
+import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
+public class XVSMUtil {
+	private static Logger logger = LoggerFactory.getLogger(XVSMUtil.class);
 
-public abstract class AbstractXVSMService {
-	private static Logger logger = LoggerFactory.getLogger(AbstractXVSMService.class);
-	protected Capi capi;
-	
-	public AbstractXVSMService(){
-		capi= new Capi(DefaultMzsCore.newInstance());
-	}
+	private XVSMUtil() {
+	};
 
-	protected ContainerReference getOrCreateContainer(String containerName, Coordinator... obligatoryCoords) {
+	public static ContainerReference getOrCreateContainer(Capi capi, String containerName,
+			Coordinator... obligatoryCoords) {
 		logger.debug("Lookup container:" + containerName);
 		ContainerReference cref = null;
 		try {

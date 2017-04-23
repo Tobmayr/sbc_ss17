@@ -1,95 +1,23 @@
-//package at.ac.tuwien.sbc.g06.robotbakery.core;
-//
-//import org.apache.log4j.Logger;
-//
-//public abstract class Bakery {
-//	private static Logger logger = Logger.getLogger(Bakery.class);
-//
-//
-//	private ITerminalCoordinator terminal;
-//	private ICounterCoordinator counter;
-//	private IBakeRoomCoordinator bakeRoom;
-//	private IStorageCoordinator storage;
-//	private Map<UUID, Actor> activeActors;
-//
-//	public Bakery(ICustomerService
-//			{
-//		super();
-//		this.terminal = terminal;
-//		this.counter = counter;
-//		this.bakeRoom = bakeRoom;
-//		this.storage = storage;
-//		activeActors= new HashMap<>();
-//		initializeRecipes();
-//
-//	}
-//
-//	private void initializeRecipes() {
-//		// Kaisersemmel Recipe
-//		Recipe recipe = new Recipe("Kaisersemmel");
-//		recipe.addIngredient(Ingredient.FLOUR, 100);
-//		recipe.addIngredient(Ingredient.WATER, 100);
-//		recipe.addIngredient(Ingredient.BACKING_MIX_SPICY, 1);
-//		RecipeRegistry.INSTANCE.registerRecipe(recipe, true);
-//
-//		// Bauernnrot Recipe
-//		recipe = new Recipe("Bauernbrot");
-//		recipe.addIngredient(Ingredient.FLOUR, 550);
-//		recipe.addIngredient(Ingredient.WATER, 500);
-//		recipe.addIngredient(Ingredient.BACKING_MIX_SPICY, 5);
-//		RecipeRegistry.INSTANCE.registerRecipe(recipe, true);
-//
-//		// Marmorkuchen Recipe
-//		recipe = new Recipe("Marmorkuchen");
-//		recipe.addIngredient(Ingredient.FLOUR, 350);
-//		recipe.addIngredient(Ingredient.WATER, 550);
-//		recipe.addIngredient(Ingredient.EGGS, 5);
-//		recipe.addIngredient(Ingredient.BACKING_MIX_SWEET, 2);
-//		RecipeRegistry.INSTANCE.registerRecipe(recipe, true);
-//
-//	}
-//
-//	
-//
-//	public Actor addActor(Class<? extends Actor> type) {
-//		Actor actor;
-//		try {
-//			actor = type.newInstance();
-//			executor.submit(actor);
-//			activeActors.put(actor.getId(), actor);
-//			return actor;
-//		} catch (InstantiationException | IllegalAccessException e) {
-//			logger.error(e);
-//			return null;
-//		}
-//
-//	}
-//
-//
-//	public boolean removeActor(Actor actor) {
-//		if (activeActors.remove(actor.getId(), actor)) {
-//			actor.setStop(true);
-//			return true;
-//		}
-//		return false;
-//	}
-//
-//	public boolean removeActor(UUID id) {
-//		Actor actor = activeActors.remove(id);
-//		if (actor != null) {
-//			actor.setStop(true);
-//			return true;
-//		}
-//		return false;
-//
-//	}
-//
-//	public void dispose() {
-//		if (executor != null && !executor.isTerminated()) {
-//			executor.shutdownNow();
-//		}
-//
-//	}
-//
-//
-//}
+package at.ac.tuwien.sbc.g06.robotbakery.core;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
+
+public abstract class Bakery {
+	
+	protected Set<IBakeryChangeListener> registeredChangeListeners;
+	
+	public Bakery() {
+		registeredChangeListeners= new HashSet<>();
+	}		
+	
+	public boolean registerChangeListener(IBakeryChangeListener listener) {
+		return registeredChangeListeners.add(listener);
+	}
+
+	public boolean removeChangeListener(IBakeryChangeListener listener) {
+		return registeredChangeListeners.remove(listener);
+	}
+}

@@ -1,49 +1,34 @@
 package at.tuwien.sbc.g06.robotbakery.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IUINotifier;
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 
-public class BakeryUI implements IUINotifier {
+public class BakeryUI implements IBakeryChangeListener {
 
-	private List<Order> orders;
+	private Map<UUID, Order> orders;
 
 	public BakeryUI() {
-		orders = new ArrayList<>();
-	}
 
-	public void start() {
+		orders = new TreeMap<>();
 		System.out.println("Welcome to the RobotBakery");
-
-	}
-
-	// Simple CLI at the
-	public static void main(String[] args) {
-
-		for (;;) {
-			// wait and chill
-		}
-
-	}
-
-	@Override
-	public void onOrderAdded(Order order) {
-		orders.add(order);
-		update();
-
 	}
 
 	private void update() {
-		orders.forEach(order -> System.out.println("Order:" + order.getId() + ", sum: " + order.totalSum()));
+		System.out.println("---------------------------------------------------------------------------");
+		orders.forEach((id, order) -> System.out.println("Order:" + id + ", sum: " + order.totalSum()));
+		System.out.println("---------------------------------------------------------------------------");
+		System.out.println();
 
 	}
 
 	@Override
-	public void onOrderStateChanged(Order order) {
-		// TODO Auto-generated method stub
+	public void onOrderAddedOrUpdated(Order order) {
+		orders.put(order.getId(), order);
+		update();
 
 	}
 
