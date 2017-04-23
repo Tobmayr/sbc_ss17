@@ -18,7 +18,7 @@ public class XVSMUIService implements IUIService {
 
 	public XVSMUIService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
-		storageContainer = XVSMUtil.getContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
+		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
 	}
 
 	@Override

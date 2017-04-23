@@ -24,7 +24,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 
 	public XVSMServiceRobotService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
-		counterContainer = XVSMUtil.getContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
+		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 	}
 
 	@Override

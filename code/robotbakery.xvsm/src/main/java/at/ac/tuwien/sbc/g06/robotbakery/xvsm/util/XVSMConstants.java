@@ -2,6 +2,8 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
 import java.net.URI;
 
+import org.mozartspaces.capi3.Coordinator;
+
 public class XVSMConstants {
 	// Connection information
 	public static final String HOST = "localhost";
@@ -13,6 +15,7 @@ public class XVSMConstants {
 	public static final String TERMINAL_CONTAINER_NAME = "Bakery/Terminal";
 	public static final String STORAGE_CONTAINER_NAME = "Bakery/Storage";
 	public static final String BAKEROOM_CONTAINER_NAME = "Bakery/Bakeroom";
+	
 	
 	//XVSM Configuration 
 	public static final long TIMEOUT_MILLIS=2000;

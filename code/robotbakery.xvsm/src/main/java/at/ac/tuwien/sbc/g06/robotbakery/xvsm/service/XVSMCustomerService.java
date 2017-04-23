@@ -1,6 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
-import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -25,7 +24,7 @@ public class XVSMCustomerService implements ICustomerService {
 
 	public XVSMCustomerService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
-		counterContainer = XVSMUtil.getContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
+		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 	}
 
 	@Override
