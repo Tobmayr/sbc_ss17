@@ -20,7 +20,7 @@
 			<artifactId>mozartspaces-runtime</artifactId>
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>org.mozartspaces</groupId>
 			<artifactId>mozartspaces-notifications</artifactId>
 			<version>2.3-SNAPSHOT</version>
@@ -30,6 +30,23 @@
 			<artifactId>robotbakery.core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>customer</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMCustomer</mainClass>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
