@@ -1,22 +1,22 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
-import at.ac.tuwien.sbc.g06.robotbakery.core.service.ICounterService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.ICustomerService;
 
 public class Customer extends Actor {
 
-	private ICounterService counterService;
+	private ICustomerService counterService;
 
-	public Customer(ICounterService counterService) {
-		this.counterService=counterService;
+	public Customer(ICustomerService customerService) {
+		this.counterService = customerService;
 	}
 
 	@Override
 	public void run() {
-		Order order= new Order();
-		order.addItem("Kaisersemmel",2 );
+		Order order = new Order();
+		order.addItem("Kaisersemmel", 2);
 		order.setCustomerId(getId());
-		counterService.addOrder(order);
+		counterService.addOrderToCounter(order);
 
 	}
 

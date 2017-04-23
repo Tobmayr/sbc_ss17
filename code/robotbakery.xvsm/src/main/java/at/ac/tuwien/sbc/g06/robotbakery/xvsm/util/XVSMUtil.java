@@ -17,23 +17,28 @@ public class XVSMUtil {
 	private XVSMUtil() {
 	};
 
-	public static ContainerReference getOrCreateContainer(Capi capi, String containerName,
-			Coordinator... obligatoryCoords) {
-		logger.debug("Lookup container:" + containerName);
+	public static ContainerReference createContainer(Capi capi, String containerName, Coordinator... obligatoryCoords) {
+
+		ContainerReference cref = null;
+		;
+		try {
+			cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI, MzsConstants.Container.UNBOUNDED,
+					Arrays.asList(obligatoryCoords), null, null);
+		} catch (MzsCoreException e) {
+			logger.error(e.getMessage());
+		}
+		return cref;
+	}
+
+	public static ContainerReference getContainer(Capi capi, String containerName) {
 		ContainerReference cref = null;
 		try {
 			cref = capi.lookupContainer(containerName, XVSMConstants.BASE_SPACE_URI, RequestTimeout.DEFAULT, null);
 			logger.debug("Existing container found for: " + containerName);
 		} catch (MzsCoreException e) {
-			try {
-				cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
-						MzsConstants.Container.UNBOUNDED, Arrays.asList(obligatoryCoords), null, null);
-				logger.debug("New container has been created for: " + containerName);
-			} catch (MzsCoreException e1) {
-				logger.error(e1.getMessage());
-			}
+			logger.error(e.getMessage());
 		}
 		return cref;
-
 	}
+
 }

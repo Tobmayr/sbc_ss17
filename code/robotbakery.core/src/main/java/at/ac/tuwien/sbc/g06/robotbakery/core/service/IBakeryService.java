@@ -1,5 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 
-public class IBakeryService {
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 
+public interface IBakeryService {
+
+	void initializeStorageWaterPipe(WaterPipe waterPipe);
 }

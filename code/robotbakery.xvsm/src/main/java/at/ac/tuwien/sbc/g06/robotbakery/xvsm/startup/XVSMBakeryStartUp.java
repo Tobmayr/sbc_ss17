@@ -16,7 +16,7 @@ public class XVSMBakeryStartUp {
 		Bakery bakery = new XVSMBakery(server);
 		BakeryUI bakeryUI = new BakeryUI();
 		bakery.registerChangeListener(bakeryUI);
-		;
+		bakery.initialize();
 		while (System.in.read() != -1) {
 			///
 		}
