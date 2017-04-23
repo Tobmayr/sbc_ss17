@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias Höllthaler on 22.04.2017.
+ * Created by Matthias HÃ¶llthaler on 22.04.2017.
  */
 public class Space {
 

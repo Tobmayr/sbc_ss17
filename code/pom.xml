@@ -9,6 +9,7 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modules>
 		<module>robotbakery.core</module>
@@ -17,12 +18,7 @@
 		<module>robotbakery.ui</module>
 		<module>robotbakery.ui.tablet</module>
 	</modules>
-	<repositories>
-		<repository>
-			<id>mozartspaces</id>
-			<url>http://www.mozartspaces.org/maven-snapshots</url>
-		</repository>
-	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -45,6 +41,41 @@
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
-
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>server</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>org.mozartspaces.core.Server</mainClass>
+							<arguments>
+								<argument>4242</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

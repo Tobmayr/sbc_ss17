@@ -6,12 +6,11 @@ import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Entity;
 
-public abstract class Actor extends Entity implements Serializable, Runnable {
+public abstract class Actor extends Entity implements Runnable {
 
 	private static final Random RANDOM = new Random();
-	private boolean stop;
 
-	protected Actor() {
+	public Actor() {
 		super();
 	}
 
@@ -30,14 +29,6 @@ public abstract class Actor extends Entity implements Serializable, Runnable {
 		} catch (InterruptedException e) {
 			// ignore InterrupedException for now
 		}
-	}
-
-	public boolean isStop() {
-		return stop;
-	}
-
-	public void setStop(boolean stop) {
-		this.stop = stop;
 	}
 
 	public static Random getRandom() {
