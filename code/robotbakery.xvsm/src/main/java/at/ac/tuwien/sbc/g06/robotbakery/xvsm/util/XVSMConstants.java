@@ -5,7 +5,7 @@ import java.net.URI;
 public class XVSMConstants {
 	// Connection information
 	public static final String HOST = "localhost";
-	public static final int PORT = 4242;
+	public static final int PORT = 9876;
 	public static final URI BASE_SPACE_URI = URI.create("xvsm://" + HOST + ":" + PORT);
 
 	// Container names

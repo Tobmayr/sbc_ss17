@@ -39,26 +39,7 @@
 			</dependency>
 
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>server</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<configuration>
-							<mainClass>org.mozartspaces.core.Server</mainClass>
-							<arguments>
-								<argument>4242</argument>
-							</arguments>
-							<classpathScope>runtime</classpathScope>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+	
 	<build>
 		<plugins>
 			<plugin>

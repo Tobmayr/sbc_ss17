@@ -41,9 +41,63 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.ActorStartUp</mainClass>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMActorStartUp</mainClass>
 							<arguments>
-							<argument>customer</argument>
+								<argument>customer</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>service</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMActorStartUp</mainClass>
+							<arguments>
+								<argument>service</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>knead</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMActorStartUp</mainClass>
+							<arguments>
+								<argument>knead</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>bake</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMActorStartUp</mainClass>
+							<arguments>
+								<argument>bake</argument>
 							</arguments>
 							<classpathScope>runtime</classpathScope>
 						</configuration>
