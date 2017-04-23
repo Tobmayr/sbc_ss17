@@ -1,32 +1,10 @@
 //package at.ac.tuwien.sbc.g06.robotbakery.core;
 //
-//import java.util.Collection;
-//import java.util.HashMap;
-//import java.util.Map;
-//import java.util.UUID;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//
 //import org.apache.log4j.Logger;
 //
-//import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Actor;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Customer;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Robot;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.IBakeRoomCoordinator;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.ICounterCoordinator;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.IStorageCoordinator;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.coordination.ITerminalCoordinator;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.Ingredient;
-//import at.ac.tuwien.sbc.g06.robotbakery.core.model.RecipeRegistry;
-///**
-// * 
-// * @author Tobias Ortmayr (1026279)
-// *
-// */
 //public abstract class Bakery {
 //	private static Logger logger = Logger.getLogger(Bakery.class);
-//	private ExecutorService executor = Executors.newCachedThreadPool();
+//
 //
 //	private ITerminalCoordinator terminal;
 //	private ICounterCoordinator counter;
@@ -34,8 +12,8 @@
 //	private IStorageCoordinator storage;
 //	private Map<UUID, Actor> activeActors;
 //
-//	public Bakery(ITerminalCoordinator terminal, ICounterCoordinator counter, IBakeRoomCoordinator bakeRoom,
-//			IStorageCoordinator storage) {
+//	public Bakery(ICustomerService
+//			{
 //		super();
 //		this.terminal = terminal;
 //		this.counter = counter;
@@ -113,24 +91,5 @@
 //
 //	}
 //
-//	public IBakeRoomCoordinator getBakeRoom() {
-//		return bakeRoom;
-//	}
-//
-//	public void setBakeRoom(IBakeRoomCoordinator bakeRoom) {
-//		this.bakeRoom = bakeRoom;
-//	}
-//
-//	public ITerminalCoordinator getTerminal() {
-//		return terminal;
-//	}
-//
-//	public ICounterCoordinator getCounter() {
-//		return counter;
-//	}
-//
-//	public IStorageCoordinator getStorage() {
-//		return storage;
-//	}
 //
 //}

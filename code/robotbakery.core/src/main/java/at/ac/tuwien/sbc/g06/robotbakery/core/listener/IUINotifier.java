@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.listener;
 
+import java.io.Serializable;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 
 /**
@@ -10,7 +12,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public interface IUINotifier {
+public interface IUINotifier extends Serializable {
 
 	/**
 	 * Is invoked when an order has been added to the counter

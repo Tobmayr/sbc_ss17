@@ -2,7 +2,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
@@ -10,6 +9,8 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsTimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
@@ -18,7 +19,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
 public class XVSMCounterService extends AbstractXVSMService implements ICounterService {
 
-	private static final Logger logger = Logger.getLogger(XVSMCounterService.class);
+	private static Logger logger = LoggerFactory.getLogger(XVSMCounterService.class);
 	private final ContainerReference counterContainer;
 
 	public XVSMCounterService() {
@@ -33,7 +34,7 @@ public class XVSMCounterService extends AbstractXVSMService implements ICounterS
 			Entry entry = new Entry(order);
 			capi.write(counterContainer, RequestTimeout.TRY_ONCE, null, entry);
 		} catch (MzsCoreException ex) {
-			logger.error(ex);
+			logger.error(ex.getMessage());
 		}
 
 	}

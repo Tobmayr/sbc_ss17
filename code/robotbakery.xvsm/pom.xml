@@ -41,7 +41,10 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMCustomer</mainClass>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.ActorStartUp</mainClass>
+							<arguments>
+							<argument>customer</argument>
+							</arguments>
 							<classpathScope>runtime</classpathScope>
 						</configuration>
 					</plugin>

@@ -2,7 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+
 import org.mozartspaces.capi3.Coordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -11,10 +11,13 @@ import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
 public abstract class AbstractXVSMService {
-	private static Logger logger = Logger.getLogger(AbstractXVSMService.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractXVSMService.class);
 	protected Capi capi;
 	
 	public AbstractXVSMService(){

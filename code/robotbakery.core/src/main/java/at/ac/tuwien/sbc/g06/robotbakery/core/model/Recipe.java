@@ -3,15 +3,12 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 /**
  * 
  * @author Tobias Ortmayr (1026279)
  *
  */
 public class Recipe extends Entity {
-	private static Logger logger = Logger.getLogger(Recipe.class);
-
 	public enum Ingredient {
 		FLOUR, WATER, EGGS, BACKING_MIX_SPICY, BACKING_MIX_SWEET;
 	}
