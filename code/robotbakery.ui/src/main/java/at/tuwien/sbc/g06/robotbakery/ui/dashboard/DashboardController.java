@@ -213,7 +213,10 @@ public class DashboardController {
 			if (newOrder != null) {
 				itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItems()));
 				orderCustomerId.setText(newOrder.getCustomerId().toString());
-				orderServiceId.setText(newOrder.getServiceRobotId().toString());
+				if (newOrder.getServiceRobotId()!=null){
+					orderServiceId.setText(newOrder.getServiceRobotId().toString());
+				}
+			
 			}
 		});
 

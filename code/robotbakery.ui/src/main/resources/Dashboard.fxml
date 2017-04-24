@@ -304,7 +304,7 @@
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                      <children>
-                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Final product in storage:" textAlignment="CENTER" wrapText="true" />
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="592.0" text="Final product in storage:" textAlignment="CENTER" wrapText="true" />
                         <TableView fx:id="productsTable2" prefHeight="200.0" prefWidth="638.0">
                            <columns>
                               <TableColumn fx:id="productsId2" prefWidth="400.0" text="ID" />
