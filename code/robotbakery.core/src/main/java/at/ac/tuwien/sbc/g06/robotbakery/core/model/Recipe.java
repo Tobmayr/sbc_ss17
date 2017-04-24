@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class Recipe {
+public class Recipe implements Serializable{
 
 	private Map<String, Integer> ingredientMap;
 	private String productName;

@@ -24,4 +24,12 @@ public class FlourPack implements Serializable{
 	public int getCurrentAmount() {
 		return currentAmount;
 	}
+
+	@Override
+	public String toString() {
+		return "FlourPack [currentAmount=" + currentAmount + "]";
+	}
+	
+	
+	
 }

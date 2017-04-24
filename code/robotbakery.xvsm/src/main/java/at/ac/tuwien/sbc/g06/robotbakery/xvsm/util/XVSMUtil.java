@@ -19,6 +19,11 @@ import org.slf4j.LoggerFactory;
 public class XVSMUtil {
 	private static Logger logger = LoggerFactory.getLogger(XVSMUtil.class);
 
+	private static String COUNTER_CONTAINER_ID = "";
+	private static String STORAGE_CONTAINER_ID = "";
+	private static String BAKEROOM_CONTAINER_ID = "";
+	private static String TERMINAL_CONTAINER_ID = "";
+
 	private XVSMUtil() {
 	};
 
@@ -32,12 +37,32 @@ public class XVSMUtil {
 			try {
 				cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
 						MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
+				setId(containerName, cref.getId());
 				logger.debug("New container has been created for: " + containerName);
 			} catch (MzsCoreException e1) {
 				logger.error(e1.getMessage());
 			}
 		}
 		return cref;
+
+	}
+
+	private static void setId(String containerName, String id) {
+		switch (containerName) {
+		case XVSMConstants.COUNTER_CONTAINER_NAME:
+			COUNTER_CONTAINER_ID = id;
+			break;
+		case XVSMConstants.STORAGE_CONTAINER_NAME:
+			STORAGE_CONTAINER_ID = id;
+			break;
+		case XVSMConstants.BAKEROOM_CONTAINER_NAME:
+			BAKEROOM_CONTAINER_ID = id;
+			break;
+		case XVSMConstants.TERMINAL_CONTAINER_NAME:
+			TERMINAL_CONTAINER_ID = id;
+			break;
+		default:
+		}
 
 	}
 
@@ -56,4 +81,18 @@ public class XVSMUtil {
 			return null;
 		}
 	}
+
+	public static String getNameForContainer(ContainerReference cref) {
+		String id = cref.getId();
+		if (id.equals(STORAGE_CONTAINER_ID))
+			return XVSMConstants.STORAGE_CONTAINER_NAME;
+		if (id.equals(BAKEROOM_CONTAINER_ID))
+			return XVSMConstants.BAKEROOM_CONTAINER_NAME;
+		if (id.equals(TERMINAL_CONTAINER_ID))
+			return XVSMConstants.TERMINAL_CONTAINER_NAME;
+		if (id.equals(COUNTER_CONTAINER_ID))
+			return XVSMConstants.COUNTER_CONTAINER_NAME;
+		return null;
+	}
+
 }

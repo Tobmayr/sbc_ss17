@@ -59,7 +59,7 @@ public class Product implements Serializable {
 		return "Product [productName=" + productName + ", recipe=" + recipe + ", state=" + state + "]";
 	}
 
-	class Contribution {
+	public class Contribution implements Serializable {
 
 		final UUID contributerId;
 		final ContributionType type;

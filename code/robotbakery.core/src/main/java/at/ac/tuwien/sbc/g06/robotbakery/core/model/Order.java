@@ -102,7 +102,7 @@ public class Order implements Serializable {
 				+ state + ", totalSum=" + totalSum + ", items=" + items + "]";
 	}
 
-	class Item {
+	public class Item implements Serializable{
 		private final String productName;
 		private final int amount;
 		private final double cost;

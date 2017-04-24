@@ -21,4 +21,11 @@ public class Message implements Serializable {
 		return type;
 	}
 
+	@Override
+	public String toString() {
+		return "Message [message=" + message + ", type=" + type + "]";
+	}
+	
+	
+
 }

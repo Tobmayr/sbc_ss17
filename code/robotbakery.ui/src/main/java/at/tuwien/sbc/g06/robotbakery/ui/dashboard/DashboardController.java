@@ -1,16 +1,24 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Item;
+import javax.jws.soap.SOAPBinding;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class DashboardController {
+	private static final String PRODUCT1 = "Kaisersemmel";
+	private static final String PRODUCT2 = "Bauernbrot";
+	private static final String PRODUCT3 = "Marmorkuchen";
 	@FXML
 	private TableView<Order> ordersTable;
 	@FXML
@@ -30,15 +38,49 @@ public class DashboardController {
 	private TableColumn<Item, String> itemCost;
 	@FXML
 	private TextField orderCustomerId;
-
 	@FXML
 	private TextField orderServiceId;
+
+	@FXML
+	private TextField product1Stock;
+	@FXML
+	private TextField product2Stock;
+	@FXML
+	private TextField product3Stock;
+	@FXML
+	private Label product1Label;
+	@FXML
+	private Label product2Label;
+	@FXML
+	private Label product3Label;
 
 	public DashboardController() {
 	}
 
-	public void setUIData(DashboardData data) {
-		ordersTable.setItems(data.getOrdersData());
+	public void initializeUIData(DashboardData data) {
+		ordersTable.setItems(data.getOrders());
+
+		MapChangeListener<String, Integer> ls = (change) -> {
+			updateProductInCounter(change.getKey(), change.getValueAdded());
+		};
+		data.getProductAmountInCounterMap().addListener(ls);
+	}
+
+	private void updateProductInCounter(String product, Integer stock) {
+		switch (product) {
+		case PRODUCT1:
+			product1Stock.setText("" + stock);
+			break;
+		case PRODUCT2:
+			product2Stock.setText("" + stock);
+			break;
+		case PRODUCT3:
+			product3Stock.setText("" + stock);
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	@FXML
@@ -58,6 +100,11 @@ public class DashboardController {
 				orderServiceId.setText(newOrder.getServiceRobotId().toString());
 			}
 		});
+
+		product1Label.setText(PRODUCT1 + ":");
+		product2Label.setText(PRODUCT2 + ":");
+		product3Label.setText(PRODUCT3 + ":");
+
 	}
 
 }

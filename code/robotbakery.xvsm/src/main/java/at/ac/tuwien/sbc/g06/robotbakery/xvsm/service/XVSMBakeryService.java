@@ -18,9 +18,8 @@ public class XVSMBakeryService implements IBakeryService {
 	private final ContainerReference storageContainer;
 	private Capi capi;
 
-
 	public XVSMBakeryService(Capi capi) {
-		this.capi=capi;
+		this.capi = capi;
 		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
 	}
 

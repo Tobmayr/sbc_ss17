@@ -36,7 +36,7 @@ public class XVSMBakeryStartUp extends Application {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		DashboardController controller = loader.getController();
-		controller.setUIData(bakeryData);
+		controller.initializeUIData(bakeryData);
 	}
 
 	public static void main(String[] args) {
