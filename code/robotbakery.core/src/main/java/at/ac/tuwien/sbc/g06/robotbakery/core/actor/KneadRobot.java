@@ -8,7 +8,6 @@ public class KneadRobot extends Actor {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+	tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardController"
+	xmlns="http://javafx.com/javafx/8.0.111">
+	<tabs>
+		<Tab text="Orders" />
+		<Tab text="Storage" />
+	</tabs>
+</TabPane>

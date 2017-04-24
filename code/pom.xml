@@ -16,7 +16,7 @@
 		<module>robotbakery.xvsm</module>
 		<module>robotbakery.jsm</module>
 		<module>robotbakery.ui</module>
-		<module>robotbakery.ui.tablet</module>
+		
 	</modules>
 
 	<dependencies>
