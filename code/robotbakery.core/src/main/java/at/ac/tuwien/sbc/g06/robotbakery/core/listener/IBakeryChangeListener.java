@@ -1,7 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.listener;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.Ingredient;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 
 /**
  * 
@@ -20,6 +21,12 @@ public interface IBakeryChangeListener {
 	 *            newly added or updated order
 	 */
 	 void onOrderAddedOrUpdated(Order order);
+	 
+	 void onProductAdded(Product product);
+	 
+	 void onIngredientAdded(Ingredient ingredient);
+	 
+	 
 	 
 
 	

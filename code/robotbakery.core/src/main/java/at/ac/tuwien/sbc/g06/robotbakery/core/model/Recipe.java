@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,32 +9,29 @@ import java.util.Map;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class Recipe  {
-	public enum Ingredient {
-		FLOUR, WATER, EGGS, BACKING_MIX_SPICY, BACKING_MIX_SWEET;
-	}
+public class Recipe {
 
-	private Map<Ingredient, Integer> ingredientAmountMap;
-
+	private Map<String, Integer> ingredientMap;
 	private String productName;
 	private double pricePerUnit;
 
 	public Recipe(String productName) {
 		super();
 		this.productName = productName;
-		ingredientAmountMap = new HashMap<>();
+		ingredientMap = new HashMap<>();
 	}
 
 	public String getProductName() {
 		return productName;
 	}
 
-	public void addIngredient(Ingredient ingredient, int amount) {
-		ingredientAmountMap.put(ingredient, amount);
+	public void addIngredients(Ingredient... ingredients) {
+		Arrays.asList(ingredients)
+				.forEach(ingredient -> ingredientMap.put(ingredient.getType(), ingredient.getAmount()));
 	}
 
-	public int getAmount(Ingredient ingredient) {
-		return ingredientAmountMap.get(ingredient);
+	public int getAmount(String type) {
+		return ingredientMap.get(type);
 	}
 
 	public double getPricePerUnit() {
@@ -42,6 +40,12 @@ public class Recipe  {
 
 	public void setPricePerUnit(double pricePerUnit) {
 		this.pricePerUnit = pricePerUnit;
+	}
+
+	@Override
+	public String toString() {
+		return "Recipe [ingredientAmountMap=" + ingredientMap + ", productName=" + productName + ", pricePerUnit="
+				+ pricePerUnit + "]";
 	}
 
 }

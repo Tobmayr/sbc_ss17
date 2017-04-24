@@ -24,7 +24,7 @@ public class Order implements Serializable {
 	private UUID customerId;
 	private UUID serviceRobotId;
 
-	private int State;
+	private int state;
 
 	private double totalSum;
 	private List<Item> items;
@@ -32,6 +32,7 @@ public class Order implements Serializable {
 	public Order() {
 		this.id = UUID.randomUUID();
 		items = new ArrayList<Item>();
+		state = OPEN;
 	}
 
 	public void addItem(String productName, Integer amount) {
@@ -80,11 +81,11 @@ public class Order implements Serializable {
 	}
 
 	public int getState() {
-		return State;
+		return state;
 	}
 
 	public void setState(int state) {
-		State = state;
+		this.state = state;
 	}
 
 	public UUID getId() {
@@ -94,7 +95,37 @@ public class Order implements Serializable {
 	public List<Item> getItems() {
 		return items;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", customerId=" + customerId + ", serviceRobotId=" + serviceRobotId + ", state="
+				+ state + ", totalSum=" + totalSum + ", items=" + items + "]";
+	}
+
+	class Item {
+		private final String productName;
+		private final int amount;
+		private final double cost;
+
+		public Item(String productName, int amount, double cost) {
+			super();
+			this.productName = productName;
+			this.amount = amount;
+			this.cost = cost;
+		}
+
+		public String getProductName() {
+			return productName;
+		}
+
+		public int getAmount() {
+			return amount;
+		}
+
+		public double getCost() {
+			return cost;
+		}
+
+	}
 
 }
