@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.io.Serializable;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
 
 /**
@@ -7,7 +9,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class Product extends Entity {
+public class Product implements Serializable {
 	public static final int DOUGH_IN_STORAGE = 1;
 	public static final int DOUGH_IN_BAKEROOM = 2;
 	public static final int PRODUCT_IN_STORAGE = 3;

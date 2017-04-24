@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class Recipe extends Entity {
+public class Recipe  {
 	public enum Ingredient {
 		FLOUR, WATER, EGGS, BACKING_MIX_SPICY, BACKING_MIX_SWEET;
 	}

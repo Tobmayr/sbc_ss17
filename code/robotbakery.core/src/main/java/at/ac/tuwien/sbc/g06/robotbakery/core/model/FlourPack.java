@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
-public class FlourPack extends Entity {
+import java.io.Serializable;
+
+public class FlourPack implements Serializable{
 
 	private int currentAmount;
 

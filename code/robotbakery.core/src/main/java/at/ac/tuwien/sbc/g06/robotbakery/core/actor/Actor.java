@@ -1,17 +1,15 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
-import java.io.Serializable;
 import java.util.Random;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Entity;
-
-public abstract class Actor extends Entity implements Runnable {
+public abstract class Actor implements Runnable {
 
 	private static final Random RANDOM = new Random();
+	private final UUID id;
 
 	public Actor() {
-		super();
+		id = UUID.randomUUID();
 	}
 
 	protected void sleepForSeconds(int secs) {
@@ -30,9 +28,11 @@ public abstract class Actor extends Entity implements Runnable {
 			// ignore InterrupedException for now
 		}
 	}
-
-	public static Random getRandom() {
-		return RANDOM;
+	public UUID getId() {
+		return id;
 	}
+
+	
+	
 
 }

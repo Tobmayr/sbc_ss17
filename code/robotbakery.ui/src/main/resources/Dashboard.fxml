@@ -1,15 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-	tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardController"
-	xmlns="http://javafx.com/javafx/8.0.111">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="788.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardController">
 	<tabs>
-		<Tab text="Orders" />
-		<Tab text="Storage" />
+		<Tab styleClass="first" text="Orders">
+         <content>
+            <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0">
+              <items>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="461.0" text="Orderoverview:" textAlignment="CENTER" />
+                        <TableView fx:id="ordersTable" prefHeight="373.0" prefWidth="318.0">
+                          <columns>
+                              <TableColumn fx:id="orderId" prefWidth="154.0" text="ID" />
+                              <TableColumn fx:id="orderStateId" minWidth="0.0" prefWidth="176.0" text="State" />
+                              <TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="125.0" text="Total (€)" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="441.0" prefWidth="409.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="537.0" text="Order details:" />
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.0" minWidth="10.0" prefWidth="114.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="358.0" minWidth="10.0" prefWidth="277.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="94.0" text="Customer-ID:" />
+                              <Label text="ServiceRobot-ID:" GridPane.rowIndex="1" />
+                              <TextField fx:id="orderCustomerId" editable="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="orderServiceId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Separator prefHeight="19.0" prefWidth="456.0" />
+                        <Label text="Items:" />
+                        <TableView fx:id="itemsTable" prefHeight="317.0" prefWidth="438.0">
+                          <columns>
+                            <TableColumn fx:id="itemProduct" prefWidth="133.0" text="Product" />
+                            <TableColumn fx:id="itemAmount" prefWidth="149.0" text="Amount" />
+                              <TableColumn fx:id="itemCost" prefWidth="133.0" text="Cost (€)" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+              </items>
+            </SplitPane>
+         </content></Tab>
+		<Tab styleClass="last" text="Storage" />
 	</tabs>
 </TabPane>

@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
-public class Message extends Entity {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 	public static final int ORDER_DECLINED = 1;
 	private String message;
 	private int type;
