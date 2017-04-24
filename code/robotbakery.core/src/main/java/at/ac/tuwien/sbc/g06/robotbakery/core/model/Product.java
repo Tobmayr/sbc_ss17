@@ -21,7 +21,7 @@ public class Product implements Serializable {
 	public enum ContributionType {
 		DOUGH_BASE, DOUGH_FINAL, BAKE, TRANSFER_TO_COUNTER, PACK_UP;
 	}
-
+	private final UUID id;
 	private String productName;
 	private Recipe recipe;
 	private ProductState state;
@@ -29,6 +29,7 @@ public class Product implements Serializable {
 
 	public Product(String productName) {
 		super();
+		this.id= UUID.randomUUID();
 		this.productName = productName;
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
@@ -58,6 +59,14 @@ public class Product implements Serializable {
 	public String toString() {
 		return "Product [productName=" + productName + ", recipe=" + recipe + ", state=" + state + "]";
 	}
+	
+	
+
+	public UUID getId() {
+		return id;
+	}
+
+
 
 	public class Contribution implements Serializable {
 

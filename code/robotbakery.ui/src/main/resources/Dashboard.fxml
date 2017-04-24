@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -10,53 +11,225 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="788.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" scaleShape="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardController">
 	<tabs>
         <Tab styleClass="middle" text="Overview">
          <content>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="389.0" minWidth="10.0" prefWidth="111.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="677.0" minWidth="10.0" prefWidth="677.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Label fx:id="product1Label" text="Kaisersemmel:" />
-                  <TextField fx:id="product1Stock" editable="false" text="0" GridPane.columnIndex="1" />
-                  <Label fx:id="product2Label" text="Bauernbrot:" GridPane.rowIndex="1" />
-                  <TextField fx:id="product2Stock" editable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label fx:id="product3Label" text="Marmorkuchen:" GridPane.rowIndex="2" />
-                  <TextField fx:id="product3Stock" editable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Counter:">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin></Separator>
+                  <HBox prefHeight="29.0" prefWidth="788.0">
+                     <children>
+                        <Label fx:id="product1Label" prefHeight="25.0" text="Kaisersemmel:">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="product1Stock" editable="false" focusTraversable="false" prefHeight="25.0" prefWidth="30.0" text="0">
+                           <HBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="product2Label" prefHeight="25.0" text="Bauernbrot:" />
+                        <TextField fx:id="product2Stock" editable="false" focusTraversable="false" prefHeight="25.0" prefWidth="30.0" text="0">
+                           <HBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="product3Label" prefHeight="25.0" text="Marmorkuchen:" />
+                        <TextField fx:id="product3Stock" editable="false" focusTraversable="false" prefHeight="25.0" prefWidth="30.0" text="0">
+                           <HBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="product4Label" prefHeight="25.0" text="Product 4" />
+                        <TextField fx:id="product4Stock" editable="false" prefHeight="25.0" prefWidth="30.0" text="0">
+                           <HBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="product5Label" prefHeight="25.0" text="Product 5" />
+                        <TextField fx:id="product5Stock" editable="false" focusTraversable="false" prefHeight="25.0" prefWidth="30.0" text="0">
+                           <HBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Separator prefHeight="9.0" prefWidth="788.0">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin></Separator>
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin></Separator>
+                  <GridPane prefHeight="456.0" prefWidth="1180.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="223.0" minHeight="10.0" prefHeight="220.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="236.0" minHeight="10.0" prefHeight="236.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Ingredients in  storage:" />
+                              <TableView fx:id="ingredientsTable" prefHeight="200.0" prefWidth="200.0" scaleShape="false">
+                                <columns>
+                                  <TableColumn fx:id="ingredientsType" prefWidth="185.0" text="Type" />
+                                  <TableColumn fx:id="ingredientsStock" minWidth="0.0" prefWidth="183.0" text="Stock" />
+                                </columns>
+                              </TableView>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </GridPane.margin>
+                        </VBox>
+                        <VBox prefHeight="221.0" prefWidth="570.0" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="Products in  storage:" />
+                              <TableView fx:id="productsStorageTable" prefWidth="372.0" scaleShape="false">
+                                <columns>
+                                  <TableColumn fx:id="productsStorageType" prefWidth="188.0" text="Type" />
+                                  <TableColumn fx:id="productsStorageStock" prefWidth="180.0" text="Stock" />
+                                </columns>
+                              </TableView>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </GridPane.margin>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                           <children>
+                              <Label text="Restock ingredients:" />
+                              <HBox prefHeight="77.0" prefWidth="570.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                                       <children>
+                                          <Label text="Flour (500g)" />
+                                          <TextField />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                                       <children>
+                                          <Label text="Egg" />
+                                          <TextField />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox prefHeight="96.0" prefWidth="100.0" spacing="5.0">
+                                       <children>
+                                          <Label text="Bakemix S" />
+                                          <TextField />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                                       <children>
+                                          <Label text="Bakemix P" />
+                                          <TextField />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="499.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" text="Clear">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button mnemonicParsing="false" text="Restock">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </GridPane>
                </children>
-            </GridPane>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
          </content></Tab>
 		<Tab styleClass="first" text="Orders">
          <content>
-            <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0">
-              <items>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
                         <Label prefHeight="17.0" prefWidth="461.0" text="Orderoverview:" textAlignment="CENTER" />
-                        <TableView fx:id="ordersTable" prefHeight="373.0" prefWidth="318.0">
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
+                        </Separator>
+                        <TableView fx:id="ordersTable" prefHeight="515.0" prefWidth="585.0" scaleShape="false">
                           <columns>
-                              <TableColumn fx:id="orderId" prefWidth="154.0" text="ID" />
-                              <TableColumn fx:id="orderStateId" minWidth="0.0" prefWidth="176.0" text="State" />
-                              <TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="125.0" text="Total (€)" />
+                              <TableColumn fx:id="orderId" prefWidth="209.0" text="ID" />
+                              <TableColumn fx:id="orderStateId" minWidth="0.0" prefWidth="255.0" text="State" />
+                              <TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="120.0" text="Total (€)" />
                           </columns>
                         </TableView>
                      </children>
+                     <padding>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                     </padding>
                   </VBox>
-                  <VBox prefHeight="441.0" prefWidth="409.0">
+                  <VBox prefHeight="441.0" prefWidth="409.0" GridPane.columnIndex="1">
                      <children>
                         <Label prefHeight="17.0" prefWidth="537.0" text="Order details:" />
-                        <GridPane>
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets left="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <GridPane prefHeight="79.0" prefWidth="379.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.0" minWidth="10.0" prefWidth="114.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="358.0" minWidth="10.0" prefWidth="277.0" />
@@ -69,22 +242,138 @@
                               <Label prefHeight="17.0" prefWidth="94.0" text="Customer-ID:" />
                               <Label text="ServiceRobot-ID:" GridPane.rowIndex="1" />
                               <TextField fx:id="orderCustomerId" editable="false" GridPane.columnIndex="1" />
-                              <TextField fx:id="orderServiceId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="orderServiceId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </TextField>
                            </children>
                         </GridPane>
-                        <Separator prefHeight="19.0" prefWidth="456.0" />
+                        <Separator prefHeight="15.0" prefWidth="379.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin></Separator>
                         <Label text="Items:" />
-                        <TableView fx:id="itemsTable" prefHeight="317.0" prefWidth="438.0">
+                        <TableView fx:id="itemsTable" prefWidth="585.0" scaleShape="false">
                           <columns>
-                            <TableColumn fx:id="itemProduct" prefWidth="133.0" text="Product" />
-                            <TableColumn fx:id="itemAmount" prefWidth="149.0" text="Amount" />
-                              <TableColumn fx:id="itemCost" prefWidth="133.0" text="Cost (€)" />
+                            <TableColumn fx:id="itemProduct" prefWidth="190.0" text="Product" />
+                            <TableColumn fx:id="itemAmount" prefWidth="212.0" text="Amount" />
+                              <TableColumn fx:id="itemCost" prefWidth="182.0" text="Cost (€)" />
                           </columns>
                         </TableView>
                      </children>
+                     <padding>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
                   </VBox>
-              </items>
-            </SplitPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </GridPane>
+         </content></Tab>
+          <Tab styleClass="middle" text="Products">
+         <content>
+            <GridPane prefHeight="571.0" prefWidth="785.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Dough in bakeroom:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable1" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TableColumn fx:id="productsId1" prefWidth="400.0" text="ID" />
+                              <TableColumn fx:id="productsType1" prefWidth="189.0" text="Type" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Final product in storage:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable2" prefHeight="200.0" prefWidth="638.0">
+                           <columns>
+                              <TableColumn fx:id="productsId2" prefWidth="400.0" text="ID" />
+                              <TableColumn fx:id="productsType2" prefWidth="189.0" text="Type" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Final product in counter:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable3" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TableColumn fx:id="productsId3" prefWidth="400.0" text="ID" />
+                              <TableColumn fx:id="productsType3" prefWidth="189.0" text="Type" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Product packed up:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable4" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TableColumn fx:id="productsId4" prefWidth="400.0" text="ID" />
+                              <TableColumn fx:id="productsType4" prefWidth="189.0" text="Type" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Product sold:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable5" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TableColumn fx:id="productsId5" prefWidth="400.0" text="ID" />
+                              <TableColumn fx:id="productsType5" prefWidth="189.0" text="Type" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="429.0" text="Dough in Storage:" textAlignment="CENTER" wrapText="true" />
+                        <TableView fx:id="productsTable" prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn fx:id="productsId" prefWidth="400.0" text="ID" />
+                            <TableColumn fx:id="productsType" prefWidth="189.0" text="Type" />
+                          </columns>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+               </children>
+            </GridPane>
          </content></Tab>
 	</tabs>
 </TabPane>

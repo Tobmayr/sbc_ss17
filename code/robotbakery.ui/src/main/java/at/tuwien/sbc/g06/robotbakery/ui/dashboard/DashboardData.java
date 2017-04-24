@@ -1,9 +1,14 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -13,8 +18,14 @@ public class DashboardData implements IBakeryChangeListener {
 	private final ObservableList<Order> orders = FXCollections.observableArrayList();
 	private final ObservableList<Ingredient> ingredients = FXCollections.observableArrayList();
 	private final ObservableList<Product> productsInStorage = FXCollections.observableArrayList();
-	private final ObservableList<Product> productsData = FXCollections.observableArrayList();
+	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
 	private final ObservableMap<String, Integer> productAmountInCounterMap = FXCollections.observableHashMap();
+
+	public DashboardData() {
+		Arrays.asList(ProductState.values())
+				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
+	
+	}
 
 	public ObservableList<Order> getOrders() {
 		return orders;
@@ -28,12 +39,12 @@ public class DashboardData implements IBakeryChangeListener {
 		return productsInStorage;
 	}
 
-	public ObservableList<Product> getProductsData() {
-		return productsData;
-	}
-
 	public ObservableMap<String, Integer> getProductAmountInCounterMap() {
 		return productAmountInCounterMap;
+	}
+	
+	public Map<ProductState, ObservableList<Product>> getStateToProductsMap() {
+		return stateToProductsMap;
 	}
 
 	@Override
@@ -43,36 +54,39 @@ public class DashboardData implements IBakeryChangeListener {
 			orders.add(order);
 		else
 			orders.set(index, order);
-
 	}
 
 	@Override
 	public void onProductAddedToStorage(Product product) {
 		productsInStorage.add(product);
-		productsData.add(product);
+		ObservableList<Product> list = stateToProductsMap.get(product.getState());
+		list.add(product);
 
 	}
 
 	@Override
 	public void onProductRemovedFromStorage(Product product) {
 		productsInStorage.remove(product);
-		productsData.remove(product);
+		ObservableList<Product> list = stateToProductsMap.get(product.getState());
+		list.remove(product);
 
 	}
 
 	@Override
 	public void onProductsAddedToCounter(Product product) {
-		productsData.add(product);
+		ObservableList<Product> list = stateToProductsMap.get(product.getState());
+		list.add(product);
 		Integer amount = productAmountInCounterMap.get(product.getName());
 		if (amount == null)
 			amount = 0;
-		productAmountInCounterMap.put(product.getName(), (amount+1));
+		productAmountInCounterMap.put(product.getName(), (amount + 1));
 
 	}
 
 	@Override
 	public void onProductRemovedFromCounter(Product product) {
-		productsData.remove(product);
+		ObservableList<Product> list = stateToProductsMap.get(product.getState());
+		list.remove(product);
 		Integer amount = productAmountInCounterMap.get(product.getName());
 		if (amount != null)
 			productAmountInCounterMap.put(product.getName(), amount--);
