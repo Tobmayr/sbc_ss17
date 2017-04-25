@@ -9,13 +9,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="302.0" prefWidth="505.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="302.0" prefWidth="505.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.dashboard.ContributionDialogController">
    <children>
       <HBox prefHeight="29.0" prefWidth="580.0">
          <children>
             <Label prefHeight="24.0" prefWidth="61.0" text="Product-ID:" />
-            <TextField editable="false" prefHeight="25.0" prefWidth="208.0">
+            <TextField fx:id="productId" editable="false" prefHeight="25.0" prefWidth="208.0">
                <HBox.margin>
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>
@@ -25,7 +24,7 @@
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>
             </Label>
-            <TextField editable="false" prefHeight="25.0" prefWidth="137.0" />
+            <TextField fx:id="type" editable="false" prefHeight="25.0" prefWidth="137.0" />
          </children>
          <VBox.margin>
             <Insets />
@@ -33,11 +32,11 @@
       </HBox>
       <Separator prefWidth="200.0" />
       <Label text="Contributions:" />
-      <TableView prefHeight="230.0" prefWidth="485.0">
+      <TableView fx:id="contributionsTable" prefHeight="230.0" prefWidth="485.0">
         <columns>
-          <TableColumn prefWidth="220.0" text="Contribution" />
-          <TableColumn prefWidth="124.0" text="Contributor-ID" />
-            <TableColumn minWidth="0.0" prefWidth="143.0" text="Contributor-Type" />
+          <TableColumn fx:id="contribution" prefWidth="220.0" text="Contribution" />
+          <TableColumn fx:id="contributorId" prefWidth="124.0" text="Contributor-ID" />
+            <TableColumn fx:id="contributorType" minWidth="0.0" prefWidth="143.0" text="Contributor-Type" />
         </columns>
       </TableView>
    </children>

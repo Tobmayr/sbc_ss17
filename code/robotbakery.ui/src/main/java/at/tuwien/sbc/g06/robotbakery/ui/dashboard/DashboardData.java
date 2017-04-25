@@ -3,11 +3,14 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.actor.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +27,7 @@ public class DashboardData implements IBakeryChangeListener {
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
 				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
-	
+
 	}
 
 	public ObservableList<Order> getOrders() {
@@ -42,7 +45,7 @@ public class DashboardData implements IBakeryChangeListener {
 	public ObservableMap<String, Integer> getProductAmountInCounterMap() {
 		return productAmountInCounterMap;
 	}
-	
+
 	public Map<ProductState, ObservableList<Product>> getStateToProductsMap() {
 		return stateToProductsMap;
 	}
@@ -54,6 +57,14 @@ public class DashboardData implements IBakeryChangeListener {
 			orders.add(order);
 		else
 			orders.set(index, order);
+		stateToProductsMap.forEach((state, table) -> {
+			Product product = new Product("Kaisersemmel");
+			product.setState(state);
+			Arrays.asList(ContributionType.values())
+					.forEach(ty -> product.addContribution(UUID.randomUUID(), ty, ServiceRobot.class));
+			stateToProductsMap.get(state).add(product);
+
+		});
 	}
 
 	@Override

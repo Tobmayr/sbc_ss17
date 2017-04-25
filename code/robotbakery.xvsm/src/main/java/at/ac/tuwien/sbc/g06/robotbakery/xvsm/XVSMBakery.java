@@ -22,6 +22,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
+import javafx.stage.Stage;
 
 public class XVSMBakery extends Bakery implements NotificationListener {
 
@@ -71,7 +72,7 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 			if (object instanceof Order) {
 				if (operation != Operation.WRITE)
 					return;
-				Order order = (Order)object;
+				Order order = (Order) object;
 				notifiyListeners(order);
 
 			}

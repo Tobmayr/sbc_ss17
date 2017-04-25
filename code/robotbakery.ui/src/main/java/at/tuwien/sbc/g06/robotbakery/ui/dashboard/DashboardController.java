@@ -1,5 +1,8 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
@@ -7,17 +10,28 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
+import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class DashboardController {
+
 	private static final String PRODUCT1 = "Kaisersemmel";
 	private static final String PRODUCT2 = "Bauernbrot";
 	private static final String PRODUCT3 = "Marmorkuchen";
@@ -117,12 +131,48 @@ public class DashboardController {
 	@FXML
 	private TableColumn<Product, String> productsType5;
 
+	private List<TableView<Product>> collectedProductables;
+	private List<TableColumn<Product, String>> collectedProductsIds;
+	private List<TableColumn<Product, String>> collectedProductsTypes;
+	private Stage mainStage;
+
+	public DashboardController() {
+	}
+
+	public void setMainStage(Stage mainStage) {
+		this.mainStage = mainStage;
+	}
+
+	public void showContributionDetails(Product product) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getClassLoader().getResource(UIConstants.CONTRIBUTION_DIALOG_FXML_FILENAME));
+			Parent root = loader.load();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle(UIConstants.CONTRIBUTION_DIALOG_TITLE);
+			dialogStage.initOwner(mainStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			dialogStage.setResizable(false);
+			dialogStage.setScene(scene);
+
+			ContributionDialogController contributionDialogController = loader.getController();
+			contributionDialogController.setProduct(product);
+
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public void initializeUIData(DashboardData data) {
 		ordersTable.setItems(data.getOrders());
 		ingredientsTable.setItems(data.getIngredients());
 		productsStorageTable.setItems(data.getProductsInStorage());
 		setProductTableData(data.getStateToProductsMap());
-
 		MapChangeListener<String, Integer> ls = (change) -> {
 			updateProductInCounter(change.getKey(), change.getValueAdded());
 		};
@@ -180,6 +230,13 @@ public class DashboardController {
 
 	@FXML
 	public void initialize() {
+		collectedProductables = Arrays.asList(productsTable, productsTable1, productsTable2, productsTable3,
+				productsTable4, productsTable5);
+		collectedProductsIds = Arrays.asList(productsId, productsId1, productsId2, productsId3, productsId4,
+				productsId5);
+		collectedProductsTypes = Arrays.asList(productsType, productsType1, productsType2, productsType3, productsType4,
+				productsType5);
+
 		orderId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		orderStateId.setCellValueFactory(new PropertyValueFactory<>("state"));
 		orderTotalSum.setCellValueFactory(new PropertyValueFactory<>("totalSum"));
@@ -196,28 +253,30 @@ public class DashboardController {
 		// productsStorageStock.setCellValueFactory(new
 		// PropertyValueFactory<>("amount"));
 
-		productsId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		productsId1.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType1.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		productsId2.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType2.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		productsId3.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType3.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		productsId4.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType4.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		productsId5.setCellValueFactory(new PropertyValueFactory<>("id"));
-		productsType5.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		collectedProductsIds.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("id")));
+		collectedProductsTypes.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("productName")));
 
 		ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldOrder, newOrder) -> {
 			if (newOrder != null) {
 				itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItems()));
 				orderCustomerId.setText(newOrder.getCustomerId().toString());
-				if (newOrder.getServiceRobotId()!=null){
+				if (newOrder.getServiceRobotId() != null) {
 					orderServiceId.setText(newOrder.getServiceRobotId().toString());
 				}
-			
+
 			}
+		});
+
+		collectedProductables.forEach(table -> {
+			MenuItem detailsMenu = new MenuItem("Show contributions");
+
+			detailsMenu.setOnAction((e) -> {
+				Product product = table.getItems().get(table.getSelectionModel().getSelectedIndex());
+				if (product != null) {
+					showContributionDetails(product);
+				}
+			});
+			table.setContextMenu(new ContextMenu(detailsMenu));
 		});
 
 		product1Label.setText(PRODUCT1 + ":");
