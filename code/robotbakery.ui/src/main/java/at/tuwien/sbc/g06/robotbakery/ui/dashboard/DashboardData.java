@@ -57,14 +57,6 @@ public class DashboardData implements IBakeryChangeListener {
 			orders.add(order);
 		else
 			orders.set(index, order);
-		stateToProductsMap.forEach((state, table) -> {
-			Product product = new Product("Kaisersemmel");
-			product.setState(state);
-			Arrays.asList(ContributionType.values())
-					.forEach(ty -> product.addContribution(UUID.randomUUID(), ty, ServiceRobot.class));
-			stateToProductsMap.get(state).add(product);
-
-		});
 	}
 
 	@Override
