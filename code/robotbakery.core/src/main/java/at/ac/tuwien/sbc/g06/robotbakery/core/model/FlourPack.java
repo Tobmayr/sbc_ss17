@@ -1,15 +1,16 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 @SuppressWarnings("serial")
 public class FlourPack extends Ingredient{
 
 	private int currentAmount;
 
-	private FlourPack(int currentAmount) {
+	public FlourPack() {
 		super(IngredientType.FLOUR);
-		this.currentAmount = currentAmount;
+		this.currentAmount = SBCConstants.FLOUR_PACK_SIZE;
 	}
 
 	public int takeFlour(int amount) {

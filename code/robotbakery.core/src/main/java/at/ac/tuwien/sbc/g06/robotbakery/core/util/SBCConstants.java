@@ -7,6 +7,8 @@ public class SBCConstants {
 	public static final String PRODUCT3_NAME = "Marmorkuchen";
 	public static final String PRODUCT4_NAME = "Fladenbrot";
 	public static final String PRODUCT5_NAME = "Croissant";
+	
+	public static final int FLOUR_PACK_SIZE = 500;
 
 	private SBCConstants() {
 	}

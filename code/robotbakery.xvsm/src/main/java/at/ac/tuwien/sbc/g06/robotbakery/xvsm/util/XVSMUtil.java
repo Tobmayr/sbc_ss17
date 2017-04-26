@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
+import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
@@ -26,6 +28,7 @@ public class XVSMUtil {
 
 	private XVSMUtil() {
 	};
+	
 
 	public static ContainerReference getOrCreateContainer(Capi capi, String containerName) {
 		logger.debug("Lookup container:" + containerName);

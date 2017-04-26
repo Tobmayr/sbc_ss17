@@ -1,10 +1,13 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
@@ -12,7 +15,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
-import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductCount;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IUIService;
+import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -54,18 +59,18 @@ public class DashboardController {
 	private TextField orderServiceId;
 
 	@FXML
-	private TableView<Ingredient> ingredientsTable;
+	private TableView<ItemCount> ingredientsTable;
 	@FXML
-	private TableColumn<Ingredient, IngredientType> ingredientsType;
+	private TableColumn<ItemCount, String> ingredientsType;
 	@FXML
-	private TableColumn<Ingredient, String> ingredientsStock;
+	private TableColumn<ItemCount, String> ingredientsStock;
 
 	@FXML
-	private TableView<ProductCount> productsStorageTable;
+	private TableView<ItemCount> productsStorageTable;
 	@FXML
-	private TableColumn<ProductCount, String> productsStorageType;
+	private TableColumn<ItemCount, String> productsStorageType;
 	@FXML
-	private TableColumn<ProductCount, String> productsStorageStock;
+	private TableColumn<ItemCount, String> productsStorageStock;
 
 	@FXML
 	private TableView<Product> productsTable;
@@ -105,22 +110,49 @@ public class DashboardController {
 	private TableColumn<Product, String> productsType5;
 
 	@FXML
-	TableView<ProductCount> productsCounterTable;
+	TableView<ItemCount> productsCounterTable;
 	@FXML
-	TableColumn<ProductCount, String> productsCounterType;
+	TableColumn<ItemCount, String> productsCounterType;
 	@FXML
-	TableColumn<ProductCount, String> productsCounterStock;
+	TableColumn<ItemCount, String> productsCounterStock;
+
+	@FXML
+	TextField restockFlourAmount;
+	@FXML
+	TextField restockEggAmount;
+	@FXML
+	TextField restockBakeSweetAmount;
+	@FXML
+	TextField restockBakeSpicyAmount;
+	@FXML
+	Button clearButton;
+	@FXML
+	Button restockButton;
 
 	private List<TableView<Product>> collectedProducTables;
 	private List<TableColumn<Product, String>> collectedProductsIds;
 	private List<TableColumn<Product, String>> collectedProductsTypes;
+	private List<TextField> collectedRestockFields;
 	private Stage mainStage;
+	private IUIService uiService;
 
 	public DashboardController() {
 	}
 
-	public void setMainStage(Stage mainStage) {
+	public void initialize(DashboardData data, Stage mainStage, IUIService uiService) {
 		this.mainStage = mainStage;
+		this.uiService = uiService;
+		initializeUIData(data);
+
+	}
+
+	private void initializeUIData(DashboardData data) {
+		ordersTable.setItems(data.getOrders());
+		ingredientsTable.setItems(data.getIngredients());
+		productsStorageTable.setItems(data.getProductsInStorage());
+		productsCounterTable.setItems(data.getProductsInCounter());
+		setProductTableData(data.getStateToProductsMap());
+
 	}
 
 	public void showContributionDetails(Product product) {
@@ -145,15 +177,6 @@ public class DashboardController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	public void initializeUIData(DashboardData data) {
-		ordersTable.setItems(data.getOrders());
-		ingredientsTable.setItems(data.getIngredients());
-		productsStorageTable.setItems(data.getProductsInStorage());
-		productsCounterTable.setItems(data.getProductsInCounter());
-		setProductTableData(data.getStateToProductsMap());
 
 	}
 
@@ -191,6 +214,8 @@ public class DashboardController {
 				productsId5);
 		collectedProductsTypes = Arrays.asList(productsType, productsType1, productsType2, productsType3, productsType4,
 				productsType5);
+		collectedRestockFields = Arrays.asList(restockFlourAmount, restockEggAmount, restockBakeSweetAmount,
+				restockBakeSpicyAmount);
 
 		orderId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		orderState.setCellValueFactory(new PropertyValueFactory<>("state"));
@@ -200,14 +225,13 @@ public class DashboardController {
 		itemAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 		itemCost.setCellValueFactory(new PropertyValueFactory<>("cost"));
 
-		ingredientsType.setCellValueFactory(new PropertyValueFactory<>("type"));
-		// ingredientsStock.setCellValueFactory(new
-		// PropertyValueFactory<>("amount"));
+		ingredientsType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+		ingredientsStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
-		productsStorageType.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		productsStorageType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
 		productsStorageStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
 		productsCounterStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
-		productsCounterType.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		productsCounterType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
 
 		collectedProductsIds.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("id")));
 		collectedProductsTypes.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("productName")));
@@ -234,6 +258,52 @@ public class DashboardController {
 			});
 			table.setContextMenu(new ContextMenu(detailsMenu));
 		});
+
+		collectedRestockFields.forEach(field -> {
+			field.textProperty().addListener((obs, oldValue, newValue) -> {
+				if (newValue == null | newValue.isEmpty()) {
+					field.setText("" + 0);
+				} else {
+					try {
+						Integer.parseInt(newValue);
+					} catch (NumberFormatException e) {
+						field.setText(oldValue);
+					}
+				}
+
+			});
+			field.setText("" + 0);
+		});
+
+	}
+
+	@FXML
+	public void clearButtonClicked() {
+		collectedRestockFields.forEach(field -> field.setText("" + 0));
+	}
+
+	@FXML
+	public void restockButtonClicked() {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		collectedRestockFields.forEach(field -> {
+			int amount = Integer.parseInt(field.getText());
+			IntStream.range(0, amount).forEach(i -> ingredients.add(generateIngredient(field)));
+
+		});
+		uiService.addIngredientsToStorage(ingredients);
+		clearButtonClicked();
+
+	}
+
+	private Ingredient generateIngredient(TextField field) {
+		if (field.equals(restockFlourAmount))
+			return new FlourPack();
+		if (field.equals(restockEggAmount))
+			return new Ingredient(IngredientType.EGGS);
+		if (field.equals(restockBakeSpicyAmount))
+			return new Ingredient(IngredientType.BAKING_MIX_SPICY);
+		else
+			return new Ingredient(IngredientType.BAKING_MIX_SWEET);
 
 	}
 

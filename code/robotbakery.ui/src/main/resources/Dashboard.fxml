@@ -65,7 +65,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                                  <children>
                                     <Label text="Flour (500g)" />
-                                    <TextField />
+                                    <TextField fx:id="restockFlourAmount" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -74,7 +74,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                                  <children>
                                     <Label text="Egg" />
-                                    <TextField />
+                                    <TextField fx:id="restockEggAmount" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -83,7 +83,7 @@
                               <VBox prefHeight="96.0" prefWidth="100.0" spacing="5.0">
                                  <children>
                                     <Label text="Bakemix S" />
-                                    <TextField />
+                                    <TextField fx:id="restockBakeSweetAmount" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -92,7 +92,7 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                                  <children>
                                     <Label text="Bakemix P" />
-                                    <TextField />
+                                    <TextField fx:id="restockBakeSpicyAmount" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -102,12 +102,12 @@
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="499.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Clear">
+                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonClicked" text="Clear">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false" text="Restock">
+                              <Button fx:id="restockButton" mnemonicParsing="false" onAction="#restockButtonClicked" text="Restock">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>

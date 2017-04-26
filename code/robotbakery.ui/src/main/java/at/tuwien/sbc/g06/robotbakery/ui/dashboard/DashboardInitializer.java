@@ -3,6 +3,7 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 import java.io.IOException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.Bakery;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,10 +16,10 @@ public class DashboardInitializer {
 
 	}
 
-	public static void initializeDashboard(Stage primaryStage, Bakery bakery) throws IOException {
+	public static void initializeDashboard(Stage primaryStage, Bakery bakery, IUIService uiService) throws IOException {
 
-		DashboardData bakeryData = new DashboardData();
-		bakery.registerChangeListener(bakeryData);
+		DashboardData dashboardData = new DashboardData();
+		bakery.registerChangeListener(dashboardData);
 		bakery.initialize();
 
 		FXMLLoader loader = new FXMLLoader();
@@ -32,8 +33,8 @@ public class DashboardInitializer {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
+		primaryStage.setResizable(false);
 		DashboardController controller = loader.getController();
-		controller.initializeUIData(bakeryData);
-		controller.setMainStage(primaryStage);
+		controller.initialize(dashboardData, primaryStage, uiService);
 	}
 }
