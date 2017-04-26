@@ -14,24 +14,23 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
  */
 @SuppressWarnings("serial")
 public class Order implements Serializable {
-	public static final int OPEN = 1;
-	public static final int DELIVERED = 2;
-	public static final int PAID = 3;
-	public static final int UNDELIVERABLE = 4;
+
+	public enum OrderState {
+		OPEN, DELIVERED, PAID, UNDELIVERABLE;
+	}
 
 	private final UUID id;
 	private UUID customerId;
 	private UUID serviceRobotId;
-
-	private int state;
+	private OrderState state;
 
 	private double totalSum;
 	private List<Item> items;
 
 	public Order() {
-		this.id = UUID.randomUUID();
+		id = UUID.randomUUID();
 		items = new ArrayList<Item>();
-		state = OPEN;
+		state = OrderState.OPEN;
 	}
 
 	public void addItem(String productName, Integer amount) {
@@ -79,26 +78,40 @@ public class Order implements Serializable {
 		this.serviceRobotId = serviceRobotId;
 	}
 
-	public int getState() {
+	public OrderState getState() {
 		return state;
 	}
 
-	public void setState(int state) {
+	public void setState(OrderState state) {
 		this.state = state;
-	}
-
-	public UUID getId() {
-		return id;
 	}
 
 	public List<Item> getItems() {
 		return items;
 	}
 
+	public UUID getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", customerId=" + customerId + ", serviceRobotId=" + serviceRobotId + ", state="
 				+ state + ", totalSum=" + totalSum + ", items=" + items + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Order) {
+			Order that = (Order) obj;
+			return this.getId().equals(that.getId());
+		}
+		return super.equals(obj);
 	}
 
 	public class Item implements Serializable {

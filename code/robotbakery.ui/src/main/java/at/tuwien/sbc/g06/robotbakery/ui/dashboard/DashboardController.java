@@ -8,22 +8,19 @@ import java.util.Map;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
-import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductCount;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,7 +36,7 @@ public class DashboardController {
 	@FXML
 	private TableColumn<Order, String> orderId;
 	@FXML
-	private TableColumn<Order, String> orderStateId;
+	private TableColumn<Order, OrderState> orderState;
 	@FXML
 	private TableColumn<Order, String> orderTotalSum;
 
@@ -196,7 +193,7 @@ public class DashboardController {
 				productsType5);
 
 		orderId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		orderStateId.setCellValueFactory(new PropertyValueFactory<>("state"));
+		orderState.setCellValueFactory(new PropertyValueFactory<>("state"));
 		orderTotalSum.setCellValueFactory(new PropertyValueFactory<>("totalSum"));
 
 		itemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));

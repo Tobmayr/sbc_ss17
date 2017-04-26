@@ -35,7 +35,7 @@ public class ContributionDialogController {
 	public void setProduct(Product product) {
 		contributionsTable.setItems(FXCollections.observableArrayList(product.getContributions()));
 		productId.setText(product.getId().toString());
-		type.setText(product.getName());
+		type.setText(product.getProductName());
 	}
 
 }

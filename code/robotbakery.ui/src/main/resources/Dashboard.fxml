@@ -164,7 +164,7 @@
                         <TableView fx:id="ordersTable" prefHeight="515.0" prefWidth="585.0" scaleShape="false">
                           <columns>
                               <TableColumn fx:id="orderId" prefWidth="209.0" text="ID" />
-                              <TableColumn fx:id="orderStateId" minWidth="0.0" prefWidth="255.0" text="State" />
+                              <TableColumn fx:id="orderState" minWidth="0.0" prefWidth="255.0" text="State" />
                               <TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="120.0" text="Total (€)" />
                           </columns>
                         </TableView>

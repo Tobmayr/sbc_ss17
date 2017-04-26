@@ -26,12 +26,12 @@ public class Product implements Serializable {
 	private final UUID id;
 	private String productName;
 	private Recipe recipe;
-	private ProductState state=ProductState.DOUGH_IN_STORAGE;
+	private ProductState state = ProductState.DOUGH_IN_STORAGE;
 	private List<Contribution> contributions = new ArrayList<>();
 
 	public Product(String productName) {
 		super();
-		this.id = UUID.randomUUID();
+		id = UUID.randomUUID();
 		this.productName = productName;
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
@@ -53,8 +53,12 @@ public class Product implements Serializable {
 		this.state = state;
 	}
 
-	public String getName() {
+	public String getProductName() {
 		return productName;
+	}
+
+	public UUID getId() {
+		return id;
 	}
 
 	@Override
@@ -62,8 +66,18 @@ public class Product implements Serializable {
 		return "Product [productName=" + productName + ", recipe=" + recipe + ", state=" + state + "]";
 	}
 
-	public UUID getId() {
-		return id;
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Product) {
+			Product that = (Product) obj;
+			return this.getId().equals(that.getId());
+		}
+		return super.equals(obj);
 	}
 
 	public class Contribution implements Serializable {

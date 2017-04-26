@@ -73,7 +73,7 @@ public class RecipeRegistry {
 	}
 
 	public Recipe getRecipeForProduct(Product product) {
-		return recipeMap.get(product.getName());
+		return recipeMap.get(product.getProductName());
 	}
 
 	public Collection<Recipe> getAllRecipes() {
