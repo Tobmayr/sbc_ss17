@@ -10,12 +10,14 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
+import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductCount;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,11 +34,6 @@ import javafx.stage.Stage;
 
 public class DashboardController {
 
-	private static final String PRODUCT1 = "Kaisersemmel";
-	private static final String PRODUCT2 = "Bauernbrot";
-	private static final String PRODUCT3 = "Marmorkuchen";
-	private static final String PRODUCT4 = "Product 4";
-	private static final String PRODUCT5 = "Prodcut 5";
 	@FXML
 	private TableView<Order> ordersTable;
 	@FXML
@@ -60,39 +57,18 @@ public class DashboardController {
 	private TextField orderServiceId;
 
 	@FXML
-	private TextField product1Stock;
-	@FXML
-	private TextField product2Stock;
-	@FXML
-	private TextField product3Stock;
-	@FXML
-	private TextField product4Stock;
-	@FXML
-	private TextField product5Stock;
-	@FXML
-	private Label product1Label;
-	@FXML
-	private Label product2Label;
-	@FXML
-	private Label product3Label;
-	@FXML
-	private Label product4Label;
-	@FXML
-	private Label product5Label;
-
-	@FXML
 	private TableView<Ingredient> ingredientsTable;
 	@FXML
-	private TableColumn<Ingredient, String> ingredientsType;
+	private TableColumn<Ingredient, IngredientType> ingredientsType;
 	@FXML
 	private TableColumn<Ingredient, String> ingredientsStock;
 
 	@FXML
-	private TableView<Product> productsStorageTable;
+	private TableView<ProductCount> productsStorageTable;
 	@FXML
-	private TableColumn<Product, String> productsStorageType;
+	private TableColumn<ProductCount, String> productsStorageType;
 	@FXML
-	private TableColumn<Product, String> productsStorageStock;
+	private TableColumn<ProductCount, String> productsStorageStock;
 
 	@FXML
 	private TableView<Product> productsTable;
@@ -131,7 +107,14 @@ public class DashboardController {
 	@FXML
 	private TableColumn<Product, String> productsType5;
 
-	private List<TableView<Product>> collectedProductables;
+	@FXML
+	TableView<ProductCount> productsCounterTable;
+	@FXML
+	TableColumn<ProductCount, String> productsCounterType;
+	@FXML
+	TableColumn<ProductCount, String> productsCounterStock;
+
+	private List<TableView<Product>> collectedProducTables;
 	private List<TableColumn<Product, String>> collectedProductsIds;
 	private List<TableColumn<Product, String>> collectedProductsTypes;
 	private Stage mainStage;
@@ -172,11 +155,9 @@ public class DashboardController {
 		ordersTable.setItems(data.getOrders());
 		ingredientsTable.setItems(data.getIngredients());
 		productsStorageTable.setItems(data.getProductsInStorage());
+		productsCounterTable.setItems(data.getProductsInCounter());
 		setProductTableData(data.getStateToProductsMap());
-		MapChangeListener<String, Integer> ls = (change) -> {
-			updateProductInCounter(change.getKey(), change.getValueAdded());
-		};
-		data.getProductAmountInCounterMap().addListener(ls);
+
 	}
 
 	private void setProductTableData(Map<ProductState, ObservableList<Product>> stateToProductsMap) {
@@ -205,32 +186,9 @@ public class DashboardController {
 
 	}
 
-	private void updateProductInCounter(String product, Integer stock) {
-		switch (product) {
-		case PRODUCT1:
-			product1Stock.setText("" + stock);
-			break;
-		case PRODUCT2:
-			product2Stock.setText("" + stock);
-			break;
-		case PRODUCT3:
-			product3Stock.setText("" + stock);
-			break;
-		case PRODUCT4:
-			product4Stock.setText("" + stock);
-			break;
-		case PRODUCT5:
-			product5Stock.setText("" + stock);
-			break;
-		default:
-			break;
-		}
-
-	}
-
 	@FXML
 	public void initialize() {
-		collectedProductables = Arrays.asList(productsTable, productsTable1, productsTable2, productsTable3,
+		collectedProducTables = Arrays.asList(productsTable, productsTable1, productsTable2, productsTable3,
 				productsTable4, productsTable5);
 		collectedProductsIds = Arrays.asList(productsId, productsId1, productsId2, productsId3, productsId4,
 				productsId5);
@@ -250,8 +208,9 @@ public class DashboardController {
 		// PropertyValueFactory<>("amount"));
 
 		productsStorageType.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		// productsStorageStock.setCellValueFactory(new
-		// PropertyValueFactory<>("amount"));
+		productsStorageStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
+		productsCounterStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
+		productsCounterType.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
 		collectedProductsIds.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("id")));
 		collectedProductsTypes.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("productName")));
@@ -267,7 +226,7 @@ public class DashboardController {
 			}
 		});
 
-		collectedProductables.forEach(table -> {
+		collectedProducTables.forEach(table -> {
 			MenuItem detailsMenu = new MenuItem("Show contributions");
 
 			detailsMenu.setOnAction((e) -> {
@@ -278,12 +237,6 @@ public class DashboardController {
 			});
 			table.setContextMenu(new ContextMenu(detailsMenu));
 		});
-
-		product1Label.setText(PRODUCT1 + ":");
-		product2Label.setText(PRODUCT2 + ":");
-		product3Label.setText(PRODUCT3 + ":");
-		product4Label.setText(PRODUCT4 + ":");
-		product5Label.setText(PRODUCT5 + ":");
 
 	}
 

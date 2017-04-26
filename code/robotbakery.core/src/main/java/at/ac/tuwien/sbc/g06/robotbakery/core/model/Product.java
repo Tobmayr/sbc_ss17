@@ -26,7 +26,7 @@ public class Product implements Serializable {
 	private final UUID id;
 	private String productName;
 	private Recipe recipe;
-	private ProductState state;
+	private ProductState state=ProductState.DOUGH_IN_STORAGE;
 	private List<Contribution> contributions = new ArrayList<>();
 
 	public Product(String productName) {

@@ -2,9 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
@@ -14,6 +12,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
  * @author Tobias Ortmayr (1026279)
  *
  */
+@SuppressWarnings("serial")
 public class Order implements Serializable {
 	public static final int OPEN = 1;
 	public static final int DELIVERED = 2;
@@ -102,7 +101,7 @@ public class Order implements Serializable {
 				+ state + ", totalSum=" + totalSum + ", items=" + items + "]";
 	}
 
-	public class Item implements Serializable{
+	public class Item implements Serializable {
 		private final String productName;
 		private final int amount;
 		private final double cost;

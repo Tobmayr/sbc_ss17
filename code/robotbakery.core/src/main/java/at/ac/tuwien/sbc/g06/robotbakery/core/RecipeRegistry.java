@@ -1,13 +1,21 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.BAKING_MIX_SPICY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.BAKING_MIX_SWEET;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.EGGS;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.FLOUR;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.WATER;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 /**
  * 
@@ -34,26 +42,30 @@ public class RecipeRegistry {
 
 	private void createRecipes() {
 		// Kaisersemmel Recipe
-		Recipe recipe = new Recipe("Kaisersemmel");
-		recipe.addIngredients(new Ingredient(Ingredient.FLOUR, 100), new Ingredient(Ingredient.WATER, 100),
-				new Ingredient(Ingredient.BACKING_MIX_SPICY, 1));
-		recipe.setPricePerUnit(0.35);
+		Recipe recipe = new Recipe(SBCConstants.PRODUCT1_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
+				Arrays.asList(100, 100, 1), 0.4d);
 		recipeMap.put(recipe.getProductName(), recipe);
-
+		
 		// Bauernnrot Recipe
-		recipe = new Recipe("Bauernbrot");
-		recipe.addIngredients(new Ingredient(Ingredient.FLOUR, 550), new Ingredient(Ingredient.WATER, 500),
-				new Ingredient(Ingredient.BACKING_MIX_SPICY, 5));
-		recipe.setPricePerUnit(1.8);
+		recipe = new Recipe(SBCConstants.PRODUCT2_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
+				Arrays.asList(550, 500, 5), 2.5d);
 		recipeMap.put(recipe.getProductName(), recipe);
 
 		// Marmorkuchen Recipe
-		recipe = new Recipe("Marmorkuchen");
-		recipe.addIngredients(new Ingredient(Ingredient.FLOUR, 350), new Ingredient(Ingredient.WATER, 550),
-				new Ingredient(Ingredient.EGGS, 5), new Ingredient(Ingredient.BAKING_MIX_SWEET, 2));
-		recipe.setPricePerUnit(1.5);
+		recipe = new Recipe(SBCConstants.PRODUCT3_NAME, Arrays.asList(FLOUR, WATER, EGGS, BAKING_MIX_SWEET),
+				Arrays.asList(350, 550, 5, 2), 2.0d);
 		recipeMap.put(recipe.getProductName(), recipe);
-		System.out.println();
+		
+		// Fladenbrot Recipe
+		recipe = new Recipe(SBCConstants.PRODUCT4_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
+				Arrays.asList(250, 300, 1), 1.0d);
+		recipeMap.put(recipe.getProductName(), recipe);
+
+		// Croissant Recipe
+		recipe = new Recipe(SBCConstants.PRODUCT5_NAME, Arrays.asList(FLOUR, WATER, EGGS, BAKING_MIX_SWEET),
+				Arrays.asList(150, 230, 1, 2), 1.0d);
+		recipeMap.put(recipe.getProductName(), recipe);
+
 	}
 
 	public Recipe getRecipeByName(String name) {
@@ -68,10 +80,10 @@ public class RecipeRegistry {
 		return Collections.unmodifiableCollection(recipeMap.values());
 	}
 
-	public Recipe getRecipeWithHighestAmount(String ingredientName) {
+	public Recipe getRecipeWithHighestAmount(IngredientType type) {
 		Recipe target = null;
 		for (Recipe recipe : recipeMap.values()) {
-			if (target == null || recipe.getAmount(ingredientName) > target.getAmount(ingredientName)) {
+			if (target == null || recipe.getAmount(type) > target.getAmount(type)) {
 				target = recipe;
 			}
 
@@ -79,10 +91,10 @@ public class RecipeRegistry {
 		return target;
 	}
 
-	public Recipe getRecipeWithLowestAmount(String ingredientName) {
+	public Recipe getRecipeWithLowestAmount(IngredientType type) {
 		Recipe target = null;
 		for (Recipe recipe : recipeMap.values()) {
-			if (target == null || recipe.getAmount(ingredientName) < target.getAmount(ingredientName)) {
+			if (target == null || recipe.getAmount(type) < target.getAmount(type)) {
 				target = recipe;
 			}
 

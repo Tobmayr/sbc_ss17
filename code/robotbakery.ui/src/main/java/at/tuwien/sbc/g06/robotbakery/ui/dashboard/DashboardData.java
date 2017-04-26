@@ -3,14 +3,11 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.actor.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +17,12 @@ public class DashboardData implements IBakeryChangeListener {
 
 	private final ObservableList<Order> orders = FXCollections.observableArrayList();
 	private final ObservableList<Ingredient> ingredients = FXCollections.observableArrayList();
-	private final ObservableList<Product> productsInStorage = FXCollections.observableArrayList();
+	private final ObservableList<ProductCount> productsInStorage = FXCollections.observableArrayList();
+	private final Map<String, ProductCount> storageProductsCounterMap = new HashMap<>();
+	private final ObservableList<ProductCount> productsInCounter = FXCollections.observableArrayList();
+	private final Map<String, ProductCount> counterProductsCounterMap = new HashMap<>();
+
 	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
-	private final ObservableMap<String, Integer> productAmountInCounterMap = FXCollections.observableHashMap();
 
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
@@ -38,12 +38,12 @@ public class DashboardData implements IBakeryChangeListener {
 		return ingredients;
 	}
 
-	public ObservableList<Product> getProductsInStorage() {
+	public ObservableList<ProductCount> getProductsInStorage() {
 		return productsInStorage;
 	}
 
-	public ObservableMap<String, Integer> getProductAmountInCounterMap() {
-		return productAmountInCounterMap;
+	public ObservableList<ProductCount> getProductsInCounter() {
+		return productsInCounter;
 	}
 
 	public Map<ProductState, ObservableList<Product>> getStateToProductsMap() {
@@ -61,38 +61,60 @@ public class DashboardData implements IBakeryChangeListener {
 
 	@Override
 	public void onProductAddedToStorage(Product product) {
-		productsInStorage.add(product);
-		ObservableList<Product> list = stateToProductsMap.get(product.getState());
-		list.add(product);
+
+		ProductCount count = storageProductsCounterMap.get(product.getName());
+		if (count == null) {
+			count = new ProductCount(product.getName());
+			storageProductsCounterMap.put(product.getName(), count);
+			productsInStorage.add(count);
+		}
+		count.amount++;
+		stateToProductsMap.get(product.getState()).add(product);
 
 	}
 
 	@Override
 	public void onProductRemovedFromStorage(Product product) {
-		productsInStorage.remove(product);
-		ObservableList<Product> list = stateToProductsMap.get(product.getState());
-		list.remove(product);
+		ProductCount count = storageProductsCounterMap.get(product.getName());
+		if (count != null) {
+			if (count.amount > 0)
+				count.amount--;
+			else {
+				productsInStorage.remove(count);
+				storageProductsCounterMap.remove(count.productName);
+			}
+		}
+
+		stateToProductsMap.get(product.getState()).remove(product);
 
 	}
 
 	@Override
 	public void onProductsAddedToCounter(Product product) {
-		ObservableList<Product> list = stateToProductsMap.get(product.getState());
-		list.add(product);
-		Integer amount = productAmountInCounterMap.get(product.getName());
-		if (amount == null)
-			amount = 0;
-		productAmountInCounterMap.put(product.getName(), (amount + 1));
+		ProductCount count = counterProductsCounterMap.get(product.getName());
+		if (count == null) {
+			count = new ProductCount(product.getName());
+			counterProductsCounterMap.put(product.getName(), count);
+			productsInCounter.add(count);
+		}
+		count.amount++;
+		stateToProductsMap.get(product.getState()).add(product);
 
 	}
 
 	@Override
 	public void onProductRemovedFromCounter(Product product) {
-		ObservableList<Product> list = stateToProductsMap.get(product.getState());
-		list.remove(product);
-		Integer amount = productAmountInCounterMap.get(product.getName());
-		if (amount != null)
-			productAmountInCounterMap.put(product.getName(), amount--);
+		ProductCount count = counterProductsCounterMap.get(product.getName());
+		if (count != null) {
+			if (count.amount > 0)
+				count.amount--;
+			else {
+				productsInCounter.remove(count);
+				counterProductsCounterMap.remove(count.productName);
+			}
+		}
+
+		stateToProductsMap.get(product.getState()).remove(product);
 	}
 
 	@Override
@@ -103,6 +125,31 @@ public class DashboardData implements IBakeryChangeListener {
 	@Override
 	public void onIngredientRemovedFromStorage(Ingredient ingredient) {
 		ingredients.remove(ingredient);
+
+	}
+
+	/**
+	 * Helper class for representing Product name and amount in the UI
+	 * 
+	 * @author Tobias Ortmayr (1026279)
+	 *
+	 */
+	class ProductCount {
+
+		private final String productName;
+		private int amount;
+
+		public ProductCount(String productName) {
+			this.productName = productName;
+		}
+
+		public String getProductName() {
+			return productName;
+		}
+
+		public int getAmount() {
+			return amount;
+		}
 
 	}
 

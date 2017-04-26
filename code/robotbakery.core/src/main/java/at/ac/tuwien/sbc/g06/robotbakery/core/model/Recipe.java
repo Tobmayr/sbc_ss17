@@ -1,46 +1,48 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * 
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class Recipe implements Serializable{
+@SuppressWarnings("serial")
+public class Recipe implements Serializable {
+	public enum IngredientType {
+		FLOUR, WATER, EGGS, BAKING_MIX_SPICY, BAKING_MIX_SWEET;
+	}
 
-	private Map<String, Integer> ingredientMap;
-	private String productName;
-	private double pricePerUnit;
+	private Map<IngredientType, Integer> ingredientMap;
+	private final String productName;
+	private final double pricePerUnit;
 
-	public Recipe(String productName) {
+	public Recipe(String productName, List<IngredientType> ingredientTypes, List<Integer> amounts,
+			double pricePerUnit) {
 		super();
 		this.productName = productName;
 		ingredientMap = new HashMap<>();
+		if (ingredientTypes.size() == amounts.size()) {
+			IntStream.range(0, amounts.size()).forEach(i -> ingredientMap.put(ingredientTypes.get(i), amounts.get(i)));
+		}
+
+		this.pricePerUnit = pricePerUnit;
 	}
 
 	public String getProductName() {
 		return productName;
 	}
 
-	public void addIngredients(Ingredient... ingredients) {
-		Arrays.asList(ingredients)
-				.forEach(ingredient -> ingredientMap.put(ingredient.getType(), ingredient.getAmount()));
-	}
-
-	public int getAmount(String type) {
+	public int getAmount(IngredientType type) {
 		return ingredientMap.get(type);
 	}
 
 	public double getPricePerUnit() {
 		return pricePerUnit;
-	}
-
-	public void setPricePerUnit(double pricePerUnit) {
-		this.pricePerUnit = pricePerUnit;
 	}
 
 	@Override

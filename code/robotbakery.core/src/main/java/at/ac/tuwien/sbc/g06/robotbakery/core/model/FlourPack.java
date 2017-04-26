@@ -1,12 +1,14 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
-import java.io.Serializable;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 
-public class FlourPack implements Serializable{
+@SuppressWarnings("serial")
+public class FlourPack extends Ingredient{
 
 	private int currentAmount;
 
 	private FlourPack(int currentAmount) {
+		super(IngredientType.FLOUR);
 		this.currentAmount = currentAmount;
 	}
 
