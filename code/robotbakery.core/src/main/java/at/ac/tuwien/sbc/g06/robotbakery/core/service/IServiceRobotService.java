@@ -10,4 +10,6 @@ public interface IServiceRobotService {
 	Order processNextOrder();
 	
 	void addToCounter(List<Product> products);
+
+	Product checkCounter();
 }

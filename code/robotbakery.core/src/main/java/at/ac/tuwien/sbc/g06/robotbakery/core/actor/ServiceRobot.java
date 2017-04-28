@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -23,9 +25,20 @@ public class ServiceRobot extends Actor {
 				System.out.println("New order with id: " + order.getId() + " received");
 				service.addToCounter(Arrays.asList(new Product("Bauernbrot"), new Product("Bauernbrot"),
 						new Product("Kaisersemmel")));
+			} else {
+				//Checks Counter and gets list of products that are missing from counter
+				Product missingProducts = service.checkCounter();
+
+				//TODO gets missing product and deliver it to counter
+
+
 			}
 		}
 
+	}
+
+	private void packOrder(Order order) {
+		// TODO
 	}
 
 }
