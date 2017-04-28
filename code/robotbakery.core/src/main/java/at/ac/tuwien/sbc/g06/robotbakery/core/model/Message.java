@@ -3,28 +3,28 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class Message implements Serializable {
-	public enum MessageType{ORDER_DECLINED};
+@SuppressWarnings("serial")
+public abstract class Message implements Serializable {
+
 	private final UUID receiverID;
-	private final MessageType type;
+	private final MessageType messageType;
 
-	public Message(MessageType type, UUID receiverID) {
+	public Message(UUID receiverID, MessageType messageType) {
 		super();
-		this.type=type;
-		this.receiverID=receiverID;
-
-	
+		this.messageType = messageType;
+		this.receiverID = receiverID;
 	}
 
 	public UUID getReceiverID() {
 		return receiverID;
 	}
 
-	public MessageType getType() {
-		return type;
+	public MessageType getMessageType() {
+		return messageType;
 	}
-	
-	
 
-	
+	public enum MessageType {
+		ORDER_DECLINED, ORDER_READY;
+	}
+
 }

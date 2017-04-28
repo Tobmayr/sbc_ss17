@@ -1,4 +1,4 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core;
+package at.ac.tuwien.sbc.g06.robotbakery.core.util;
 
 import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.BAKING_MIX_SPICY;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType.BAKING_MIX_SWEET;
@@ -17,7 +17,6 @@ import org.omg.CORBA.OMGVMCID;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
-import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 /**
  * 

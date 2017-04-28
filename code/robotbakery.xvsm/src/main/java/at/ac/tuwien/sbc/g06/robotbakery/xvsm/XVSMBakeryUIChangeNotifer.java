@@ -15,30 +15,23 @@ import org.mozartspaces.notifications.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.Bakery;
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.BakeryUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
-import javafx.stage.Stage;
 
-public class XVSMBakery extends Bakery implements NotificationListener {
+public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements NotificationListener {
 
-	private static Logger logger = LoggerFactory.getLogger(XVSMBakery.class);
+	private static Logger logger = LoggerFactory.getLogger(XVSMBakeryUIChangeNotifer.class);
 	private final ContainerReference counterContainer;
-	private final ContainerReference terminalContainer;
+
 	private final ContainerReference storageContainer;
-	private final ContainerReference bakeroomContainer;
 
-	public XVSMBakery(Capi server) {
-		super(new XVSMBakeryService(server));
-
+	public XVSMBakeryUIChangeNotifer(Capi server) {
 		counterContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.COUNTER_CONTAINER_NAME);
-		terminalContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.TERMINAL_CONTAINER_NAME);
 		storageContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.STORAGE_CONTAINER_NAME);
-		bakeroomContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		createNotifications(server);
 	}
 

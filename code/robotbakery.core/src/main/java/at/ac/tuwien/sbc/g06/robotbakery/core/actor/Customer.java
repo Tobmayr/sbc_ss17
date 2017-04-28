@@ -1,12 +1,9 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
-import java.util.UUID;
-
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ICustomerService;
 
 public class Customer extends Actor {
-
 
 	private ICustomerService counterService;
 	
@@ -24,5 +21,6 @@ public class Customer extends Actor {
 
 	}
 
+	
 
 }

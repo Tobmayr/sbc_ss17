@@ -13,7 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public interface IBakeryChangeListener {
+public interface IBakeryUIChangeListener extends IChangeListener{
 
 	/**
 	 * Is invoked when an order has been added to the counter or an existing

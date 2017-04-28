@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -13,7 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class DashboardData implements IBakeryChangeListener {
+public class DashboardData implements IBakeryUIChangeListener {
 
 	private final ObservableList<Order> orders = FXCollections.observableArrayList();
 	private final ObservableList<ItemCount> ingredients = FXCollections.observableArrayList();

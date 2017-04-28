@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Actor;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
  * 

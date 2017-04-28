@@ -15,7 +15,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
-import at.ac.tuwien.sbc.g06.robotbakery.core.service.IUIService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.collections.FXCollections;
@@ -134,12 +134,12 @@ public class DashboardController {
 	private List<TableColumn<Product, String>> collectedProductsTypes;
 	private List<TextField> collectedRestockFields;
 	private Stage mainStage;
-	private IUIService uiService;
+	private IBakeryUIService uiService;
 
 	public DashboardController() {
 	}
 
-	public void initialize(DashboardData data, Stage mainStage, IUIService uiService) {
+	public void initialize(DashboardData data, Stage mainStage, IBakeryUIService uiService) {
 		this.mainStage = mainStage;
 		this.uiService = uiService;
 		initializeUIData(data);

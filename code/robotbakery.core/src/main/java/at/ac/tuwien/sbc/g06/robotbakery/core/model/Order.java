@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.RecipeRegistry;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
  * 
@@ -34,12 +35,15 @@ public class Order implements Serializable {
 	}
 
 	public void addItem(String productName, Integer amount) {
-		Recipe recipe = RecipeRegistry.getInstance().getRecipeByName(productName);
-		if (recipe != null) {
-			double cost = recipe.getPricePerUnit() * amount;
-			items.add(new Item(productName, amount, cost));
-			totalSum += cost;
+		Item i = new Item(productName, amount);
+		int index = items.indexOf(i);
+		if (index != -1) {
+			items.set(index, i);
+		} else {
+			items.add(i);
 		}
+
+		totalSum = items.stream().mapToDouble(Item::getCost).sum();
 
 	}
 
@@ -51,10 +55,6 @@ public class Order implements Serializable {
 
 	public double getTotalSum() {
 		return totalSum;
-	}
-
-	public void setTotalSum(double totalSum) {
-		this.totalSum = totalSum;
 	}
 
 	public void resetItems() {
@@ -119,11 +119,16 @@ public class Order implements Serializable {
 		private final int amount;
 		private final double cost;
 
-		public Item(String productName, int amount, double cost) {
+		public Item(String productName, int amount) {
 			super();
 			this.productName = productName;
 			this.amount = amount;
-			this.cost = cost;
+			Recipe recipe = RecipeRegistry.getInstance().getRecipeByName(productName);
+			if (recipe != null)
+				cost = recipe.getPricePerUnit() * amount;
+			else
+				cost = 0;
+
 		}
 
 		public String getProductName() {
@@ -136,6 +141,20 @@ public class Order implements Serializable {
 
 		public double getCost() {
 			return cost;
+		}
+
+		@Override
+		public int hashCode() {
+			return productName.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Item) {
+				Item that = (Item) obj;
+				return this.productName.equals(that.productName);
+			}
+			return super.equals(obj);
 		}
 
 	}
