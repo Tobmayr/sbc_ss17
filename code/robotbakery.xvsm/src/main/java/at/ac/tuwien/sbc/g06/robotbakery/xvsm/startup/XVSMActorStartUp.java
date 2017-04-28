@@ -7,7 +7,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.actor.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Customer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.actor.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.actor.ServiceRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMCustomerService;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMServiceRobotService;
 
 public class XVSMActorStartUp {
@@ -24,10 +26,10 @@ public class XVSMActorStartUp {
 			startActor(new ServiceRobot(new XVSMServiceRobotService()));
 			break;
 		case "knead":
-			startActor(new KneadRobot());
+			startActor(new KneadRobot(new XVSMKneadRobotService()));
 			break;
 		case "bake":
-			startActor(new BakeRobot());
+			startActor(new BakeRobot(new XVSMBakeRobotService()));
 			break;
 
 		default:

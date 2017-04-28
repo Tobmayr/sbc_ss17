@@ -24,9 +24,9 @@ public class Product implements Serializable {
 	}
 
 	private final UUID id;
-	private String productName;
-	private Recipe recipe;
-	private ProductState state = ProductState.DOUGH_IN_STORAGE;
+	private final String productName;
+	final Recipe recipe;
+	private ProductState state;
 	private List<Contribution> contributions = new ArrayList<>();
 
 	public Product(String productName) {
@@ -35,6 +35,17 @@ public class Product implements Serializable {
 		this.productName = productName;
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
+	}
+
+	public Product(Recipe recipe) {
+		super();
+		id = UUID.randomUUID();
+		this.productName = recipe.getProductName();
+		this.recipe = recipe;
+	}
+
+	public boolean isBaked() {
+		return (state != ProductState.DOUGH_IN_BAKEROOM && state != ProductState.DOUGH_IN_BAKEROOM);
 	}
 
 	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Actor> contributor) {
@@ -55,6 +66,10 @@ public class Product implements Serializable {
 
 	public String getProductName() {
 		return productName;
+	}
+
+	public Recipe getRecipe() {
+		return recipe;
 	}
 
 	public UUID getId() {

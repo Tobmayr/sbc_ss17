@@ -1,9 +1,15 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
+
 public class BakeRobot extends Actor {
 
-	public BakeRobot() {
+	private IBakeRobotService service;
+
+	public BakeRobot(IBakeRobotService service) {
 		super();
+		this.service=service;
+
 	};
 
 	@Override
@@ -11,5 +17,7 @@ public class BakeRobot extends Actor {
 		// TODO Auto-generated method stub
 
 	}
+	
+	
 
 }

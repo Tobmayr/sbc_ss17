@@ -9,6 +9,7 @@ public class SBCConstants {
 	public static final String PRODUCT5_NAME = "Croissant";
 	
 	public static final int FLOUR_PACK_SIZE = 500;
+	public static final int COUNTER_MAX_CAPACITY = 10;
 
 	private SBCConstants() {
 	}

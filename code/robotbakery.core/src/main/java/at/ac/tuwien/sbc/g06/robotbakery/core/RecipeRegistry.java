@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.omg.CORBA.OMGVMCID;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
@@ -45,7 +47,7 @@ public class RecipeRegistry {
 		Recipe recipe = new Recipe(SBCConstants.PRODUCT1_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
 				Arrays.asList(100, 100, 1), 0.4d);
 		recipeMap.put(recipe.getProductName(), recipe);
-		
+
 		// Bauernnrot Recipe
 		recipe = new Recipe(SBCConstants.PRODUCT2_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
 				Arrays.asList(550, 500, 5), 2.5d);
@@ -55,7 +57,7 @@ public class RecipeRegistry {
 		recipe = new Recipe(SBCConstants.PRODUCT3_NAME, Arrays.asList(FLOUR, WATER, EGGS, BAKING_MIX_SWEET),
 				Arrays.asList(350, 550, 5, 2), 2.0d);
 		recipeMap.put(recipe.getProductName(), recipe);
-		
+
 		// Fladenbrot Recipe
 		recipe = new Recipe(SBCConstants.PRODUCT4_NAME, Arrays.asList(FLOUR, WATER, BAKING_MIX_SPICY),
 				Arrays.asList(250, 300, 1), 1.0d);
@@ -80,26 +82,5 @@ public class RecipeRegistry {
 		return Collections.unmodifiableCollection(recipeMap.values());
 	}
 
-	public Recipe getRecipeWithHighestAmount(IngredientType type) {
-		Recipe target = null;
-		for (Recipe recipe : recipeMap.values()) {
-			if (target == null || recipe.getAmount(type) > target.getAmount(type)) {
-				target = recipe;
-			}
-
-		}
-		return target;
-	}
-
-	public Recipe getRecipeWithLowestAmount(IngredientType type) {
-		Recipe target = null;
-		for (Recipe recipe : recipeMap.values()) {
-			if (target == null || recipe.getAmount(type) < target.getAmount(type)) {
-				target = recipe;
-			}
-
-		}
-		return target;
-	}
 
 }

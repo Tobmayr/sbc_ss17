@@ -17,7 +17,8 @@ public class Recipe implements Serializable {
 		FLOUR, WATER, EGGS, BAKING_MIX_SPICY, BAKING_MIX_SWEET;
 	}
 
-	private Map<IngredientType, Integer> ingredientMap;
+	private final Map<IngredientType, Integer> baseIngredients = new HashMap<>();
+	private final Map<IngredientType, Integer> additionalIngredients = new HashMap<>();
 	private final String productName;
 	private final double pricePerUnit;
 
@@ -25,20 +26,50 @@ public class Recipe implements Serializable {
 			double pricePerUnit) {
 		super();
 		this.productName = productName;
-		ingredientMap = new HashMap<>();
 		if (ingredientTypes.size() == amounts.size()) {
-			IntStream.range(0, amounts.size()).forEach(i -> ingredientMap.put(ingredientTypes.get(i), amounts.get(i)));
+			IntStream.range(0, amounts.size()).forEach(i -> addIngredients(ingredientTypes.get(i), amounts.get(i)));
 		}
 
 		this.pricePerUnit = pricePerUnit;
+	}
+
+	private void addIngredients(IngredientType type, int amount) {
+		switch (type) {
+		case BAKING_MIX_SPICY:
+		case BAKING_MIX_SWEET:
+		case EGGS:
+			additionalIngredients.put(type, amount);
+			break;
+		case FLOUR:
+		case WATER:
+			baseIngredients.put(type, amount);
+			break;
+		default:
+			break;
+
+		}
 	}
 
 	public String getProductName() {
 		return productName;
 	}
 
-	public int getAmount(IngredientType type) {
-		return ingredientMap.get(type);
+	public Integer getAmount(IngredientType type) {
+		Integer result = null;
+		result = baseIngredients.get(type);
+		if (result == null)
+			return additionalIngredients.get(type);
+		return result;
+
+	}
+
+	
+	public Map<IngredientType, Integer> getBaseIngredients() {
+		return baseIngredients;
+	}
+
+	public Map<IngredientType, Integer> getAdditionalIngredients() {
+		return additionalIngredients;
 	}
 
 	public double getPricePerUnit() {
@@ -47,8 +78,8 @@ public class Recipe implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Recipe [ingredientAmountMap=" + ingredientMap + ", productName=" + productName + ", pricePerUnit="
-				+ pricePerUnit + "]";
+		return "Recipe [baseIngredients=" + baseIngredients + ", additionalIngredients=" + additionalIngredients
+				+ ", productName=" + productName + ", pricePerUnit=" + pricePerUnit + "]";
 	}
 
 }
