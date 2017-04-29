@@ -2,6 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
@@ -9,7 +10,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 
 public abstract class Robot implements Runnable {
 
-	private static final Random RANDOM = new Random();
 	private final UUID id;
 	private ITransactionManager transactionManager;
 
@@ -18,18 +18,17 @@ public abstract class Robot implements Runnable {
 		this.transactionManager = transactionManager;
 	}
 
-	protected void sleepForSeconds(int secs) {
+	protected void sleepFor(long millis) {
 		try {
-			Thread.sleep(secs * 1000);
+			Thread.sleep(millis);
 		} catch (InterruptedException e) {
 			// ignore InterrupedException for now
 		}
 	}
 
-	protected void sleepForSecons(int min, int max) {
+	protected void sleepFor(long min, long max) {
 		try {
-			Thread.sleep(min * 1000 + RANDOM.nextInt((max - min) * 1000));
-			;
+			Thread.sleep(ThreadLocalRandom.current().nextLong(min, max));
 		} catch (InterruptedException e) {
 			// ignore InterrupedException for now
 		}

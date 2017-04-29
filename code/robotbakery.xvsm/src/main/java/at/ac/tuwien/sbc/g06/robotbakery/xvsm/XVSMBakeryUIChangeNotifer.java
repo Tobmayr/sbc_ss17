@@ -28,10 +28,14 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 	private final ContainerReference counterContainer;
 
 	private final ContainerReference storageContainer;
+	private ContainerReference terminalContainer;
+	private ContainerReference bakeroomContainer;
 
 	public XVSMBakeryUIChangeNotifer(Capi server) {
 		counterContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.COUNTER_CONTAINER_NAME);
 		storageContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.STORAGE_CONTAINER_NAME);
+		terminalContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.TERMINAL_CONTAINER_NAME);
+		bakeroomContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		createNotifications(server);
 	}
 
@@ -41,6 +45,8 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
 			notifications.add(manager.createNotification(storageContainer, this, Operation.WRITE, Operation.TAKE));
+			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE, Operation.TAKE));
+			notifications.add(manager.createNotification(bakeroomContainer, this, Operation.WRITE, Operation.TAKE));
 		} catch (MzsCoreException | InterruptedException e) {
 			logger.error(e.getMessage());
 			throw new RuntimeException(e);
@@ -99,17 +105,39 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 	private void notifiyListeners(Product product, String containerName, Operation operation) {
 		registeredChangeListeners.forEach(ls -> {
 			if (operation == Operation.WRITE) {
-				if (containerName.equals(XVSMConstants.STORAGE_CONTAINER_NAME)) {
+				switch (containerName) {
+				case XVSMConstants.STORAGE_CONTAINER_NAME:
 					ls.onProductAddedToStorage(product);
-				} else if (containerName.equals(XVSMConstants.COUNTER_CONTAINER_NAME)) {
+					break;
+				case XVSMConstants.COUNTER_CONTAINER_NAME:
 					ls.onProductsAddedToCounter(product);
+					break;
+				case XVSMConstants.TERMINAL_CONTAINER_NAME:
+					ls.onProductAddedToTerminal(product);
+					break;
+				case XVSMConstants.BAKEROOM_CONTAINER_NAME:
+					ls.onProductAddedToBakeroom(product);
+					break;
+				default:
+					break;
 				}
 
 			} else if (operation == Operation.TAKE) {
-				if (containerName.equals(XVSMConstants.STORAGE_CONTAINER_NAME)) {
+				switch (containerName) {
+				case XVSMConstants.STORAGE_CONTAINER_NAME:
 					ls.onProductRemovedFromStorage(product);
-				} else if (containerName.equals(XVSMConstants.COUNTER_CONTAINER_NAME)) {
-					ls.onProductRemovedFromStorage(product);
+					break;
+				case XVSMConstants.COUNTER_CONTAINER_NAME:
+					ls.onProductRemovedFromCounter(product);
+					break;
+				case XVSMConstants.TERMINAL_CONTAINER_NAME:
+					ls.onProductRemovedFromTerminal(product);
+					break;
+				case XVSMConstants.BAKEROOM_CONTAINER_NAME:
+					ls.onProductAddedToBakeroom(product);
+					break;
+				default:
+					break;
 				}
 			}
 		});

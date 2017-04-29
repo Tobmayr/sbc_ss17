@@ -8,7 +8,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -70,7 +70,10 @@ public class DashboardData implements IBakeryUIChangeListener {
 		}
 		count.amount++;
 		updateItemCount(count, productsInStorage);
-		stateToProductsMap.get(product.getState()).add(product);
+		ProductState state = product.getType() == ProductType.DOUGH ? ProductState.DOUGH_IN_STORAGE
+				: ProductState.PRODUCT_IN_STORAGE;
+
+		stateToProductsMap.get(state).add(product);
 
 	}
 
@@ -86,8 +89,9 @@ public class DashboardData implements IBakeryUIChangeListener {
 				storageProductsCounterMap.remove(count.itemName);
 			}
 		}
-
-		stateToProductsMap.get(product.getState()).remove(product);
+		ProductState state = product.getType() == ProductType.DOUGH ? ProductState.DOUGH_IN_STORAGE
+				: ProductState.PRODUCT_IN_STORAGE;
+		stateToProductsMap.get(state).remove(product);
 
 	}
 
@@ -101,7 +105,8 @@ public class DashboardData implements IBakeryUIChangeListener {
 		}
 		count.amount++;
 		updateItemCount(count, productsInCounter);
-		stateToProductsMap.get(product.getState()).add(product);
+
+		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).add(product);
 
 	}
 
@@ -118,7 +123,32 @@ public class DashboardData implements IBakeryUIChangeListener {
 			}
 		}
 
-		stateToProductsMap.get(product.getState()).remove(product);
+		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).remove(product);
+	}
+
+	@Override
+	public void onProductAddedToBakeroom(Product product) {
+		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).add(product);
+
+	}
+
+	@Override
+	public void onProductRemovedFromBakeroom(Product product) {
+		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).remove(product);
+
+	}
+
+	@Override
+	public void onProductAddedToTerminal(Product product) {
+		stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL).add(product);
+
+	}
+
+	@Override
+	public void onProductRemovedFromTerminal(Product product) {
+		stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL).remove(product);
+		stateToProductsMap.get(ProductState.PRODUCT_SOLD).add(product);
+
 	}
 
 	@Override
@@ -196,6 +226,10 @@ public class DashboardData implements IBakeryUIChangeListener {
 			return amount;
 		}
 
+	}
+
+	public enum ProductState {
+		DOUGH_IN_STORAGE, DOUGH_IN_BAKEROOM, PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD;
 	}
 
 }

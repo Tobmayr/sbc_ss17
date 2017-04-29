@@ -6,17 +6,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ProductChooser;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
@@ -33,9 +30,9 @@ public class ProductChooserTest {
 	@Before
 	public void setUp() {
 		baseDough1 = new Product(SBCConstants.PRODUCT1_NAME);
-		baseDough1.setState(ProductState.DOUGH_IN_STORAGE);
+		baseDough1.setType(ProductType.DOUGH);
 		baseDough2 = new Product(SBCConstants.PRODUCT2_NAME);
-		baseDough2.setState(ProductState.DOUGH_IN_STORAGE);
+		baseDough2.setType(ProductType.DOUGH);
 		ingredientStock = new TreeMap<IngredientType, Integer>(
 				);
 		counterStock = new HashMap<String, Integer>();

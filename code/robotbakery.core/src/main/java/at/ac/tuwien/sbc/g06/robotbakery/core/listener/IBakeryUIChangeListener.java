@@ -31,9 +31,18 @@ public interface IBakeryUIChangeListener extends IChangeListener{
 	void onProductsAddedToCounter(Product product);
 
 	void onProductRemovedFromCounter(Product product);
+	
+	void onProductAddedToBakeroom(Product product);
+	
+	void onProductRemovedFromBakeroom(Product product);
+	
+	void onProductAddedToTerminal(Product product);
+	
+	void onProductRemovedFromTerminal(Product product);
 
 	void onIngredientAddedToStorage(Ingredient ingredient);
 
 	void onIngredientRemovedFromStorage(Ingredient ingredient);
+	
 
 }

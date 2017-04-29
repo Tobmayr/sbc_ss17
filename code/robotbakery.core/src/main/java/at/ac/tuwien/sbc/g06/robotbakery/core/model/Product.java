@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +17,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 @SuppressWarnings("serial")
 public class Product implements Serializable {
 
-	public enum ProductState {
-		DOUGH_IN_STORAGE, DOUGH_IN_BAKEROOM, PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD;
+	public enum ProductType {
+		DOUGH, FINALPRODUCT;
 	}
 
 	public enum ContributionType {
@@ -27,8 +28,9 @@ public class Product implements Serializable {
 	private final UUID id;
 	private final String productName;
 	final Recipe recipe;
-	private ProductState state;
+	private ProductType type=ProductType.DOUGH;
 	private List<Contribution> contributions = new ArrayList<>();
+	private Timestamp timestamp;
 
 	public Product(String productName) {
 		super();
@@ -37,16 +39,26 @@ public class Product implements Serializable {
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
 	}
+	
+	
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+
 
 	public Product(Recipe recipe) {
 		super();
 		id = UUID.randomUUID();
 		this.productName = recipe.getProductName();
 		this.recipe = recipe;
-	}
-
-	public boolean isBaked() {
-		return (state != ProductState.DOUGH_IN_BAKEROOM && state != ProductState.DOUGH_IN_BAKEROOM);
 	}
 
 	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
@@ -57,12 +69,12 @@ public class Product implements Serializable {
 		return contributions;
 	}
 
-	public ProductState getState() {
-		return state;
+	public ProductType getType() {
+		return type;
 	}
 
-	public void setState(ProductState state) {
-		this.state = state;
+	public void setType(ProductType type) {
+		this.type = type;
 	}
 
 	public String getProductName() {
@@ -77,10 +89,6 @@ public class Product implements Serializable {
 		return id;
 	}
 
-	@Override
-	public String toString() {
-		return "Product [productName=" + productName + ", recipe=" + recipe + ", state=" + state + "]";
-	}
 
 	@Override
 	public int hashCode() {

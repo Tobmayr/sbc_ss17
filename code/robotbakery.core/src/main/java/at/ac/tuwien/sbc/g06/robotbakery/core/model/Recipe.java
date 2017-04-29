@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -37,14 +41,21 @@ public class Recipe implements Serializable {
 	}
 
 	public Integer getAmount(IngredientType type) {
-		Integer result= ingredients.get(type);
-		if (result==null) result=0;
+		Integer result = ingredients.get(type);
+		if (result == null)
+			result = 0;
 		return result;
 
 	}
 
 	public Map<IngredientType, Integer> getIngredients() {
 		return ingredients;
+	}
+
+	public Set<Entry<IngredientType, Integer>> getAdditionalIngredients() {
+		return ingredients.entrySet().stream()
+				.filter(e -> e.getKey() != IngredientType.FLOUR && e.getKey() != IngredientType.WATER)
+				.collect(Collectors.toSet());
 	}
 
 	public double getPricePerUnit() {
@@ -56,7 +67,5 @@ public class Recipe implements Serializable {
 		return "Recipe [ingredients=" + ingredients + ", productName=" + productName + ", pricePerUnit=" + pricePerUnit
 				+ "]";
 	}
-
-
 
 }

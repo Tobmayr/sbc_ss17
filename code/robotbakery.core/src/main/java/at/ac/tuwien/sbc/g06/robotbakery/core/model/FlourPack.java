@@ -4,7 +4,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 @SuppressWarnings("serial")
-public class FlourPack extends Ingredient{
+public class FlourPack extends Ingredient {
 
 	private int currentAmount;
 
@@ -13,6 +13,13 @@ public class FlourPack extends Ingredient{
 		this.currentAmount = SBCConstants.FLOUR_PACK_SIZE;
 	}
 
+	/**
+	 * Takes the needed amount from the flour pack. If the flour pack hasn't
+	 * enough flour left the rest amount is returned
+	 * 
+	 * @param amount
+	 * @return
+	 */
 	public int takeFlour(int amount) {
 		if (currentAmount >= amount) {
 			currentAmount = currentAmount - amount;
@@ -32,7 +39,5 @@ public class FlourPack extends Ingredient{
 	public String toString() {
 		return "FlourPack [currentAmount=" + currentAmount + "]";
 	}
-	
-	
-	
+
 }
