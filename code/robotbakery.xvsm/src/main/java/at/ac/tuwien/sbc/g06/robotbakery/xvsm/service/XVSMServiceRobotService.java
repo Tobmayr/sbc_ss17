@@ -15,6 +15,7 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -40,13 +43,13 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public Order getNextOrder() {
+	public Order getNextOrder(ITransaction tx) {
 		try {
 			Query query = new Query().filter(Property.forName("*", "state").equalTo(OrderState.OPEN))
 					.sortup(ComparableProperty.forName("*", "timestamp")).cnt(1);
 			List<Order> test = capi.take(counterContainer,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)),
-					MzsConstants.RequestTimeout.DEFAULT, null);
+					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 			return test.get(0);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
@@ -55,11 +58,11 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public void addToCounter(List<Product> products) {
+	public void addToCounter(List<Product> products, ITransaction tx) {
 		try {
 			List<Entry> entries = new ArrayList<>();
 			products.forEach(product -> entries.add(new Entry(product)));
-			capi.write(entries, counterContainer, RequestTimeout.TRY_ONCE, null);
+			capi.write(entries, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
 		}
@@ -73,10 +76,10 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public void updateOrder(Order order) {
+	public void updateOrder(Order order, ITransaction tx) {
 		try {
 			Entry entry = new Entry(order);
-			capi.write(entry, counterContainer, RequestTimeout.TRY_ONCE, null);
+			capi.write(entry, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
 		}
@@ -84,10 +87,10 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public void putPackedOrderInTerminal(PackedOrder packedOrder) {
+	public void putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
 		try {
 			Entry entry = new Entry(packedOrder);
-			capi.write(entry, terminalContainer, RequestTimeout.TRY_ONCE, null);
+			capi.write(entry, terminalContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
 		}

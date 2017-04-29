@@ -9,6 +9,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMServiceRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransactionManager;
 
 public class XVSMRobotStartUp {
 
@@ -18,13 +19,13 @@ public class XVSMRobotStartUp {
 		}
 		switch (args[0]) {
 		case "service":
-			startRobot(new ServiceRobot(new XVSMServiceRobotService()));
+			startRobot(new ServiceRobot(new XVSMServiceRobotService(), new XVSMTransactionManager()));
 			break;
 		case "knead":
-			startRobot(new KneadRobot(new XVSMKneadRobotService()));
+			startRobot(new KneadRobot(new XVSMKneadRobotService(), new XVSMTransactionManager()));
 			break;
 		case "bake":
-			startRobot(new BakeRobot(new XVSMBakeRobotService()));
+			startRobot(new BakeRobot(new XVSMBakeRobotService(), new XVSMTransactionManager()));
 			break;
 
 		default:

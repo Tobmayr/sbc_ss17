@@ -9,6 +9,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -19,11 +20,15 @@ public class ProductChooser {
 	private Map<String, Integer> counterStock;
 	private Map<IngredientType, Integer> ingredientStock;
 
-	public ProductChooser(IKneadRobotService kneadRobotService) {
-		baseDoughCandidates = kneadRobotService.getBaseDoughsFromStorage();
-		counterStock = CollectionsUtil.sortMapByValues(kneadRobotService.getCounterStock(), true);
-		ingredientStock = CollectionsUtil.sortMapByValues(kneadRobotService.getIngredientStock(), false);
+	public ProductChooser(IKneadRobotService kneadRobotService, ITransaction tx) {
+		baseDoughCandidates = kneadRobotService.getBaseDoughsFromStorage(tx);
+		counterStock = CollectionsUtil.sortMapByValues(kneadRobotService.getCounterStock(tx), true);
+		ingredientStock = CollectionsUtil.sortMapByValues(kneadRobotService.getIngredientStock(tx), false);
 
+	}
+
+	public boolean correctlyInitialized() {
+		return baseDoughCandidates != null && counterStock != null && ingredientStock != null;
 	}
 
 	public Product getFinishableBaseDough() {
@@ -32,8 +37,16 @@ public class ProductChooser {
 
 	}
 
-	public Product getNextProductForCounter() {
-		if (counterStock.values().stream().findFirst().get().equals(SBCConstants.COUNTER_MAX_CAPACITY))
+	public Product getNextProduct() {
+		Product product = getNextProductForCounter();
+		if (product == null)
+			product = getNextProductForStorage();
+		return product;
+	}
+
+	private Product getNextProductForCounter() {
+		if (counterStock.isEmpty()
+				|| SBCConstants.COUNTER_MAX_CAPACITY.equals(counterStock.values().stream().findFirst().orElse(null)))
 			return null;
 		int median = (int) counterStock.values().toArray()[2];
 		List<Recipe> recipes = getRecipesSortedByDiff(counterStock, median);
@@ -44,8 +57,8 @@ public class ProductChooser {
 
 	}
 
-	public Product getNextProductForStorage() {
-		Recipe candiate = ingredientStock.keySet().stream().filter(type->type!=IngredientType.FLOUR)
+	private Product getNextProductForStorage() {
+		Recipe candiate = ingredientStock.keySet().stream().filter(type -> type != IngredientType.FLOUR)
 				.map(i -> getSuitableRecipe(i, ingredientStock.get(i), false)).filter(r -> r != null).findFirst()
 				.orElse(null);
 		if (candiate != null)
@@ -57,14 +70,12 @@ public class ProductChooser {
 		Predicate<Recipe> pred = onlyBaseIngredients ? r -> enoughIngredientsToFinishBaseDough(r)
 				: r -> enoughIngredientsToFinish(r);
 
-		return RecipeRegistry.getInstance().getAllRecipes()
-				.stream()
-				.filter(r -> r.getAmount(type) <= amount)
+		return RecipeRegistry.getInstance().getAllRecipes().stream().filter(r -> r.getAmount(type) <= amount)
 				.sorted((i, j) -> j.getAmount(type).compareTo(i.getAmount(type))).filter(pred).findFirst().orElse(null);
 	}
 
 	public Product getNextBaseDoughForStorage() {
-		Recipe candiate=getSuitableRecipe(IngredientType.FLOUR, ingredientStock.get(IngredientType.FLOUR), true);
+		Recipe candiate = getSuitableRecipe(IngredientType.FLOUR, ingredientStock.get(IngredientType.FLOUR), true);
 		if (candiate != null)
 			return new Product(candiate);
 		return null;
@@ -82,7 +93,8 @@ public class ProductChooser {
 	}
 
 	private boolean enoughAddtionaIngredientsToFinish(Recipe recipe) {
-		return recipe.getIngredients().keySet().stream().filter(type->type!=IngredientType.FLOUR && type!=IngredientType.WATER)
+		return recipe.getIngredients().keySet().stream()
+				.filter(type -> type != IngredientType.FLOUR && type != IngredientType.WATER)
 				.allMatch((i) -> ingredientStock.get(i) >= recipe.getAmount(i));
 	}
 

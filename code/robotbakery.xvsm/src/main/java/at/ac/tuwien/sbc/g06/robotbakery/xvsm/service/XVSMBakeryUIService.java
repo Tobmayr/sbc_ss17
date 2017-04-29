@@ -17,12 +17,13 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
 public class XVSMBakeryUIService implements IBakeryUIService {
+	
 	private static Logger logger = LoggerFactory.getLogger(XVSMBakeryUIService.class);
 	private final ContainerReference storageContainer;
 	private Capi capi;
 
 	public XVSMBakeryUIService(Capi capi) {
-		this.capi=capi;
+		this.capi = capi;
 		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
 	}
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 
 /**
  * 
@@ -19,7 +20,7 @@ public interface IKneadRobotService {
 	 * 
 	 * @return
 	 */
-	List<Product> getBaseDoughsFromStorage();
+	List<Product> getBaseDoughsFromStorage(ITransaction tx);
 
 	/**
 	 * Returns a map containing the current storage stock information about each
@@ -27,7 +28,7 @@ public interface IKneadRobotService {
 	 * 
 	 * @return
 	 */
-	Map<IngredientType, Integer> getIngredientStock();
+	Map<IngredientType, Integer> getIngredientStock(ITransaction tx);
 
 	/**
 	 * Returns a map containing the current counter stock for each product type.
@@ -35,6 +36,6 @@ public interface IKneadRobotService {
 	 *
 	 * @return
 	 */
-	Map<String, Integer> getCounterStock();
+	Map<String, Integer> getCounterStock(ITransaction tx);
 
 }

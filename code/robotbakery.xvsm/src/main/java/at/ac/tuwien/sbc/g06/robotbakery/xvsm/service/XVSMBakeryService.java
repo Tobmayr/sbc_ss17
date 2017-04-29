@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -24,10 +25,10 @@ public class XVSMBakeryService implements IBakeryService {
 	}
 
 	@Override
-	public void initializeStorageWaterPipe(WaterPipe waterPipe) {
+	public void initializeStorageWaterPipe(WaterPipe waterPipe, ITransaction tx) {
 		try {
 			Entry entry = new Entry(waterPipe);
-			capi.write(storageContainer, RequestTimeout.TRY_ONCE, null, entry);
+			capi.write(storageContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx), entry);
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
 		}

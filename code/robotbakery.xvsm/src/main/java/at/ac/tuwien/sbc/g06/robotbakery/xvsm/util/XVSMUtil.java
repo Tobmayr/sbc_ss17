@@ -12,8 +12,12 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransaction;
 
 public class XVSMUtil {
 	private static Logger logger = LoggerFactory.getLogger(XVSMUtil.class);
@@ -25,7 +29,6 @@ public class XVSMUtil {
 
 	private XVSMUtil() {
 	};
-	
 
 	public static ContainerReference getOrCreateContainer(Capi capi, String containerName) {
 		logger.debug("Lookup container:" + containerName);
@@ -92,6 +95,12 @@ public class XVSMUtil {
 			return XVSMConstants.TERMINAL_CONTAINER_NAME;
 		if (id.equals(COUNTER_CONTAINER_ID))
 			return XVSMConstants.COUNTER_CONTAINER_NAME;
+		return null;
+	}
+
+	public static TransactionReference unwrap(ITransaction tx) {
+		if (tx instanceof XVSMTransaction)
+			return ((XVSMTransaction) tx).unwrap();
 		return null;
 	}
 

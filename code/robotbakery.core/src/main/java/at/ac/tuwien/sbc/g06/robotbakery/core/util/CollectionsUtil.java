@@ -24,6 +24,7 @@ public class CollectionsUtil {
 	 * @return sorted LinkedHashMap
 	 */
 	public static <K, V extends Comparable<V>> LinkedHashMap<K, V> sortMapByValues(Map<K, V> map, boolean ascending) {
+		if (map==null) return null;
 		Comparator<Map.Entry<K, V>> comparator = ascending ? Entry.comparingByValue()
 				: (i, j) -> j.getValue().compareTo(i.getValue());
 		return map.entrySet().stream().sorted(comparator)

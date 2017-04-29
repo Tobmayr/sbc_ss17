@@ -40,17 +40,17 @@ public class ProductChooserTest {
 				);
 		counterStock = new HashMap<String, Integer>();
 
-		when(kneadService.getCounterStock()).thenReturn(counterStock);
-		when(kneadService.getIngredientStock()).thenReturn(ingredientStock);
+		when(kneadService.getCounterStock(null)).thenReturn(counterStock);
+		when(kneadService.getIngredientStock(null)).thenReturn(ingredientStock);
 
 	}
 
 	@Test
 	public void test_getBaseDoughFromStorage_canFinish() {
 		ingredientStock.put(IngredientType.BAKING_MIX_SPICY, 2);
-		when(kneadService.getBaseDoughsFromStorage()).thenReturn(Arrays.asList(baseDough1));
+		when(kneadService.getBaseDoughsFromStorage(null)).thenReturn(Arrays.asList(baseDough1));
 
-		ProductChooser chooser = new ProductChooser(kneadService);
+		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getFinishableBaseDough();
 		assertEquals(baseDough1, result);
 
@@ -59,8 +59,8 @@ public class ProductChooserTest {
 	@Test
 	public void test_getBaseDoughFromStorage_canNotFinish() {
 		ingredientStock.put(IngredientType.BAKING_MIX_SPICY, 2);
-		when(kneadService.getBaseDoughsFromStorage()).thenReturn(Arrays.asList(baseDough2));
-		ProductChooser chooser = new ProductChooser(kneadService);
+		when(kneadService.getBaseDoughsFromStorage(null)).thenReturn(Arrays.asList(baseDough2));
+		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getFinishableBaseDough();
 		assertEquals(null, result);
 
@@ -70,8 +70,8 @@ public class ProductChooserTest {
 	public void test_getNextProductForCounter_counterFull() {
 		counterStock.put(SBCConstants.PRODUCT1_NAME, 10);
 		counterStock.put(SBCConstants.PRODUCT1_NAME, 10);
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForCounter();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(null, result);
 
 	}
@@ -89,8 +89,8 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 5);
 		ingredientStock.put(IngredientType.EGGS, 15);
 
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForCounter();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(SBCConstants.PRODUCT1_NAME, result.getProductName());
 
 	}
@@ -108,8 +108,8 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 5);
 		ingredientStock.put(IngredientType.EGGS, 15);
 
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForCounter();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(SBCConstants.PRODUCT1_NAME, result.getProductName());
 
 	}
@@ -125,8 +125,8 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.FLOUR, 0);
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 0);
 		ingredientStock.put(IngredientType.EGGS, 0);
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForCounter();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(null, result);
 	}
 	
@@ -137,8 +137,8 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 15);
 		ingredientStock.put(IngredientType.EGGS, 13);
 			
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForStorage();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(SBCConstants.PRODUCT3_NAME, result.getProductName());
 		
 	
@@ -151,8 +151,8 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 0);
 		ingredientStock.put(IngredientType.EGGS, 1);
 		
-		ProductChooser chooser = new ProductChooser(kneadService);
-		Product result = chooser.getNextProductForStorage();
+		ProductChooser chooser = new ProductChooser(kneadService,null);
+		Product result = chooser.getNextProduct();
 		assertEquals(null, result);
 		
 	
@@ -166,7 +166,7 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 0);
 		ingredientStock.put(IngredientType.EGGS, 0);
 			
-		ProductChooser chooser = new ProductChooser(kneadService);
+		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getNextBaseDoughForStorage();
 		assertEquals(SBCConstants.PRODUCT5_NAME, result.getProductName());
 		
@@ -180,7 +180,7 @@ public class ProductChooserTest {
 		ingredientStock.put(IngredientType.BAKING_MIX_SWEET, 0);
 		ingredientStock.put(IngredientType.EGGS, 0);
 			
-		ProductChooser chooser = new ProductChooser(kneadService);
+		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getNextBaseDoughForStorage();
 		assertEquals(null, result);
 		
