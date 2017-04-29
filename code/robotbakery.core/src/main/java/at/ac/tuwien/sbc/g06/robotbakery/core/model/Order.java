@@ -1,12 +1,10 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collector;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
@@ -17,21 +15,21 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
  */
 @SuppressWarnings("serial")
 public class Order implements Serializable {
-
 	public enum OrderState {
 		OPEN, DELIVERED, PAID, UNDELIVERABLE;
 	}
-
-	private final UUID id;
-	private UUID customerId;
+	
+	private final UUID orderID;
+	private UUID customerID;
 	private UUID serviceRobotId;
-	private OrderState state;
+	private OrderState state=OrderState.OPEN;
+	private Timestamp timestamp; 
 
 	private double totalSum;
 	private final Map<String,Item> itemsMap;
 
 	public Order() {
-		id = UUID.randomUUID();
+		orderID = UUID.randomUUID();
 		itemsMap = new HashMap<>();
 	}
 
@@ -41,6 +39,19 @@ public class Order implements Serializable {
 
 		totalSum = itemsMap.values().stream().mapToDouble(Item::getCost).sum();
 		return item;
+	}
+
+	
+	public Timestamp getTimestamp(){
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public void setTotalSum(double totalSum) {
+		this.totalSum = totalSum;
 	}
 
 	public Item removeItem(String productName) {
@@ -60,11 +71,11 @@ public class Order implements Serializable {
 	}
 
 	public UUID getCustomerId() {
-		return customerId;
+		return customerID;
 	}
 
 	public void setCustomerId(UUID customerId) {
-		this.customerId = customerId;
+		this.customerID = customerId;
 	}
 
 	public UUID getServiceRobotId() {
@@ -90,20 +101,20 @@ public class Order implements Serializable {
 
 
 	public UUID getId() {
-		return id;
+		return orderID;
 	}
 
 	
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", customerId=" + customerId + ", serviceRobotId=" + serviceRobotId + ", state="
+		return "Order [id=" + orderID + ", customerId=" + customerID + ", serviceRobotId=" + serviceRobotId + ", state="
 				+ state + ", totalSum=" + totalSum + ", itemsMap=" + itemsMap + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return orderID.hashCode();
 	}
 
 	@Override
@@ -161,3 +172,4 @@ public class Order implements Serializable {
 	}
 
 }
+

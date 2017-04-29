@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
-import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardInitializer;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +21,7 @@ public class TabletInitializer {
 		UUID customerID= UUID.randomUUID();
 		changeNotifer.setCustomerID(customerID);
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(DashboardInitializer.class.getClassLoader().getResource(UIConstants.TABLE_FXML_FILENAME));
+		loader.setLocation(TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLE_FXML_FILENAME));
 		Parent root = loader.load();
 		primaryStage.setTitle(UIConstants.TABLET_TITLE);
 		Scene scene = new Scene(root);

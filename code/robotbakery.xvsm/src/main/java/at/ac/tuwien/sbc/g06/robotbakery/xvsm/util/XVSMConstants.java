@@ -2,8 +2,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
 import java.net.URI;
 
-import org.mozartspaces.capi3.Coordinator;
-
 public class XVSMConstants {
 	// Connection information
 	public static final String HOST = "localhost";

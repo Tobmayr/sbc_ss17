@@ -13,6 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
  * @author Tobias Ortmayr (1026279)
  *
  */
+@SuppressWarnings("serial")
 public class Product implements Serializable {
 
 	public enum ProductState {

@@ -1,7 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,10 +9,9 @@ import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
-import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
-import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
+import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +69,7 @@ public class XVSMUtil {
 	private static List<Coordinator> getObligatoryCoordsForContainer(String containerName) {
 		switch (containerName) {
 		case XVSMConstants.COUNTER_CONTAINER_NAME:
-			return Arrays.asList(new FifoCoordinator(), new TypeCoordinator());
+			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
 		case XVSMConstants.STORAGE_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator());
 		case XVSMConstants.BAKEROOM_CONTAINER_NAME:

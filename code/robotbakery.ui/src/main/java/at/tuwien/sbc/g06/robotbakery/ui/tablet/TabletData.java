@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.ITableUIChangeListener;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import javafx.collections.FXCollections;

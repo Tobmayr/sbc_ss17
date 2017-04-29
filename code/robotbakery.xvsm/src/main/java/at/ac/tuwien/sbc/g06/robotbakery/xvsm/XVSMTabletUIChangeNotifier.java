@@ -3,7 +3,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -18,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.TabletUIChangeNotifer;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;

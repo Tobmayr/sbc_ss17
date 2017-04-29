@@ -12,11 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.omg.CORBA.OMGVMCID;
-
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 
 /**
  * 

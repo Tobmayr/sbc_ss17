@@ -1,19 +1,19 @@
 package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message.MessageType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletData.CounterInformation;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -61,15 +61,18 @@ public class TabletController {
 	TableColumn<Item, String> itemAmount;
 	@FXML
 	TableColumn<Item, String> itemCost;
-	
-	@FXML TextField customerIdText;
-	@FXML TextField totalSum;
+
+	@FXML
+	TextField customerIdText;
+	@FXML
+	TextField totalSum;
 
 	private Order order;
 	private Alert invalidOrderAlert;
 	private Map<String, CounterInformation> counterMap;
 	private ITabletUIService service;
 	private ObservableList<Item> itemsData;
+	private PackedOrder packedOrder;
 
 	public void initialize(TabletData data, ITabletUIService uiService, UUID customerID) {
 
@@ -77,12 +80,17 @@ public class TabletController {
 		productsTable.setItems(data.getCounterInformationData());
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
+		
+		//TODO: Convenience Method for testing. REMOVE AFTER IMPLEMENTATION
 		productCombo.getItems().forEach(s -> {
 			CounterInformation c = data.new CounterInformation(s, 50, 500d);
 			productsTable.getItems().add(c);
 			counterMap.put(s, c);
 		});
+		
+		
 		customerIdText.setText(customerID.toString());
+		order.setCustomerId(customerID);
 
 	}
 
@@ -139,7 +147,7 @@ public class TabletController {
 			Item item = itemsTable.getItems().get(itemsTable.getSelectionModel().getSelectedIndex());
 			order.removeItem(item.getProductName());
 			itemsData.remove(item);
-			totalSum.setText(String.format("%.2f",order.getTotalSum()));
+			totalSum.setText(String.format("%.2f", order.getTotalSum()));
 			if (itemsData.isEmpty())
 				statusButton.setDisable(true);
 		});
@@ -157,7 +165,7 @@ public class TabletController {
 			}
 
 		});
-		
+
 		totalSum.setText("0");
 
 	}
@@ -181,13 +189,16 @@ public class TabletController {
 
 	@FXML
 	public void onStatusButtonClicked() {
-		if (order.getState() == null || order.getState() == OrderState.UNDELIVERABLE) {
+		if (order.getState() == OrderState.OPEN || order.getState() == OrderState.UNDELIVERABLE) {
 			if (orderValid()) {
+				order.setState(OrderState.OPEN);
+				order.setTimestamp(new Timestamp(System.currentTimeMillis()));
 				service.addOrderToCounter(order);
 			} else
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
-			service.getAndPayOrderPackage();
+			packedOrder=service.getOrderPackage(order);
+			service.payOrder(order);
 		}
 
 	}
@@ -212,31 +223,43 @@ public class TabletController {
 			itemsData.set(index, item);
 		if (statusButton.isDisabled())
 			statusButton.setDisable(false);
-		totalSum.setText(String.format("%.2f",order.getTotalSum()));
+		totalSum.setText(String.format("%.2f", order.getTotalSum()));
 		addButton.setText("Update");
 
 	}
 
 	public void onOrderUpdated(Order updated) {
-		if (updated.getId().equals(order.getId())) {
-			changeState(updated.getState());
-			statusField.setText(getText(order.getState()));
-		}
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				if (updated.getId().equals(order.getId())) {
+					order.setState(OrderState.DELIVERED);
+					changeState(updated.getState());
+					statusField.setText(getText(updated.getState()));
+				}
+
+			}
+		});
 
 	}
 
 	private void changeState(OrderState state) {
 		switch (state) {
 		case DELIVERED:
-			addButton.setDisable(false);
-			addButton.setText("Pay order");
+			statusButton.setDisable(false);
+			statusButton.setText("Pay order");
 			break;
 		case OPEN:
+			disableOrderEdit(true);
+			break;
 		case PAID:
 			disableOrderEdit(true);
 			break;
 		case UNDELIVERABLE:
+			order.setState(OrderState.OPEN);
 			disableOrderEdit(false);
+			statusButton.setText("Resend order");
 			break;
 
 		}
@@ -247,7 +270,14 @@ public class TabletController {
 		addButton.setDisable(true);
 		productCombo.setDisable(value);
 		amountText.setDisable(value);
-		itemsTable.setDisable(value);
+		statusButton.setDisable(value);
 	}
 
+	public PackedOrder getPackedOrder() {
+		return packedOrder;
+	}
+
+
+
+	
 }

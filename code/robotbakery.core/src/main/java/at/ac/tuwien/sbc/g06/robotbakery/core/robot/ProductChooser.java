@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;

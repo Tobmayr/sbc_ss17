@@ -9,7 +9,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
