@@ -2,7 +2,9 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collector;
 
@@ -26,30 +28,25 @@ public class Order implements Serializable {
 	private OrderState state;
 
 	private double totalSum;
-	private List<Item> items;
+	private final Map<String,Item> itemsMap;
 
 	public Order() {
 		id = UUID.randomUUID();
-		items = new ArrayList<Item>();
-		state = OrderState.OPEN;
+		itemsMap = new HashMap<>();
 	}
 
-	public void addItem(String productName, Integer amount) {
-		Item i = new Item(productName, amount);
-		int index = items.indexOf(i);
-		if (index != -1) {
-			items.set(index, i);
-		} else {
-			items.add(i);
-		}
+	public Item addItem(String productName, Integer amount) {
+		Item item = new Item(productName, amount);
+		itemsMap.put(productName, item);
 
-		totalSum = items.stream().mapToDouble(Item::getCost).sum();
-
+		totalSum = itemsMap.values().stream().mapToDouble(Item::getCost).sum();
+		return item;
 	}
 
-	public void removeItem(Item item) {
-		items.remove(item);
+	public Item removeItem(String productName) {
+		Item item=itemsMap.remove(productName);
 		totalSum -= item.getCost();
+		return item;
 
 	}
 
@@ -58,7 +55,7 @@ public class Order implements Serializable {
 	}
 
 	public void resetItems() {
-		items.clear();
+		itemsMap.clear();
 		totalSum = 0;
 	}
 
@@ -86,18 +83,22 @@ public class Order implements Serializable {
 		this.state = state;
 	}
 
-	public List<Item> getItems() {
-		return items;
+
+	public Map<String, Item> getItemsMap() {
+		return itemsMap;
 	}
+
 
 	public UUID getId() {
 		return id;
 	}
 
+	
+
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", customerId=" + customerId + ", serviceRobotId=" + serviceRobotId + ", state="
-				+ state + ", totalSum=" + totalSum + ", items=" + items + "]";
+				+ state + ", totalSum=" + totalSum + ", itemsMap=" + itemsMap + "]";
 	}
 
 	@Override

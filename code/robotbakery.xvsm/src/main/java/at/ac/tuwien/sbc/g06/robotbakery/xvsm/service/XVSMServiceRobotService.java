@@ -58,4 +58,10 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 
 	}
 
+	@Override
+	public Product checkCounter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

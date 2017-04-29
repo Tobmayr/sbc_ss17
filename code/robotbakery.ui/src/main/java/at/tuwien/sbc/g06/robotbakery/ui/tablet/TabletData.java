@@ -28,11 +28,6 @@ public class TabletData implements ITableUIChangeListener {
 		this.delegateController = delegateController;
 	}
 
-	@Override
-	public void onMessageAddedToTerminal(Message message) {
-		delegateController.onMessageAddedToTerminal(message);
-
-	}
 
 	@Override
 	public void onProductsAddedToCounter(Product product) {

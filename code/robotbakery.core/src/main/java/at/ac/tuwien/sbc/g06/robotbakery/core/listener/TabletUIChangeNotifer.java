@@ -4,15 +4,21 @@ import java.util.UUID;
 
 public abstract class TabletUIChangeNotifer extends ChangeListenerNotifier<ITableUIChangeListener> {
 
-	private final UUID customerID;
 
-	public TabletUIChangeNotifer(UUID customerID) {
+	private UUID customerID;
+
+	public TabletUIChangeNotifer() {
 		super();
-		this.customerID = customerID;
+	
 	}
 
 	public UUID getCustomerID() {
 		return customerID;
+	}
+
+	public void setCustomerID(UUID customerID) {
+		this.customerID=customerID;
+		
 	}
 
 	

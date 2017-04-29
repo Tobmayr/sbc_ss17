@@ -18,6 +18,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ProductChooser;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 

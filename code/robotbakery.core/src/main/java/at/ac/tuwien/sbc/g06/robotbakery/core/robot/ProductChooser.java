@@ -1,4 +1,4 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
+package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.util.List;
 import java.util.Map;

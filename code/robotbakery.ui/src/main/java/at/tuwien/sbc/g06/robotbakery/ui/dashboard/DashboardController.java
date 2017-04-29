@@ -18,6 +18,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -219,11 +220,13 @@ public class DashboardController {
 
 		orderId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		orderState.setCellValueFactory(new PropertyValueFactory<>("state"));
-		orderTotalSum.setCellValueFactory(new PropertyValueFactory<>("totalSum"));
+		orderTotalSum.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getTotalSum())));
 
 		itemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
 		itemAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
-		itemCost.setCellValueFactory(new PropertyValueFactory<>("cost"));
+		itemCost.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getCost())));
 
 		ingredientsType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
 		ingredientsStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -238,7 +241,8 @@ public class DashboardController {
 
 		ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldOrder, newOrder) -> {
 			if (newOrder != null) {
-				itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItems()));
+				itemsTable.setItems(
+						FXCollections.observableArrayList(newOrder.getItemsMap().values()));
 				orderCustomerId.setText(newOrder.getCustomerId().toString());
 				if (newOrder.getServiceRobotId() != null) {
 					orderServiceId.setText(newOrder.getServiceRobotId().toString());
@@ -274,6 +278,8 @@ public class DashboardController {
 			});
 			field.setText("" + 0);
 		});
+		
+		
 
 	}
 

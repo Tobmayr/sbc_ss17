@@ -64,7 +64,7 @@ public class RecipeRegistry {
 
 		// Croissant Recipe
 		recipe = new Recipe(SBCConstants.PRODUCT5_NAME, Arrays.asList(FLOUR, WATER, EGGS, BAKING_MIX_SWEET),
-				Arrays.asList(150, 230, 1, 2), 1.0d);
+				Arrays.asList(150, 230, 1, 2), 1.8d);
 		recipeMap.put(recipe.getProductName(), recipe);
 
 	}

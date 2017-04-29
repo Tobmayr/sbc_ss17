@@ -1,14 +1,14 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
+package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class Actor implements Runnable {
+public abstract class Robot implements Runnable {
 
 	private static final Random RANDOM = new Random();
 	private final UUID id;
 
-	public Actor() {
+	public Robot() {
 		id = UUID.randomUUID();
 	}
 

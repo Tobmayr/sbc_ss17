@@ -1,8 +1,8 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
+package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 
-public class BakeRobot extends Actor {
+public class BakeRobot extends Robot {
 
 	private IBakeRobotService service;
 

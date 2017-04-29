@@ -1,4 +1,4 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.actor;
+package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 
-public class ServiceRobot extends Actor {
+public class ServiceRobot extends Robot {
 
 	private IServiceRobotService service;
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.actor.Actor;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
@@ -48,7 +48,7 @@ public class Product implements Serializable {
 		return (state != ProductState.DOUGH_IN_BAKEROOM && state != ProductState.DOUGH_IN_BAKEROOM);
 	}
 
-	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Actor> contributor) {
+	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
 		contributions.add(new Contribution(contributerId, type, contributor));
 	}
 
@@ -101,7 +101,7 @@ public class Product implements Serializable {
 		final ContributionType type;
 		final String contributor;
 
-		private Contribution(UUID contributerId, ContributionType type, Class<? extends Actor> contributor) {
+		private Contribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
 			super();
 			this.contributerId = contributerId;
 			this.type = type;

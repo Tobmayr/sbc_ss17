@@ -31,8 +31,8 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;
 
-	public XVSMTabletUIChangeNotifier(UUID customerId) {
-		super(customerId);
+	public XVSMTabletUIChangeNotifier() {
+		super();
 		Capi capi = new Capi(DefaultMzsCore.newInstance());
 		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
@@ -66,15 +66,7 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 				object = ser;
 			}
 
-			if (object instanceof Message) {
-				if (operation != Operation.WRITE)
-					return;
-				Message message = (Message) object;
-				notifiyListeners(message);
-
-			}
-
-			else if (object instanceof Product) {
+			if (object instanceof Product) {
 				Product product = (Product) object;
 				notifiyListeners(product, operation);
 
@@ -105,10 +97,6 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 			registeredChangeListeners.forEach(ls -> ls.onProductRemovedFromCounter(product));
 		}
 
-	}
-
-	private void notifiyListeners(Message message) {
-		registeredChangeListeners.forEach(ls -> ls.onMessageAddedToTerminal(message));
 	}
 
 }

@@ -18,8 +18,9 @@ public class TabletInitializer {
 	}
 
 	public static void intitalizeTablet(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
-			ITabletUIService uiService, UUID customerId) throws IOException {
-
+			ITabletUIService uiService) throws IOException {
+		UUID customerID= UUID.randomUUID();
+		changeNotifer.setCustomerID(customerID);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(DashboardInitializer.class.getClassLoader().getResource(UIConstants.TABLE_FXML_FILENAME));
 		Parent root = loader.load();
@@ -35,7 +36,7 @@ public class TabletInitializer {
 		TabletController controller = loader.getController();
 		TabletData tabletData = new TabletData(controller);
 		changeNotifer.registerChangeListener(tabletData);
-		controller.initialize(tabletData, uiService);
+		controller.initialize(tabletData, uiService,customerID);
 	}
 
 }

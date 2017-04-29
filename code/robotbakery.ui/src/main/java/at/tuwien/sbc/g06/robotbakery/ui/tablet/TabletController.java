@@ -2,6 +2,7 @@ package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Message.MessageType;
@@ -11,7 +12,10 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletData.CounterInformation;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -57,18 +61,28 @@ public class TabletController {
 	TableColumn<Item, String> itemAmount;
 	@FXML
 	TableColumn<Item, String> itemCost;
+	
+	@FXML TextField customerIdText;
+	@FXML TextField totalSum;
+
 	private Order order;
 	private Alert invalidOrderAlert;
 	private Map<String, CounterInformation> counterMap;
 	private ITabletUIService service;
+	private ObservableList<Item> itemsData;
 
-	public void initialize(TabletData data, ITabletUIService uiService) {
+	public void initialize(TabletData data, ITabletUIService uiService, UUID customerID) {
 
-		itemsTable.setItems(FXCollections.observableArrayList(order.getItems()));
+		itemsData = itemsTable.getItems();
 		productsTable.setItems(data.getCounterInformationData());
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
-		productCombo.getItems().forEach(s -> productsTable.getItems().add(data.new CounterInformation(s, 50, 500d)));
+		productCombo.getItems().forEach(s -> {
+			CounterInformation c = data.new CounterInformation(s, 50, 500d);
+			productsTable.getItems().add(c);
+			counterMap.put(s, c);
+		});
+		customerIdText.setText(customerID.toString());
 
 	}
 
@@ -77,10 +91,11 @@ public class TabletController {
 		order = new Order();
 		orderIdText.setText(order.getId().toString());
 		statusField.setText(getText(order.getState()));
-		itemsTable.setItems(FXCollections.observableArrayList(order.getItems()));
+		itemsTable.setItems(FXCollections.observableArrayList(order.getItemsMap().values()));
 		itemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
 		itemAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
-		itemCost.setCellValueFactory(new PropertyValueFactory<>("cost"));
+		itemCost.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getCost())));
 
 		productsType.setCellValueFactory(new PropertyValueFactory<>("type"));
 		productsPrice.setCellValueFactory(new PropertyValueFactory<>("pricePerPiece"));
@@ -90,19 +105,19 @@ public class TabletController {
 				FXCollections.observableArrayList(Arrays.asList(SBCConstants.PRODUCT1_NAME, SBCConstants.PRODUCT2_NAME,
 						SBCConstants.PRODUCT3_NAME, SBCConstants.PRODUCT4_NAME, SBCConstants.PRODUCT5_NAME)));
 
-		itemAmount.textProperty().addListener((obs, oldValue, newValue) -> {
+		amountText.textProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue == null | newValue.isEmpty()) {
-				itemAmount.setText("" + 0);
+				amountText.setText("" + 0);
 			} else {
 				try {
 					Integer.parseInt(newValue);
 				} catch (NumberFormatException e) {
-					itemAmount.setText(oldValue);
+					amountText.setText(oldValue);
 				}
 			}
 
 		});
-		itemAmount.setText("" + 0);
+		amountText.setText("" + 0);
 
 		invalidOrderAlert = new Alert(AlertType.ERROR);
 		invalidOrderAlert.setTitle("Invalid order");
@@ -110,23 +125,46 @@ public class TabletController {
 		invalidOrderAlert.setContentText("The amount of some of your order's items is invalid. Please check again!");
 
 		itemsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			productCombo.getSelectionModel().select(newValue.getProductName());
-			itemAmount.setText("" + newValue.getAmount());
+			if (newValue != null) {
+				productCombo.getSelectionModel().select(newValue.getProductName());
+				amountText.setText("" + newValue.getAmount());
+				addButton.setText("Update");
+			}
+
 		});
 
 		MenuItem itemsMenu = new MenuItem("Remove this item");
 
 		itemsMenu.setOnAction((e) -> {
 			Item item = itemsTable.getItems().get(itemsTable.getSelectionModel().getSelectedIndex());
-			if (item != null) {
-				order.removeItem(item);
-			}
+			order.removeItem(item.getProductName());
+			itemsData.remove(item);
+			totalSum.setText(String.format("%.2f",order.getTotalSum()));
+			if (itemsData.isEmpty())
+				statusButton.setDisable(true);
 		});
 		itemsTable.setContextMenu(new ContextMenu(itemsMenu));
+		statusField.setText("New- Add items to your order and click \"Send order\"");
+
+		productCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			Item item = order.getItemsMap().get(newValue);
+			if (item != null) {
+				amountText.setText("" + item.getAmount());
+				addButton.setText("Update");
+			} else {
+				amountText.setText("" + 0);
+				addButton.setText("Add");
+			}
+
+		});
+		
+		totalSum.setText("0");
 
 	}
 
 	private String getText(OrderState state) {
+		if (state == null)
+			return "";
 		switch (state) {
 		case OPEN:
 			return "Ordered- Order will be processed by our service robots";
@@ -134,18 +172,24 @@ public class TabletController {
 			return "Paid- Your order has been paid.";
 		case UNDELIVERABLE:
 			return "Undeliverable- Your order can not be delivered. Not enough products in stock";
-		default:
-			return "";
+		case DELIVERED:
+			return "Packed- Your order is packed and ready in the terminal";
 		}
+		return "";
 
 	}
 
 	@FXML
 	public void onStatusButtonClicked() {
-		if (orderValid()) {
-			service.addOrderToCounter(order);
-		} else
-			invalidOrderAlert.showAndWait();
+		if (order.getState() == null || order.getState() == OrderState.UNDELIVERABLE) {
+			if (orderValid()) {
+				service.addOrderToCounter(order);
+			} else
+				invalidOrderAlert.showAndWait();
+		} else if (order.getState() == OrderState.DELIVERED) {
+			service.getAndPayOrderPackage();
+		}
+
 	}
 
 	private boolean orderValid() {
@@ -155,24 +199,55 @@ public class TabletController {
 
 	@FXML
 	public void onAddButtonClicked() {
-		order.addItem(productCombo.getSelectionModel().getSelectedItem(), Integer.parseInt(amountText.getText()));
-
-	}
-
-	public void onMessageAddedToTerminal(Message message) {
-		if (message.getMessageType() == MessageType.ORDER_DECLINED) {
-			// TODO ?
+		int amount = Integer.parseInt(amountText.getText());
+		String selectedString = productCombo.getSelectionModel().getSelectedItem();
+		if (amount == 0 || selectedString == null || counterMap.get(selectedString).getStock() < amount)
 			return;
-		}
-		statusField.setText("Packed- Order is ready for payment in terminal");
+		Item item = order.addItem(selectedString, amount);
+
+		int index = itemsData.indexOf(item);
+		if (index == -1)
+			itemsData.add(item);
+		else
+			itemsData.set(index, item);
+		if (statusButton.isDisabled())
+			statusButton.setDisable(false);
+		totalSum.setText(String.format("%.2f",order.getTotalSum()));
+		addButton.setText("Update");
 
 	}
 
 	public void onOrderUpdated(Order updated) {
 		if (updated.getId().equals(order.getId())) {
+			changeState(updated.getState());
 			statusField.setText(getText(order.getState()));
 		}
 
+	}
+
+	private void changeState(OrderState state) {
+		switch (state) {
+		case DELIVERED:
+			addButton.setDisable(false);
+			addButton.setText("Pay order");
+			break;
+		case OPEN:
+		case PAID:
+			disableOrderEdit(true);
+			break;
+		case UNDELIVERABLE:
+			disableOrderEdit(false);
+			break;
+
+		}
+
+	}
+
+	private void disableOrderEdit(boolean value) {
+		addButton.setDisable(true);
+		productCombo.setDisable(value);
+		amountText.setDisable(value);
+		itemsTable.setDisable(value);
 	}
 
 }
