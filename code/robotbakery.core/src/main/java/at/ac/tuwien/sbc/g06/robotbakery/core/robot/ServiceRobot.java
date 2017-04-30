@@ -3,14 +3,20 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
+
+import java.util.*;
+
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
 
 public class ServiceRobot extends Robot {
 
 	private IServiceRobotService service;
 	private Order currentOrder;
+	SortedMap<String, Integer> missingProducts;
 
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
@@ -21,8 +27,11 @@ public class ServiceRobot extends Robot {
 	public void run() {
 		while (!Thread.interrupted()) {
 
+			doTask(getCounterStock);
+			if(missingProducts.size()>0)
 			doTask(processNextOrder);
-			doTask(checkCounter);
+			if(currentOrder!=null) doTask(checkCounter);
+
 
 		}
 
@@ -52,16 +61,29 @@ public class ServiceRobot extends Robot {
 		if (currentOrder == null)
 			return false;
 		System.out.println("New order with id: " + currentOrder.getId() + " received");
-		if (!doTask(packOrderAndPutInTerminal)) {
-			return doTask(declineOrder);
-		}
 
 		return true;
 	};
 
 	ITransactionalTask checkCounter = tx -> {
-		// TODO: Add implementation
+		List<Product> products = service.checkCounter(currentOrder, tx);
+		if(products == null)
+			return false;
+		System.out.println("Order with id: " + currentOrder.getId() + " checked, begin packing");
+		if(!doTask(packOrderAndPutInTerminal)) {
+			return doTask(declineOrder);
+		}
+		return true;
+	};
 
+	ITransactionalTask getCounterStock = tx -> {
+		missingProducts = service.getCounterStock(tx);
+		return true;
+	};
+
+	ITransactionalTask getProductFromStorage = tx -> {
+		List<Product> productsForCounter = service.getProductFromStorage(missingProducts, tx);
+		service.addToCounter(productsForCounter, tx);
 		return true;
 	};
 
