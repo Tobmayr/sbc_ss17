@@ -14,7 +14,7 @@
 	<modules>
 		<module>robotbakery.core</module>
 		<module>robotbakery.xvsm</module>
-		<module>robotbakery.jsm</module>
+		<module>robotbakery.jms</module>
 		<module>robotbakery.ui</module>
 
 	</modules>
