@@ -15,7 +15,6 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
-import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -48,7 +46,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			Query query = new Query().filter(Property.forName("*", "state").equalTo(OrderState.OPEN))
 					.sortup(ComparableProperty.forName("*", "timestamp")).cnt(1);
 			List<Order> test = capi.take(counterContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)),
+					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.DEFAULT_COUNT)),
 					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 			return test.get(0);
 		} catch (MzsCoreException e) {

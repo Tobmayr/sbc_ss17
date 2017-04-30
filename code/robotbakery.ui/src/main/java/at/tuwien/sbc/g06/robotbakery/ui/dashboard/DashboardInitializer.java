@@ -3,6 +3,8 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 import java.io.IOException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.BakeryUIChangeNotifier;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +19,8 @@ public class DashboardInitializer {
 	}
 
 	public static void initializeDashboard(Stage primaryStage, BakeryUIChangeNotifier changeNotifier,
-			IBakeryUIService uiService) throws IOException {
+			IBakeryUIService uiService, IBakeryService service) throws IOException {
+		service.initializeStorageWaterPipe(new WaterPipe(), null);
 
 		DashboardData dashboardData = new DashboardData();
 		changeNotifier.registerChangeListener(dashboardData);

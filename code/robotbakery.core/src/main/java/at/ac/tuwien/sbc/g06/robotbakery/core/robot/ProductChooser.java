@@ -15,7 +15,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 public class ProductChooser {
-
 	private List<Product> baseDoughCandidates;
 	private Map<String, Integer> counterStock;
 	private Map<IngredientType, Integer> ingredientStock;
@@ -70,12 +69,20 @@ public class ProductChooser {
 		Predicate<Recipe> pred = onlyBaseIngredients ? r -> enoughIngredientsToFinishBaseDough(r)
 				: r -> enoughIngredientsToFinish(r);
 
-		return RecipeRegistry.getInstance().getAllRecipes().stream().filter(r -> r.getAmount(type) <= amount)
+		return RecipeRegistry.getInstance().getAllRecipes().stream().filter(r -> notEnoughInStock(r, type, amount))
 				.sorted((i, j) -> j.getAmount(type).compareTo(i.getAmount(type))).filter(pred).findFirst().orElse(null);
 	}
 
+	private boolean notEnoughInStock(Recipe r, IngredientType type, Integer amount) {
+		if (type == IngredientType.FLOUR)
+			return r.getAmount(type) <= amount * SBCConstants.FLOUR_PACK_SIZE;
+		return r.getAmount(type) <= amount;
+
+	}
+
 	public Product getNextBaseDoughForStorage() {
-		Recipe candiate = getSuitableRecipe(IngredientType.FLOUR, ingredientStock.get(IngredientType.FLOUR), true);
+		Recipe candiate = getSuitableRecipe(IngredientType.FLOUR,
+				ingredientStock.get(IngredientType.FLOUR), true);
 		if (candiate != null)
 			return new Product(candiate);
 		return null;
@@ -89,7 +96,7 @@ public class ProductChooser {
 	}
 
 	private boolean enoughIngredientsToFinishBaseDough(Recipe recipe) {
-		return recipe.getAmount(IngredientType.FLOUR) <= ingredientStock.get(IngredientType.FLOUR);
+		return recipe.getAmount(IngredientType.FLOUR) <= ingredientStock.get(IngredientType.FLOUR)*SBCConstants.FLOUR_PACK_SIZE;
 	}
 
 	private boolean enoughAddtionaIngredientsToFinish(Recipe recipe) {

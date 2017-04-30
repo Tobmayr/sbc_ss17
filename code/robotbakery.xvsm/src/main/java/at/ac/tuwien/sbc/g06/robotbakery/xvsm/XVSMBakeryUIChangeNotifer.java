@@ -16,9 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.BakeryUIChangeNotifier;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -94,6 +96,9 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 	private void notifiyListeners(Ingredient ingredient, Operation operation) {
 		registeredChangeListeners.forEach(ls -> {
 			if (operation == Operation.WRITE) {
+				if (ingredient instanceof FlourPack
+						&& ((FlourPack) ingredient).getCurrentAmount() != SBCConstants.FLOUR_PACK_SIZE)
+					return;
 				ls.onIngredientAddedToStorage(ingredient);
 			} else if (operation == Operation.TAKE) {
 				ls.onIngredientRemovedFromStorage(ingredient);

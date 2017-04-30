@@ -28,7 +28,7 @@ public class ContributionDialogController {
 	@FXML
 	private void initialize() {
 		contribution.setCellValueFactory(new PropertyValueFactory<>("type"));
-		contribution.setCellValueFactory(new PropertyValueFactory<>("contributerId"));
+		contributorId.setCellValueFactory(new PropertyValueFactory<>("contributerId"));
 		contributorType.setCellValueFactory(new PropertyValueFactory<>("contributor"));
 	}
 

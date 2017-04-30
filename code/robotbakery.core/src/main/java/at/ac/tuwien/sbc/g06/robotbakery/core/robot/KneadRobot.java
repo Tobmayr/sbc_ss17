@@ -71,7 +71,7 @@ public class KneadRobot extends Robot {
 
 		// Get additional ingredients
 		for (Entry<IngredientType, Integer> entry : nextProduct.getRecipe().getAdditionalIngredients()) {
-			List<Ingredient> ingredients = service.getIngredientsFromStorage(entry.getKey(),entry.getValue(), tx);
+			List<Ingredient> ingredients = service.getIngredientsFromStorage(entry.getKey(), entry.getValue(), tx);
 			if (ingredients == null || ingredients.size() < entry.getValue())
 				return false;
 		}
@@ -83,7 +83,7 @@ public class KneadRobot extends Robot {
 	};
 
 	ITransactionalTask bakeNextProduct = tx -> {
-		ProductChooser productChooser = new ProductChooser(service, tx);
+		ProductChooser productChooser = new ProductChooser(service,null);
 		if (!productChooser.correctlyInitialized())
 			return false;
 
@@ -97,8 +97,9 @@ public class KneadRobot extends Robot {
 		nextProduct = productChooser.getNextProduct();
 		if (nextProduct != null) {
 			if (doTask(makeNewBaseDough)) {
+				Product baseDough=nextProduct;
 				if (!doTask(finishBaseDough)) {
-					return service.putBaseDoughInStorage(nextProduct, tx);
+					return service.putBaseDoughInStorage(baseDough, tx);
 				}
 				return service.putDoughInBakeroom(nextProduct, tx);
 
@@ -108,10 +109,11 @@ public class KneadRobot extends Robot {
 
 		nextProduct = productChooser.getNextBaseDoughForStorage();
 		if (nextProduct != null)
-			if (!doTask(makeNewBaseDough)) {
+			if (doTask(makeNewBaseDough)) {
 				return service.putBaseDoughInStorage(nextProduct, tx);
 			}
-		return true;
+
+		return false;
 
 	};
 

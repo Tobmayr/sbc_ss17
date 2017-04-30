@@ -4,22 +4,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.UUID;
 
 import org.mozartspaces.capi3.ComparableProperty;
 import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
-import org.mozartspaces.capi3.QueryCoordinator.QuerySelector;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
-import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
+import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +27,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -61,7 +58,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(ProductType.DOUGH))
 					.sortup(ComparableProperty.forName("*", "timestamp"));
 			return capi.read(storageContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Product.class)),
+					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),
 					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
@@ -78,13 +75,15 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 				if (type != IngredientType.WATER) {
 					if (type == IngredientType.FLOUR) {
 						map.put(type,
-								capi.test(storageContainer, Arrays.asList(TypeCoordinator.newSelector(FlourPack.class)),
+								capi.test(storageContainer,
+										TypeCoordinator.newSelector(FlourPack.class, MzsConstants.Selecting.COUNT_MAX),
 										MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
 					} else {
 						Query query = new Query().filter(Property.forName("*", "type").equalTo(type));
 						map.put(type, capi.test(storageContainer,
-								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL),
-										TypeCoordinator.newSelector(Ingredient.class)),
+								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
+										TypeCoordinator.newSelector(Ingredient.class,
+												MzsConstants.Selecting.COUNT_MAX)),
 								MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
 					}
 				}
@@ -106,8 +105,8 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 				Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName));
 				map.put(productName,
 						capi.test(counterContainer,
-								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL),
-										TypeCoordinator.newSelector(Product.class)),
+								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
+										TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX)),
 								MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
 			}
 			return map;
@@ -123,7 +122,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 		try {
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(type)).cnt(amount);
 			return capi.take(storageContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Ingredient.class)),
+					Arrays.asList(QueryCoordinator.newSelector(query,amount), TypeCoordinator.newSelector(Ingredient.class,amount)),
 					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
@@ -174,7 +173,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 		try {
 			Query query = new Query().sortup(ComparableProperty.forName("*", "currentAmount")).cnt(1);
 			return (FlourPack) capi.take(storageContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(FlourPack.class)),
+					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Ingredient.class)),
 					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
