@@ -15,6 +15,9 @@ public class SBCConstants {
 			PRODUCT4_NAME, PRODUCT5_NAME);
 	public static final Integer FLOUR_PACK_SIZE = 500;
 	public static final Integer COUNTER_MAX_CAPACITY = 10;
+	public static final Integer BAKE_SIZE = 5;
+
+	public static final Long BAKE_WAIT = 5L;
 
 	private SBCConstants() {
 	}
