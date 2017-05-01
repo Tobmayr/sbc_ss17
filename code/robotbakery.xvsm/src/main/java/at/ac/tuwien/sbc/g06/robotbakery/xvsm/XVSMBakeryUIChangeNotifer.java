@@ -141,7 +141,7 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 					ls.onProductRemovedFromTerminal(product);
 					break;
 				case XVSMConstants.BAKEROOM_CONTAINER_NAME:
-					ls.onProductAddedToBakeroom(product);
+					ls.onProductRemovedFromBakeroom(product);
 					break;
 				default:
 					break;
@@ -159,9 +159,7 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 	@Override
 	public void initializeStorageWaterPipe(WaterPipe waterPipe, ITransaction tx) {
 		// TODO Auto-generated method stub
-		
-	}
 
-	
+	}
 
 }

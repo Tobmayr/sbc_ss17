@@ -12,7 +12,6 @@ import java.util.List;
 public class BakeRobot extends Robot {
 
 	private IBakeRobotService service;
-	private List<Product> products;
 
 	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
@@ -30,8 +29,8 @@ public class BakeRobot extends Robot {
 	}
 
 	ITransactionalTask bakeProducts = tx -> {
-		products = service.getUnbakedProducts(null);
-		if (products == null)
+		List<Product> products = service.getUnbakedProducts(null);
+		if (products == null || products.isEmpty())
 			return false;
 		sleepFor(5000);
 		for (Product product : products) {
@@ -39,9 +38,9 @@ public class BakeRobot extends Robot {
 			product.setType(ProductType.FINALPRODUCT);
 			if (!service.putBakedProductsInStorage(product, tx)) {
 				System.out.println("Could not put Product with id " + product.getId() + " in storage!");
+				return false;
 			}
 		}
-		products = null;
 
 		return true;
 	};

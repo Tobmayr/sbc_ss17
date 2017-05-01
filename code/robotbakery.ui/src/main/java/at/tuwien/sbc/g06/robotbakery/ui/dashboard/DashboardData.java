@@ -69,11 +69,11 @@ public class DashboardData implements IBakeryUIChangeListener {
 			productsInStorage.add(count);
 		}
 		count.amount++;
-		updateItemCount(count, productsInStorage);
+		addOrUpdate(count, productsInStorage);
 		ProductState state = product.getType() == ProductType.DOUGH ? ProductState.DOUGH_IN_STORAGE
 				: ProductState.PRODUCT_IN_STORAGE;
 
-		stateToProductsMap.get(state).add(product);
+		addOrUpdate(product, stateToProductsMap.get(state));
 
 	}
 
@@ -83,7 +83,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		if (count != null) {
 			if (count.amount > 0) {
 				count.amount--;
-				updateItemCount(count, productsInStorage);
+				addOrUpdate(count, productsInStorage);
 			} else {
 				productsInStorage.remove(count);
 				storageProductsCounterMap.remove(count.itemName);
@@ -104,9 +104,9 @@ public class DashboardData implements IBakeryUIChangeListener {
 			productsInCounter.add(count);
 		}
 		count.amount++;
-		updateItemCount(count, productsInCounter);
+		addOrUpdate(count, productsInCounter);
 
-		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).add(product);
+		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER));
 
 	}
 
@@ -116,7 +116,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		if (count != null) {
 			if (count.amount > 0) {
 				count.amount--;
-				updateItemCount(count, productsInCounter);
+				addOrUpdate(count, productsInCounter);
 			} else {
 				productsInCounter.remove(count);
 				counterProductsCounterMap.remove(count.itemName);
@@ -128,7 +128,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	@Override
 	public void onProductAddedToBakeroom(Product product) {
-		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).add(product);
+		addOrUpdate(product, stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM));
 
 	}
 
@@ -140,14 +140,14 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	@Override
 	public void onProductAddedToTerminal(Product product) {
-		stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL).add(product);
+		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL));
 
 	}
 
 	@Override
 	public void onProductRemovedFromTerminal(Product product) {
 		stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL).remove(product);
-		stateToProductsMap.get(ProductState.PRODUCT_SOLD).add(product);
+		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_SOLD));
 
 	}
 
@@ -161,7 +161,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 			ingredients.add(count);
 		}
 		count.amount++;
-		updateItemCount(count, ingredients);
+		addOrUpdate(count, ingredients);
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		if (count != null) {
 			if (count.amount > 0) {
 				count.amount--;
-				updateItemCount(count, ingredients);
+				addOrUpdate(count, ingredients);
 			} else {
 				ingredients.remove(count);
 				ingredientsCounterMap.remove(count.itemName);
@@ -196,10 +196,14 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	}
 
-	private void updateItemCount(ItemCount itemCount, ObservableList<ItemCount> list) {
-		int index = list.indexOf(itemCount);
-		if (index != -1)
-			list.set(index, itemCount);
+	private <T> void addOrUpdate(T element, ObservableList<T> observableList) {
+		int index = observableList.indexOf(element);
+		if (index != -1) {
+			observableList.set(index, element);
+		} else {
+			observableList.add(element);
+		}
+
 	}
 
 	/**

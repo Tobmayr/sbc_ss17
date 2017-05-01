@@ -4,7 +4,6 @@ import java.util.Enumeration;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.QueueBrowser;
 import javax.jms.TopicConnection;
 

@@ -16,45 +16,43 @@ import java.util.List;
 
 public class XVSMBakeRobotService implements IBakeRobotService {
 
-    private static Logger logger = LoggerFactory.getLogger(XVSMKneadRobotService.class);
-    private final ContainerReference storageContainer;
-    private final ContainerReference bakeroomContainer;
-    private Capi capi;
+	private static Logger logger = LoggerFactory.getLogger(XVSMKneadRobotService.class);
+	private final ContainerReference storageContainer;
+	private final ContainerReference bakeroomContainer;
+	private Capi capi;
 
-    public XVSMBakeRobotService() {
-        this.capi = new Capi(DefaultMzsCore.newInstance());
-        bakeroomContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.BAKEROOM_CONTAINER_NAME);
-        storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
-    }
+	public XVSMBakeRobotService() {
+		this.capi = new Capi(DefaultMzsCore.newInstance());
+		bakeroomContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.BAKEROOM_CONTAINER_NAME);
+		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
+	}
 
-    @Override
-    public List<Product> getUnbakedProducts(ITransaction tx) {
-        try {
-            return capi.read(bakeroomContainer,
-                    FifoCoordinator.newSelector( SBCConstants.BAKE_SIZE),
-                    SBCConstants.BAKE_WAIT, null);
-        } catch (MzsCoreException e) {
+	@Override
+	public List<Product> getUnbakedProducts(ITransaction tx) {
+		try {
+			List<Product> pls = capi.take(bakeroomContainer, FifoCoordinator.newSelector(SBCConstants.BAKE_SIZE),
+					SBCConstants.BAKE_WAIT, null);
+			return pls;
+		} catch (MzsCoreException e) {
+			try {
+				return capi.take(bakeroomContainer, FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_MAX),
+						MzsConstants.RequestTimeout.TRY_ONCE, null);
+			} catch (MzsCoreException ex) {
+				logger.error(ex.getMessage());
+				return null;
+			}
+		}
+	}
 
-            try {
-                return capi.read(bakeroomContainer,
-                        FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_MAX),
-                        MzsConstants.RequestTimeout.TRY_ONCE, null);
-            } catch (MzsCoreException ex) {
-                logger.error(ex.getMessage());
-                return null;
-            }
-        }
-    }
-
-    @Override
-    public boolean putBakedProductsInStorage(Product nextProduct, ITransaction tx) {
-        try {
-            Entry entry = new Entry(nextProduct);
-            capi.write(entry, storageContainer, MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
-            return true;
-        } catch (MzsCoreException ex) {
-            logger.error(ex.getMessage());
-            return false;
-        }
-    }
+	@Override
+	public boolean putBakedProductsInStorage(Product nextProduct, ITransaction tx) {
+		try {
+			Entry entry = new Entry(nextProduct);
+			capi.write(entry, storageContainer, MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return true;
+		} catch (MzsCoreException ex) {
+			logger.error(ex.getMessage());
+			return false;
+		}
+	}
 }

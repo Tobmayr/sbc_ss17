@@ -76,7 +76,7 @@ public class XVSMUtil {
 		case XVSMConstants.STORAGE_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
 		case XVSMConstants.BAKEROOM_CONTAINER_NAME:
-			return Arrays.asList(new FifoCoordinator());
+			return Arrays.asList(new FifoCoordinator(),new QueryCoordinator());
 		case XVSMConstants.TERMINAL_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator());
 
