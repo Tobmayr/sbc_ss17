@@ -99,7 +99,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public List<Product> getProductFromStorage(SortedMap<String, Integer> missingProducts, ITransaction tx) {
+	public List<Product> getProductFromStorage(Map<String, Integer> missingProducts, ITransaction tx) {
 		Iterator it = missingProducts.entrySet().iterator();
 		List<Product> productsForCounter = new ArrayList<>();
 		try {
@@ -126,8 +126,8 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public SortedMap<String, Integer> getCounterStock(ITransaction tx) {
-		SortedMap<String, Integer> missingProducts = new TreeMap<>();
+	public TreeMap<String, Integer> getCounterStock(ITransaction tx) {
+		TreeMap<String, Integer> missingProducts = new TreeMap<>();
 		try {
 			for (String name : PRODUCTS_NAMES) {
 				Query query = new Query().filter(Property.forName("*", "productName").equalTo(name));

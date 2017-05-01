@@ -7,6 +7,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class ServiceRobot extends Robot {
 
 	private IServiceRobotService service;
 	private Order currentOrder;
-	SortedMap<String, Integer> missingProducts;
+	Map<String, Integer> missingProducts;
 
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
@@ -82,6 +83,7 @@ public class ServiceRobot extends Robot {
 	};
 
 	ITransactionalTask getProductFromStorage = tx -> {
+		missingProducts = CollectionsUtil.sortMapByValues(missingProducts, false);
 		List<Product> productsForCounter = service.getProductFromStorage(missingProducts, tx);
 		service.addToCounter(productsForCounter, tx);
 		return true;
