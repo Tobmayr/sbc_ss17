@@ -53,13 +53,13 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	}
 
 	@Override
-	public List<Product> getBaseDoughsFromStorage(ITransaction tx) {
+	public List<Product> checkBaseDoughsInStorage() {
 		try {
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(ProductType.DOUGH))
 					.sortup(ComparableProperty.forName("*", "timestamp"));
 			return capi.read(storageContainer,
 					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),
-					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+					MzsConstants.RequestTimeout.TRY_ONCE, null);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
 			return null;
@@ -68,7 +68,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	}
 
 	@Override
-	public Map<IngredientType, Integer> getIngredientStock(ITransaction tx) {
+	public Map<IngredientType, Integer> getIngredientStock() {
 		try {
 			Map<IngredientType, Integer> map = new HashMap<>();
 			for (IngredientType type : IngredientType.values()) {
@@ -77,14 +77,14 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 						map.put(type,
 								capi.test(storageContainer,
 										TypeCoordinator.newSelector(FlourPack.class, MzsConstants.Selecting.COUNT_MAX),
-										MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
+										MzsConstants.RequestTimeout.TRY_ONCE, null));
 					} else {
 						Query query = new Query().filter(Property.forName("*", "type").equalTo(type));
 						map.put(type, capi.test(storageContainer,
 								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
 										TypeCoordinator.newSelector(Ingredient.class,
 												MzsConstants.Selecting.COUNT_MAX)),
-								MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
+								MzsConstants.RequestTimeout.TRY_ONCE, null));
 					}
 				}
 			}
@@ -98,7 +98,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	}
 
 	@Override
-	public Map<String, Integer> getCounterStock(ITransaction tx) {
+	public Map<String, Integer> getCounterStock() {
 		try {
 			Map<String, Integer> map = new HashMap<>();
 			for (String productName : SBCConstants.PRODUCTS_NAMES) {
@@ -107,7 +107,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 						capi.test(counterContainer,
 								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
 										TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX)),
-								MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
+								MzsConstants.RequestTimeout.TRY_ONCE, null));
 			}
 			return map;
 		} catch (MzsCoreException e) {
@@ -122,7 +122,8 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 		try {
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(type)).cnt(amount);
 			return capi.take(storageContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query,amount), TypeCoordinator.newSelector(Ingredient.class,amount)),
+					Arrays.asList(QueryCoordinator.newSelector(query, amount),
+							TypeCoordinator.newSelector(Ingredient.class, amount)),
 					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());

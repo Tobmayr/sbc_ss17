@@ -37,15 +37,15 @@ public class ProductChooserTest {
 				);
 		counterStock = new HashMap<String, Integer>();
 
-		when(kneadService.getCounterStock(null)).thenReturn(counterStock);
-		when(kneadService.getIngredientStock(null)).thenReturn(ingredientStock);
+		when(kneadService.getCounterStock()).thenReturn(counterStock);
+		when(kneadService.getIngredientStock()).thenReturn(ingredientStock);
 
 	}
 
 	@Test
 	public void test_getBaseDoughFromStorage_canFinish() {
 		ingredientStock.put(IngredientType.BAKING_MIX_SPICY, 2);
-		when(kneadService.getBaseDoughsFromStorage(null)).thenReturn(Arrays.asList(baseDough1));
+		when(kneadService.checkBaseDoughsInStorage()).thenReturn(Arrays.asList(baseDough1));
 
 		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getFinishableBaseDough();
@@ -56,7 +56,7 @@ public class ProductChooserTest {
 	@Test
 	public void test_getBaseDoughFromStorage_canNotFinish() {
 		ingredientStock.put(IngredientType.BAKING_MIX_SPICY, 2);
-		when(kneadService.getBaseDoughsFromStorage(null)).thenReturn(Arrays.asList(baseDough2));
+		when(kneadService.checkBaseDoughsInStorage()).thenReturn(Arrays.asList(baseDough2));
 		ProductChooser chooser = new ProductChooser(kneadService,null);
 		Product result = chooser.getFinishableBaseDough();
 		assertEquals(null, result);

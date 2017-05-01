@@ -20,9 +20,9 @@ public class ProductChooser {
 	private Map<IngredientType, Integer> ingredientStock;
 
 	public ProductChooser(IKneadRobotService kneadRobotService, ITransaction tx) {
-		baseDoughCandidates = kneadRobotService.getBaseDoughsFromStorage(tx);
-		counterStock = CollectionsUtil.sortMapByValues(kneadRobotService.getCounterStock(tx), true);
-		ingredientStock = CollectionsUtil.sortMapByValues(kneadRobotService.getIngredientStock(tx), false);
+		baseDoughCandidates = kneadRobotService.checkBaseDoughsInStorage();
+		counterStock = CollectionsUtil.sortMapByValues(kneadRobotService.getCounterStock(), true);
+		ingredientStock = CollectionsUtil.sortMapByValues(kneadRobotService.getIngredientStock(), false);
 
 	}
 

@@ -1,10 +1,13 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.Enumeration;
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
+import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
@@ -56,6 +59,22 @@ public class AbstractJMSService {
 		msg.setBooleanProperty(JMSConstants.Property.REMOVED, remove);
 		msg.setStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION, msg.getJMSDestination().toString());
 		notifier.send(notificationTopic, msg);
+	}
+
+	public static int size(QueueBrowser browser, String property, String value) throws JMSException {
+		int count = 0;
+		Enumeration<?> messages = browser.getEnumeration();
+		while (messages.hasMoreElements()) {
+			Object element = messages.nextElement();
+			if (element instanceof Message) {
+				String elementValue = ((Message) element).getStringProperty(property);
+				if (value.equals(elementValue))
+					count++;
+			}
+			count++;
+
+		}
+		return count;
 	}
 
 }

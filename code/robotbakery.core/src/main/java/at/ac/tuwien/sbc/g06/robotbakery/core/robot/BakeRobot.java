@@ -16,7 +16,7 @@ public class BakeRobot extends Robot {
 
 	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
-		this.service=service;
+		this.service = service;
 
 	};
 
@@ -30,21 +30,20 @@ public class BakeRobot extends Robot {
 	}
 
 	ITransactionalTask bakeProducts = tx -> {
-		products = service.getUnbakedProducts(tx);
-		if(products==null) return false;
+		products = service.getUnbakedProducts(null);
+		if (products == null)
+			return false;
 		sleepFor(5000);
-		for(Product product: products) {
+		for (Product product : products) {
 			product.addContribution(getId(), ContributionType.BAKE, getClass());
 			product.setType(ProductType.FINALPRODUCT);
-			if(!service.putBakedProductsInStorage(product, tx)) {
+			if (!service.putBakedProductsInStorage(product, tx)) {
 				System.out.println("Could not put Product with id " + product.getId() + " in storage!");
 			}
 		}
-		products=null;
+		products = null;
 
 		return true;
 	};
-	
-	
 
 }

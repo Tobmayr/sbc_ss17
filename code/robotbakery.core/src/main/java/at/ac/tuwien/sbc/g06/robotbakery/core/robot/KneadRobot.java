@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -65,9 +67,7 @@ public class KneadRobot extends Robot {
 	};
 
 	ITransactionalTask finishBaseDough = tx -> {
-		nextProduct = service.getProductFromStorage(nextProduct.getId(), tx);
-		if (nextProduct == null)
-			return false;
+	
 
 		// Get additional ingredients
 		for (Entry<IngredientType, Integer> entry : nextProduct.getRecipe().getAdditionalIngredients()) {
@@ -86,9 +86,12 @@ public class KneadRobot extends Robot {
 		ProductChooser productChooser = new ProductChooser(service,null);
 		if (!productChooser.correctlyInitialized())
 			return false;
-
 		nextProduct = productChooser.getFinishableBaseDough();
 		if (nextProduct != null) {
+			// the product chooser is just read, so we have to take the basedough now for real
+			nextProduct = service.getProductFromStorage(nextProduct.getId(), tx);
+			if (nextProduct == null)
+				return false;
 			if (!doTask(finishBaseDough))
 				return service.putBaseDoughInStorage(nextProduct, tx);
 			return service.putDoughInBakeroom(nextProduct, tx);

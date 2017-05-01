@@ -1,40 +1,81 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
+
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.QueueBrowser;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
 /**
  * 
  * @author Tobias Ortmayr, 1026279
  *
  */
-public class  JMSKneadRobotService implements IKneadRobotService{
+public class JMSKneadRobotService extends AbstractJMSService implements IKneadRobotService {
+	private static Logger logger = LoggerFactory.getLogger(JMSKneadRobotService.class);
+	private Queue storageQueue;
+
+	private Map<String, QueueBrowser> productTypeQueueBrowsers = new HashMap<>();
+	private QueueBrowser ingredientQueueBrowser;
+
+	public JMSKneadRobotService() {
+		try {
+			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
+			ingredientQueueBrowser = session.createBrowser(storageQueue,
+					String.format("%s = '%s'", JMSConstants.Property.CLASS, Ingredient.class.getSimpleName()));
+
+		} catch (JMSException e) {
+			logger.error(e.getMessage());
+		}
+	}
 
 	@Override
-	public List<Product> getBaseDoughsFromStorage(ITransaction tx) {
-		// TODO Auto-generated method stub
+	public List<Product> checkBaseDoughsInStorage() {
+
 		return null;
 	}
 
 	@Override
-	public Map<IngredientType, Integer> getIngredientStock(ITransaction tx) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<IngredientType, Integer> getIngredientStock() {
+		try {
+			Map<IngredientType, Integer> map = new HashMap<>();
+			for (IngredientType type : IngredientType.values()) {
+				if (type != IngredientType.WATER) {
+					map.put(type, size(ingredientQueueBrowser, JMSConstants.Property.TYPE, type.toString()));
+				}
+			}
+			return map;
+		} catch (JMSException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
+
+	
 	}
 
 	@Override
-	public Map<String, Integer> getCounterStock(ITransaction tx) {
-		// TODO Auto-generated method stub
+	public Map<String, Integer> getCounterStock() {
 		return null;
+
 	}
 
 	@Override
@@ -79,5 +120,4 @@ public class  JMSKneadRobotService implements IKneadRobotService{
 		return false;
 	}
 
-	
 }

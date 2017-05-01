@@ -37,7 +37,7 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 
             try {
                 return capi.read(bakeroomContainer,
-                        FifoCoordinator.newSelector( SBCConstants.BAKE_SIZE),
+                        FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_MAX),
                         MzsConstants.RequestTimeout.TRY_ONCE, null);
             } catch (MzsCoreException ex) {
                 logger.error(ex.getMessage());

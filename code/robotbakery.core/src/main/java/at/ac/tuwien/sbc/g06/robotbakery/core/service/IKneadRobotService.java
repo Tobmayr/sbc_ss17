@@ -24,7 +24,7 @@ public interface IKneadRobotService {
 	 * 
 	 * @return
 	 */
-	List<Product> getBaseDoughsFromStorage(ITransaction tx);
+	List<Product> checkBaseDoughsInStorage();
 
 	/**
 	 * Returns a map containing the current storage stock information about each
@@ -32,7 +32,7 @@ public interface IKneadRobotService {
 	 * 
 	 * @return
 	 */
-	Map<IngredientType, Integer> getIngredientStock(ITransaction tx);
+	Map<IngredientType, Integer> getIngredientStock();
 
 	/**
 	 * Returns a map containing the current counter stock for each product type.
@@ -40,7 +40,7 @@ public interface IKneadRobotService {
 	 *
 	 * @return
 	 */
-	Map<String, Integer> getCounterStock(ITransaction tx);
+	Map<String, Integer> getCounterStock();
 
 	List<Ingredient> getIngredientsFromStorage(IngredientType type, Integer integer, ITransaction tx);
 
@@ -55,5 +55,7 @@ public interface IKneadRobotService {
 	boolean putPackInStorage(FlourPack pack, ITransaction tx);
 
 	boolean putDoughInBakeroom(Product nextProduct, ITransaction tx);
+
+
 
 }

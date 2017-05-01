@@ -1,7 +1,11 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.util;
 
+import java.util.Enumeration;
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.QueueBrowser;
 import javax.jms.TopicConnection;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -27,6 +31,17 @@ public class JMSUtil {
 		connection.start();
 		return connection;
 
+	}
+
+	public static int size(QueueBrowser browser) throws JMSException {
+		int count = 0;
+		Enumeration<?> messages = browser.getEnumeration();
+		while (messages.hasMoreElements()) {
+			count++;
+			messages.nextElement();
+
+		}
+		return count;
 	}
 
 	private JMSUtil() {

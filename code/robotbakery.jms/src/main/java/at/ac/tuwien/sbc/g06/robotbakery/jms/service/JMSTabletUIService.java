@@ -42,7 +42,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 			terminalConsumer = session.createConsumer(orderQueue,
 					String.format("%s= '%s' AND %s='%s'", JMSConstants.Property.CUSTOMER_ID, customerID.toString(),
 							JMSConstants.Property.ORDER_ID, orderID.toString()));
-
+		
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

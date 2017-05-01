@@ -4,6 +4,7 @@ public class JMSConstants {
 
 	public static final class Property {
 		public static final String TYPE = "type";
+		public static final String CLASS = "class";
 		public static final String CUSTOMER_ID = "customerID";
 		public static final String ORDER_ID = "orderID";
 		public static final String REMOVED = "removed";
@@ -34,8 +35,6 @@ public class JMSConstants {
 	}
 
 	public static final String SERVER_ADDRESS = "tcp://localhost:5557";
-
-
 
 	private JMSConstants() {
 	};

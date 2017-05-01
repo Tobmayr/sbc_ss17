@@ -7,6 +7,7 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 
+import org.omg.CORBA.OMGVMCID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,8 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 		try {
 			for (Ingredient ingredient : ingredients) {
 				Message msg = session.createObjectMessage(ingredient);
+				msg.setStringProperty(JMSConstants.Property.CLASS, Ingredient.class.getSimpleName());
+				msg.setStringProperty(JMSConstants.Property.TYPE, ingredient.getType().toString());
 				storageProducer.send(msg);
 				notifiyObserver(msg, false);
 			}
