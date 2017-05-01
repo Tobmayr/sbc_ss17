@@ -71,9 +71,9 @@ public class ServiceRobot extends Robot {
 
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
-		System.out.println("New order with id: " + currentOrder.getId() + " is now processed");
 		if (currentOrder == null)
 			return false;
+		System.out.println("New order with id: " + currentOrder.getId() + " is now processed");
 		if (!doTask(packOrderAndPutInTerminal)) {
 			return doTask(declineOrder);
 		}
