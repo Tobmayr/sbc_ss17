@@ -93,8 +93,6 @@ public class ServiceRobot extends Robot {
 			List<Product> temp = service.getProductsFromStorage(entry.getKey(), entry.getValue(), tx);
 			if (temp != null && !temp.isEmpty())
 				productsForCounter.addAll(temp);
-			else
-				return false;
 		}
 		for (Product product: productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
