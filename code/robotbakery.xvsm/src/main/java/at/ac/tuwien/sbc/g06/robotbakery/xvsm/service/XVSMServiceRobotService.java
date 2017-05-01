@@ -1,6 +1,14 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
-import java.util.*;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_NAMES;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.mozartspaces.capi3.ComparableProperty;
 import org.mozartspaces.capi3.Property;
@@ -25,20 +33,19 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_NAMES;
-
 public class XVSMServiceRobotService implements IServiceRobotService {
 
 	private static Logger logger = LoggerFactory.getLogger(XVSMServiceRobotService.class);
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;
+	private final ContainerReference storageContainer;
 	private Capi capi;
 
 	public XVSMServiceRobotService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
+		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
 	}
 
 	@Override
@@ -70,72 +77,69 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 
 	}
 
-	public List<Product> checkCounter(Order order, ITransaction tx) {
-		List<Product> products = new ArrayList<>();
-		Map<String, Order.Item> neededProducts = order.getItemsMap();
-		Iterator it = neededProducts.entrySet().iterator();
-		try {
-			while(it.hasNext()) {
-				Map.Entry pair = (Map.Entry) it.next();
-				Order.Item item = (Order.Item) pair.getValue();
-				Query query = new Query().filter(Property.forName("*", "productName").equalTo(pair.getKey())).cnt((item.getAmount()));
-				products.addAll(capi.read(counterContainer,Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)), RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
-			}
+	@Override
+	public List<Product> getProductsFromStorage(String productName, int amount, ITransaction tx) {
+		return getProducts(storageContainer, productName, amount, tx);
+	}
 
-			return products;
-		} catch (MzsCoreException e) {
-			logger.error(e.getMessage());
+	@Override
+	public List<Product> getProductsFromCounter(String productName, int amount, ITransaction tx) {
+		return getProducts(counterContainer, productName, amount, tx);
+	}
+
+	private List<Product> getProducts(ContainerReference containerReference, String productName, int amount,
+			ITransaction tx) {
+
+		try {
+			Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName)).cnt((amount));
+			return capi.take(containerReference,
+					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
+					RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+
+		} catch (MzsCoreException ex) {
+			logger.error(ex.getMessage());
 		}
+
 		return null;
 	}
 
 	@Override
-	public void updateOrder(Order order, ITransaction tx) {
+	public boolean updateOrder(Order order, ITransaction tx) {
 		try {
 			Entry entry = new Entry(order);
 			capi.write(entry, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
+			return false;
+			
 		}
 
 	}
 
 	@Override
-	public List<Product> getProductFromStorage(Map<String, Integer> missingProducts, ITransaction tx) {
-		Iterator it = missingProducts.entrySet().iterator();
-		List<Product> productsForCounter = new ArrayList<>();
-		try {
-			while (it.hasNext()) {
-				Map.Entry pair = (Map.Entry) it.next();
-				Query query = new Query().filter(Property.forName("*", "productName").equalTo(pair.getKey())).cnt((Integer) pair.getValue());
-				productsForCounter.addAll(capi.take(counterContainer, Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)), RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)));
-			}
-		} catch (MzsCoreException ex) {
-			logger.error(ex.getMessage());
-		}
-
-		return productsForCounter;
-	}
-
-	@Override
-	public void putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
+	public boolean putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
 		try {
 			Entry entry = new Entry(packedOrder);
 			capi.write(entry, terminalContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
+			return false;
 		}
 	}
 
 	@Override
-	public TreeMap<String, Integer> getCounterStock(ITransaction tx) {
-		TreeMap<String, Integer> missingProducts = new TreeMap<>();
+	public Map<String, Integer> getCounterStock() {
+		Map<String, Integer> missingProducts = new HashMap<>();
 		try {
 			for (String name : PRODUCTS_NAMES) {
 				Query query = new Query().filter(Property.forName("*", "productName").equalTo(name));
-				Integer available = capi.test(counterContainer, Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)), RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
-				if(available < COUNTER_MAX_CAPACITY) {
-					missingProducts.put(name, COUNTER_MAX_CAPACITY-available);
+				Integer available = capi.test(counterContainer,
+						Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)),
+						RequestTimeout.TRY_ONCE, null);
+				if (available < COUNTER_MAX_CAPACITY) {
+					missingProducts.put(name, COUNTER_MAX_CAPACITY - available);
 				}
 			}
 		} catch (MzsCoreException ex) {
@@ -143,7 +147,5 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 		}
 		return missingProducts;
 	}
-
-
 
 }

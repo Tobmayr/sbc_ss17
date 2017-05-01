@@ -19,6 +19,9 @@ public class PackedOrder implements Serializable {
 		this.products = new ArrayList<Product>();
 	}
 
+	public void addAll(List<Product> products){
+		this.products.addAll(products);
+	}
 	public UUID getCustomerID() {
 		return customerID;
 	}

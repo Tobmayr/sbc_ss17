@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 import javax.jms.JMSException;
@@ -77,43 +78,48 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	}
 
 	@Override
-	public void updateOrder(Order order, ITransaction tx) {
+	public boolean updateOrder(Order order, ITransaction tx) {
 		try {
 			ObjectMessage msg = session.createObjectMessage(order);
 			notifiyObserver(msg, false);
+			return true;
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
+			return false;
 		}
 
 	}
 
 	@Override
-	public void putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
+	public boolean putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
 		try {
 			Message msg = session.createObjectMessage(packedOrder);
 			msg.setStringProperty(JMSConstants.Property.CUSTOMER_ID, packedOrder.getCustomerID().toString());
 			msg.setStringProperty(JMSConstants.Property.ORDER_ID, packedOrder.getOrderID().toString());
 			terminalQueueProducer.send(msg);
+			return true;
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
+			return false;
 		}
 
 	}
 
 	@Override
-	public SortedMap<String, Integer> getCounterStock(ITransaction tx) {
+	public Map<String, Integer> getCounterStock() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Product> getProductsFromStorage(String productType,int amount, ITransaction tx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Product> checkCounter(Order order, ITransaction tx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Product> getProductFromStorage(SortedMap<String, Integer> missingProducts, ITransaction tx) {
+	public List<Product> getProductsFromCounter(String productName, int amount, ITransaction tx) {
 		// TODO Auto-generated method stub
 		return null;
 	}

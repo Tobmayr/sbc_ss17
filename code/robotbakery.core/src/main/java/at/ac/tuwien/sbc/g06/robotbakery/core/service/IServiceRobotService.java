@@ -16,13 +16,15 @@ public interface IServiceRobotService {
 
 	boolean addToCounter(List<Product> products, ITransaction tx);
 
-    TreeMap<String, Integer> getCounterStock(ITransaction tx);
+    Map<String, Integer> getCounterStock();
 
-	List<Product> checkCounter(Order order, ITransaction tx);
+	boolean updateOrder(Order order, ITransaction tx);
 
-	void updateOrder(Order order, ITransaction tx);
+	boolean putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx);
 
-	List<Product> getProductFromStorage(Map<String, Integer> missingProducts, ITransaction tx);
+	List<Product> getProductsFromStorage(String productType, int amount, ITransaction tx);
 
-	void putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx);
+	List<Product> getProductsFromCounter(String productName, int amount, ITransaction tx);
+
+
 }
