@@ -14,7 +14,7 @@
 	<modules>
 		<module>robotbakery.core</module>
 		<module>robotbakery.xvsm</module>
-		<module>robotbakery.jsm</module>
+		<module>robotbakery.jms</module>
 		<module>robotbakery.ui</module>
 
 	</modules>
@@ -31,7 +31,11 @@
 			<version>1.9.5</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 
 	</dependencies>
 
