@@ -12,7 +12,7 @@ public interface IServiceRobotService {
 
 	Order getNextOrder(ITransaction tx);
 
-	void addToCounter(List<Product> products, ITransaction tx);
+	boolean addToCounter(List<Product> products, ITransaction tx);
 
     SortedMap<String, Integer> getCounterStock(ITransaction tx);
 

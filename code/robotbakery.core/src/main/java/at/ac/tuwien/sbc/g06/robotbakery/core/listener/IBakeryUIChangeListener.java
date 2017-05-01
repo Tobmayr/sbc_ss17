@@ -28,7 +28,7 @@ public interface IBakeryUIChangeListener extends IChangeListener{
 
 	void onProductRemovedFromStorage(Product product);
 
-	void onProductsAddedToCounter(Product product);
+	void onProductAddedToCounter(Product product);
 
 	void onProductRemovedFromCounter(Product product);
 	

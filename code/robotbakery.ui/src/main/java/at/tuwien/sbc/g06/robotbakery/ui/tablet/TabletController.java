@@ -197,7 +197,7 @@ public class TabletController {
 			} else
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
-			packedOrder=service.getOrderPackage(order);
+			packedOrder=service.getOrderPackage();
 			service.payOrder(order);
 		}
 
@@ -277,6 +277,9 @@ public class TabletController {
 		return packedOrder;
 	}
 
+	public Order getOrder(){
+		return order;
+	}
 
 
 	

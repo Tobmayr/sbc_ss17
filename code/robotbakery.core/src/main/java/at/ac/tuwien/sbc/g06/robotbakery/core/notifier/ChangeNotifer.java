@@ -1,16 +1,18 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.listener;
+package at.ac.tuwien.sbc.g06.robotbakery.core.notifier;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class ChangeListenerNotifier<L extends IChangeListener> {
-	protected Set<L> registeredChangeListeners = new HashSet<>();
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 
-	public boolean registerChangeListener(L listener) {
+public abstract class ChangeNotifer<T extends IChangeListener> {
+	protected Set<T> registeredChangeListeners = new HashSet<>();
+
+	public boolean registerChangeListener(T listener) {
 		return registeredChangeListeners.add(listener);
 	}
 
-	public boolean removeChangeListener(L listener) {
+	public boolean removeChangeListener(T listener) {
 		return registeredChangeListeners.remove(listener);
 	}
 }

@@ -15,16 +15,18 @@ import org.mozartspaces.notifications.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.BakeryUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
-public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements NotificationListener {
+public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationListener {
 
 	private static Logger logger = LoggerFactory.getLogger(XVSMBakeryUIChangeNotifer.class);
 	private final ContainerReference counterContainer;
@@ -115,7 +117,7 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 					ls.onProductAddedToStorage(product);
 					break;
 				case XVSMConstants.COUNTER_CONTAINER_NAME:
-					ls.onProductsAddedToCounter(product);
+					ls.onProductAddedToCounter(product);
 					break;
 				case XVSMConstants.TERMINAL_CONTAINER_NAME:
 					ls.onProductAddedToTerminal(product);
@@ -153,5 +155,13 @@ public class XVSMBakeryUIChangeNotifer extends BakeryUIChangeNotifier implements
 		registeredChangeListeners.forEach(ls -> ls.onOrderAddedOrUpdated(order));
 
 	}
+
+	@Override
+	public void initializeStorageWaterPipe(WaterPipe waterPipe, ITransaction tx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }

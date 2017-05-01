@@ -7,5 +7,5 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 
 public interface IBakeryUIService {
 
-	void addIngredientsToStorage(List<Ingredient> ingredients);
+	boolean addIngredientsToStorage(List<Ingredient> ingredients);
 }

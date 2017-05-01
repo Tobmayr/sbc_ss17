@@ -96,7 +96,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	}
 
 	@Override
-	public void onProductsAddedToCounter(Product product) {
+	public void onProductAddedToCounter(Product product) {
 		ItemCount count = counterProductsCounterMap.get(product.getProductName());
 		if (count == null) {
 			count = new ItemCount(product.getProductName());

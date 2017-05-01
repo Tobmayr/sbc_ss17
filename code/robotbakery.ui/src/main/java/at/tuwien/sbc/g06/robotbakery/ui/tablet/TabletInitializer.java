@@ -3,7 +3,8 @@ package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 import java.io.IOException;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.TabletUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,9 @@ public class TabletInitializer {
 		TabletData tabletData = new TabletData(controller);
 		changeNotifer.registerChangeListener(tabletData);
 		controller.initialize(tabletData, uiService,customerID);
+		Order order=controller.getOrder();
+		uiService.initialize(customerID,order.getId());
+
 	}
 
 }

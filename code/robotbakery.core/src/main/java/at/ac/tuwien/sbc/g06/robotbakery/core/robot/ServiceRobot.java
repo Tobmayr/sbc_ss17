@@ -1,5 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import java.util.List;
+import java.util.SortedMap;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -7,10 +10,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
-
-import java.util.*;
-
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
 
 public class ServiceRobot extends Robot {
 
@@ -28,7 +27,6 @@ public class ServiceRobot extends Robot {
 		while (!Thread.interrupted()) {
 
 			doTask(getCounterStock);
-			if(missingProducts.size()>0)
 			doTask(processNextOrder);
 			if(currentOrder!=null) doTask(checkCounter);
 

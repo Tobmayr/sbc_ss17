@@ -1,8 +1,10 @@
-package at.ac.tuwien.sbc.g06.robotbakery.core.listener;
+package at.ac.tuwien.sbc.g06.robotbakery.core.notifier;
 
 import java.util.UUID;
 
-public abstract class TabletUIChangeNotifer extends ChangeListenerNotifier<ITableUIChangeListener> {
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.ITableUIChangeListener;
+
+public abstract class TabletUIChangeNotifer extends ChangeNotifer<ITableUIChangeListener>{
 
 
 	private UUID customerID;
@@ -23,7 +25,7 @@ public abstract class TabletUIChangeNotifer extends ChangeListenerNotifier<ITabl
 
 	
 	/**
-	 * Needs to be extendend by each framework-specific implementation (XVSM &
+	 * Needs to be extended by each framework-specific implementation (XVSM &
 	 * JSM)
 	 */
 

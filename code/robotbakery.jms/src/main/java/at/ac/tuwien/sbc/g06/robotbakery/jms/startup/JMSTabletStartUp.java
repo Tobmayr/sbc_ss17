@@ -1,6 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.startup;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.TabletUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSTabletUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletInitializer;

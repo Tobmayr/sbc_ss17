@@ -17,7 +17,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
 public class XVSMBakeryUIService implements IBakeryUIService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(XVSMBakeryUIService.class);
 	private final ContainerReference storageContainer;
 	private Capi capi;
@@ -28,13 +28,15 @@ public class XVSMBakeryUIService implements IBakeryUIService {
 	}
 
 	@Override
-	public void addIngredientsToStorage(List<Ingredient> ingredients) {
+	public boolean addIngredientsToStorage(List<Ingredient> ingredients) {
 		List<Entry> entries = new ArrayList<>();
 		ingredients.forEach(element -> entries.add(new Entry(element)));
 		try {
 			capi.write(entries, storageContainer, RequestTimeout.TRY_ONCE, null);
+			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
+			return false;
 		}
 	}
 

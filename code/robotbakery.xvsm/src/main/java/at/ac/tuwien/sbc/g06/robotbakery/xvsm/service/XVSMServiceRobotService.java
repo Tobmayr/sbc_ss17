@@ -57,13 +57,15 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public void addToCounter(List<Product> products, ITransaction tx) {
+	public boolean addToCounter(List<Product> products, ITransaction tx) {
 		try {
 			List<Entry> entries = new ArrayList<>();
 			products.forEach(product -> entries.add(new Entry(product)));
 			capi.write(entries, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return false;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
+			return true;
 		}
 
 	}
