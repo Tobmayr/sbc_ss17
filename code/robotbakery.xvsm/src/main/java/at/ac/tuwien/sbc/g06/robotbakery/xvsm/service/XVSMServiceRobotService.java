@@ -10,10 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.mozartspaces.capi3.ComparableProperty;
-import org.mozartspaces.capi3.Property;
-import org.mozartspaces.capi3.Query;
-import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -92,7 +89,9 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			ITransaction tx) {
 
 		try {
-			Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName)).filter(Property.forName("*", "ProductType").equalTo(ProductType.FINALPRODUCT)).cnt((amount));
+			Matchmaker product = Property.forName("*", "productName").equalTo(productName);
+			Matchmaker type = Property.forName("*", "ProductType").equalTo(ProductType.FINALPRODUCT);
+			Query query = new Query().filter(Matchmakers.and(product, type)).cnt((amount));
 			return capi.take(containerReference,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 					RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));

@@ -10,6 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
@@ -46,7 +47,7 @@ public class ServiceRobot extends Robot {
 	ITransactionalTask packOrderAndPutInTerminal = tx -> {
 		PackedOrder packedOrder = new PackedOrder(currentOrder.getCustomerId(), currentOrder.getId());
 		for (Item item : currentOrder.getItemsMap().values()) {
-			List<Product> temp = service.getProductsFromStorage(item.getProductName(), item.getAmount(), tx);
+			List<Product> temp = service.getProductsFromCounter(item.getProductName(), item.getAmount(), tx);
 			if (temp != null && !temp.isEmpty())
 				packedOrder.addAll(temp);
 			else
@@ -55,6 +56,10 @@ public class ServiceRobot extends Robot {
 		
 		//simulate packing duration
 		sleepFor(1000,3000);
+
+		for(Product product: packedOrder.getProducts()) {
+			product.addContribution(getId(), ContributionType.PACK_UP, getClass());
+		}
 
 		if (service.putPackedOrderInTerminal(packedOrder, tx)) {
 			currentOrder.setState(OrderState.DELIVERED);
@@ -90,6 +95,9 @@ public class ServiceRobot extends Robot {
 				productsForCounter.addAll(temp);
 			else
 				return false;
+		}
+		for (Product product: productsForCounter) {
+			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
 		}
 		return service.addToCounter(productsForCounter, tx);
 	};
