@@ -94,6 +94,7 @@ public class ServiceRobot extends Robot {
 			if (temp != null && !temp.isEmpty())
 				productsForCounter.addAll(temp);
 		}
+		if(productsForCounter.isEmpty()) return false;
 		for (Product product: productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
 		}
