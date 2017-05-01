@@ -28,6 +28,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -91,7 +92,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			ITransaction tx) {
 
 		try {
-			Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName)).cnt((amount));
+			Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName)).filter(Property.forName("*", "ProductType").equalTo(ProductType.FINALPRODUCT)).cnt((amount));
 			return capi.take(containerReference,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 					RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
