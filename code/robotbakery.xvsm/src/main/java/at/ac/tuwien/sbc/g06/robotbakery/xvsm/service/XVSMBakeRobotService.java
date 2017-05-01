@@ -11,6 +11,7 @@ import org.mozartspaces.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class XVSMBakeRobotService implements IBakeRobotService {
@@ -28,17 +29,16 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 
     @Override
     public List<Product> getUnbakedProducts(ITransaction tx) {
-        Query query = new Query().sortup(ComparableProperty.forName("*", "timestamp"));
         try {
             return capi.read(bakeroomContainer,
-                    QueryCoordinator.newSelector(query, SBCConstants.BAKE_SIZE),
-                    SBCConstants.BAKE_WAIT, XVSMUtil.unwrap(tx));
+                    FifoCoordinator.newSelector( SBCConstants.BAKE_SIZE),
+                    SBCConstants.BAKE_WAIT, null);
         } catch (MzsCoreException e) {
 
             try {
                 return capi.read(bakeroomContainer,
-                        QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
-                        MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+                        FifoCoordinator.newSelector( SBCConstants.BAKE_SIZE),
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
             } catch (MzsCoreException ex) {
                 logger.error(ex.getMessage());
                 return null;

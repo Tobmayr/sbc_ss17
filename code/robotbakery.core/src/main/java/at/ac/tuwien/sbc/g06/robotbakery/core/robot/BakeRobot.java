@@ -31,6 +31,7 @@ public class BakeRobot extends Robot {
 
 	ITransactionalTask bakeProducts = tx -> {
 		products = service.getUnbakedProducts(tx);
+		if(products==null) return false;
 		sleepFor(5000);
 		for(Product product: products) {
 			product.addContribution(getId(), ContributionType.BAKE, getClass());
