@@ -110,7 +110,7 @@ public class JSMBakery extends Bakery implements MessageListener {
 	}
 
 	@Override
-	public void initializeStorageWaterPipe(WaterPipe waterPipe, ITransaction tx) {
+	public void initializeStorageWaterPipe() {
 		// TODO Auto-generated method stub
 
 	}

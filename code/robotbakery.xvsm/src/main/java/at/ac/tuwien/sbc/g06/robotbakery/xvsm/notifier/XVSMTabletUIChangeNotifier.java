@@ -24,7 +24,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
 public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements NotificationListener {
 
-	private static Logger logger = LoggerFactory.getLogger(XVSMBakeryUIChangeNotifer.class);
+	private static Logger logger = LoggerFactory.getLogger(XVSMBakery.class);
 
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;

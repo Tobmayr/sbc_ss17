@@ -4,8 +4,7 @@ import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.DefaultMzsCore;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMBakeryUIChangeNotifer;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryService;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMBakery;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardInitializer;
 import javafx.application.Application;
@@ -17,9 +16,8 @@ public class XVSMBakeryStartUp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// Initialize Bakery-instance and required ui listeners
 		Capi server = new Capi(DefaultMzsCore.newInstance());
-		Bakery changeNotifer = new XVSMBakeryUIChangeNotifer(server);
-		DashboardInitializer.initializeDashboard(primaryStage, changeNotifer, new XVSMBakeryUIService(server),
-				new XVSMBakeryService(server));
+		Bakery bakery = new XVSMBakery(server);
+		DashboardInitializer.initializeDashboard(primaryStage, bakery, new XVSMBakeryUIService(server));
 
 	}
 
