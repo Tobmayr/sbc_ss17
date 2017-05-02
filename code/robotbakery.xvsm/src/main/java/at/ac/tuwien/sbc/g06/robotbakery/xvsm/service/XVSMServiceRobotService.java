@@ -99,7 +99,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 
 		try {
 			Matchmaker product = Property.forName("*", "productName").equalTo(productName);
-			Matchmaker type = Property.forName("*", "ProductType").equalTo(BakeState.FINALPRODUCT);
+			Matchmaker type = Property.forName("*", "BakeState").equalTo(BakeState.FINALPRODUCT);
 			Query query = new Query().filter(Matchmakers.and(product, type)).cnt((amount));
 			return capi.take(containerReference,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
@@ -145,7 +145,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			for (String name : PRODUCTS_NAMES) {
 				Query query = new Query().filter(Property.forName("*", "productName").equalTo(name));
 				Integer available = capi.test(counterContainer,
-						Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL)),
+						Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 						RequestTimeout.TRY_ONCE, null);
 				if (available < COUNTER_MAX_CAPACITY) {
 					missingProducts.put(name, COUNTER_MAX_CAPACITY - available);
