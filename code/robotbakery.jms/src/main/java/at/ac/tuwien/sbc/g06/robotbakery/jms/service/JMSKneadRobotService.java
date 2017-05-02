@@ -91,9 +91,9 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	}
 
 	@Override
-	public WaterPipe useWaterPipe(ITransaction tx) {
+	public boolean useWaterPipe(long time,ITransaction tx) {
 		// TODO Auto-generated method stub
-		return null;
+		return true;
 	}
 
 	@Override

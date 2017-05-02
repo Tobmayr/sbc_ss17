@@ -44,7 +44,7 @@ public interface IKneadRobotService extends IRobotService{
 
 	List<Ingredient> getIngredientsFromStorage(IngredientType type, Integer integer, ITransaction tx);
 
-	WaterPipe useWaterPipe(ITransaction tx);
+	boolean useWaterPipe(long time, ITransaction tx);
 
 	boolean putBaseDoughInStorage(Product nextProduct, ITransaction tx);
 
@@ -55,6 +55,8 @@ public interface IKneadRobotService extends IRobotService{
 	boolean putPackInStorage(FlourPack pack, ITransaction tx);
 
 	boolean putDoughInBakeroom(Product nextProduct, ITransaction tx);
+
+	
 
 
 

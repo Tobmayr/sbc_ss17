@@ -39,9 +39,9 @@ public class KneadRobot extends Robot {
 	}
 
 	ITransactionalTask takeWater = tx -> {
-		WaterPipe waterPipe = service.useWaterPipe(tx);
 		long time = (long) (nextProduct.getRecipe().getAmount(IngredientType.WATER) / 500d * 2000);
-		sleepFor(time);
+		if (!service.useWaterPipe(time, tx))
+			return false;
 		return true;
 	};
 

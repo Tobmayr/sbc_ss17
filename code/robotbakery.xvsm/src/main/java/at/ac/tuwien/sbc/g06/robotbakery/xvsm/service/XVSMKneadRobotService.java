@@ -30,6 +30,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -136,13 +137,15 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	}
 
 	@Override
-	public WaterPipe useWaterPipe(ITransaction tx) {
+	public boolean useWaterPipe(long time, ITransaction tx) {
 		try {
-			return (WaterPipe) capi.read(storageContainer, TypeCoordinator.newSelector(WaterPipe.class),
-					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
-		} catch (MzsCoreException e) {
+			WaterPipe pipe = (WaterPipe) capi.take(storageContainer, TypeCoordinator.newSelector(WaterPipe.class),2000, XVSMUtil.unwrap(tx)).get(0);
+			Thread.sleep(time);
+			capi.write(storageContainer, new Entry(pipe));
+			return true;
+		} catch (MzsCoreException | InterruptedException e) {
 			logger.error(e.getMessage());
-			return null;
+			return false;
 		}
 	}
 
@@ -213,13 +216,13 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	@Override
 	public void startRobot() {
 		robotService.startRobot();
-		
+
 	}
 
 	@Override
 	public void shutdownRobot() {
 		robotService.shutdownRobot();
-		
+
 	}
 
 }
