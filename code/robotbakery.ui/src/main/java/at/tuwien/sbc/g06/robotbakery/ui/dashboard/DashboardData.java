@@ -62,11 +62,12 @@ public class DashboardData implements IBakeryUIChangeListener {
 	@Override
 	public void onProductAddedToStorage(Product product) {
 
-		ItemCount count = storageProductsCounterMap.get(product.getProductName());
+		ItemCount count = storageProductsCounterMap.get(toFullProductName(product));
 		if (count == null) {
-			count = new ItemCount(product.getProductName());
-			storageProductsCounterMap.put(product.getProductName(), count);
+			count = new ItemCount(toFullProductName(product));
+			storageProductsCounterMap.put(toFullProductName(product), count);
 			productsInStorage.add(count);
+			FXCollections.sort(productsInStorage);
 		}
 		count.amount++;
 		addOrUpdate(count, productsInStorage);
@@ -102,6 +103,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 			count = new ItemCount(product.getProductName());
 			counterProductsCounterMap.put(product.getProductName(), count);
 			productsInCounter.add(count);
+			FXCollections.sort(productsInCounter);
 		}
 		count.amount++;
 		addOrUpdate(count, productsInCounter);
@@ -196,6 +198,11 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	}
 
+	private String toFullProductName(Product product) {
+		String suffix = product.getType() == ProductType.DOUGH ? " (Base dough)" : "";
+		return product.getProductName() + suffix;
+	}
+
 	private <T> void addOrUpdate(T element, ObservableList<T> observableList) {
 		int index = observableList.indexOf(element);
 		if (index != -1) {
@@ -213,7 +220,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	 * @author Tobias Ortmayr (1026279)
 	 *
 	 */
-	public class ItemCount {
+	public class ItemCount implements Comparable<ItemCount> {
 
 		private final String itemName;
 		private int amount;
@@ -228,6 +235,11 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 		public int getAmount() {
 			return amount;
+		}
+
+		@Override
+		public int compareTo(ItemCount that) {
+			return this.itemName.compareTo(that.itemName);
 		}
 
 	}

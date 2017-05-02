@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
@@ -28,7 +29,7 @@ public class Product implements Serializable {
 	private final UUID id;
 	private final String productName;
 	final Recipe recipe;
-	private ProductType type=ProductType.DOUGH;
+	private ProductType type = ProductType.DOUGH;
 	private List<Contribution> contributions = new ArrayList<>();
 	private Timestamp timestamp;
 
@@ -39,20 +40,14 @@ public class Product implements Serializable {
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 
 	}
-	
-	
 
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 
-
-
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
-
-
 
 	public Product(Recipe recipe) {
 		super();
@@ -89,17 +84,17 @@ public class Product implements Serializable {
 		return id;
 	}
 
-
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return Objects.hash(id, productName, recipe, type);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Product) {
 			Product that = (Product) obj;
-			return this.getId().equals(that.getId());
+			return this.getId().equals(that.getId()) && this.getProductName().equals(that.getProductName())
+					&& this.getType() == that.getType() && this.getRecipe().equals(that.getRecipe());
 		}
 		return super.equals(obj);
 	}

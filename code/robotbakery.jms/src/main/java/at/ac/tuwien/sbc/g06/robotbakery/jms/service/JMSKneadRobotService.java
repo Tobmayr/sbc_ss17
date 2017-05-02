@@ -3,7 +3,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.jms.JMSException;
@@ -16,14 +15,12 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
-import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
 /**
  * 
@@ -33,16 +30,18 @@ import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 public class JMSKneadRobotService extends AbstractJMSService implements IKneadRobotService {
 	private static Logger logger = LoggerFactory.getLogger(JMSKneadRobotService.class);
 	private Queue storageQueue;
-
-	private Map<String, QueueBrowser> productTypeQueueBrowsers = new HashMap<>();
 	private QueueBrowser ingredientQueueBrowser;
+	private QueueBrowser productQueueBrowser;
+	private Queue counterQueue;
 
 	public JMSKneadRobotService() {
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
+			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			ingredientQueueBrowser = session.createBrowser(storageQueue,
 					String.format("%s = '%s'", JMSConstants.Property.CLASS, Ingredient.class.getSimpleName()));
-
+			productQueueBrowser = session.createBrowser(counterQueue,
+					String.format("%s = '%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}
@@ -69,13 +68,20 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 			return null;
 		}
 
-	
 	}
 
 	@Override
 	public Map<String, Integer> getCounterStock() {
-		return null;
-
+		try {
+			Map<String, Integer> map = new HashMap<String, Integer>();
+			for (String product : SBCConstants.PRODUCTS_NAMES) {
+				map.put(product, size(productQueueBrowser, JMSConstants.Property.TYPE, product));
+			}
+			return map;
+		} catch (JMSException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
 	}
 
 	@Override
