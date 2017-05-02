@@ -63,7 +63,8 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(BakeState.DOUGH))
 					.sortup(ComparableProperty.forName("*", "timestamp"));
 			return capi.read(storageContainer,
-					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),
+					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
+							TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX)),
 					MzsConstants.RequestTimeout.TRY_ONCE, null);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
