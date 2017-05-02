@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
@@ -60,7 +60,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	@Override
 	public List<Product> checkBaseDoughsInStorage() {
 		try {
-			Query query = new Query().filter(Property.forName("*", "type").equalTo(ProductType.DOUGH))
+			Query query = new Query().filter(Property.forName("*", "type").equalTo(BakeState.DOUGH))
 					.sortup(ComparableProperty.forName("*", "timestamp"));
 			return capi.read(storageContainer,
 					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),

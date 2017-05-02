@@ -18,7 +18,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 @SuppressWarnings("serial")
 public class Product implements Serializable {
 
-	public enum ProductType {
+	public enum BakeState {
 		DOUGH, FINALPRODUCT;
 	}
 
@@ -29,7 +29,7 @@ public class Product implements Serializable {
 	private final UUID id;
 	private final String productName;
 	final Recipe recipe;
-	private ProductType type = ProductType.DOUGH;
+	private BakeState type = BakeState.DOUGH;
 	private List<Contribution> contributions = new ArrayList<>();
 	private Timestamp timestamp;
 
@@ -64,11 +64,11 @@ public class Product implements Serializable {
 		return contributions;
 	}
 
-	public ProductType getType() {
+	public BakeState getType() {
 		return type;
 	}
 
-	public void setType(ProductType type) {
+	public void setType(BakeState type) {
 		this.type = type;
 	}
 

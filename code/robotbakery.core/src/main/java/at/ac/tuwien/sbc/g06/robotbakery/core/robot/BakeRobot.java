@@ -2,7 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
@@ -36,7 +36,7 @@ public class BakeRobot extends Robot {
 		sleepFor(5000);
 		for (Product product : products) {
 			product.addContribution(getId(), ContributionType.BAKE, getClass());
-			product.setType(ProductType.FINALPRODUCT);
+			product.setType(BakeState.FINALPRODUCT);
 			if (!service.putBakedProductsInStorage(product, tx)) {
 				System.out.println("Could not put Product with id " + product.getId() + " in storage!");
 				return false;

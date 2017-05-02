@@ -8,7 +8,7 @@ public class JMSConstants {
 		public static final String CUSTOMER_ID = "customerID";
 		public static final String ORDER_ID = "orderID";
 		public static final String REMOVED = "removed";
-		public static final String ORDER_STATE = "orderState";
+		public static final String STATE = "orderState";
 		public static final String ORIGINAL_DESTINATION = "originalDestination";
 
 		private Property() {
@@ -35,6 +35,7 @@ public class JMSConstants {
 	}
 
 	public static final String SERVER_ADDRESS = "tcp://localhost:5557";
+	public static final long MAX_TIMEOUT = 2000;
 
 	private JMSConstants() {
 	};

@@ -1,26 +1,28 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Queue;
+import javax.jms.QueueBrowser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
 public class JMSServiceRobotService extends AbstractJMSService implements IServiceRobotService {
 	private static Logger logger = LoggerFactory.getLogger(JMSTabletUIService.class);
@@ -30,6 +32,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private MessageConsumer orderConsumer;
 	private MessageProducer counterProducer;
 	private MessageProducer terminalQueueProducer;
+	private QueueBrowser productCounterQueueBrowser;
 
 	public JMSServiceRobotService() {
 
@@ -39,8 +42,10 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			counterProducer = session.createProducer(counterQueue);
 			orderConsumer = session.createConsumer(orderQueue,
-					String.format("%s='%s'", JMSConstants.Property.ORDER_STATE, OrderState.OPEN));
+					String.format("%s='%s'", JMSConstants.Property.STATE, OrderState.OPEN));
 			terminalQueueProducer = session.createProducer(terminalQueue);
+			productCounterQueueBrowser = session.createBrowser(counterQueue,
+					String.format("%s='%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
 
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
@@ -49,71 +54,41 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public Order getNextOrder(ITransaction tx) {
-		try {
-			Message msg = orderConsumer.receive(1000);
-			if (msg instanceof ObjectMessage) {
-				Order order = (Order) ((ObjectMessage) msg).getObject();
-				return order;
-			}
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-		}
-		return null;
+		return receive(orderConsumer);
 	}
 
 	@Override
 	public boolean addToCounter(List<Product> products, ITransaction tx) {
-		try {
-			for (Product product : products) {
-				Message msg = session.createObjectMessage(product);
-				msg.setStringProperty(JMSConstants.Property.TYPE, product.getProductName());
-				counterProducer.send(msg);
-			}
-			return true;
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-			return false;
+		for (Product product : products) {
+			if (!send(counterProducer, product))
+				return false;
 		}
+		return true;
 
 	}
 
 	@Override
 	public boolean updateOrder(Order order, ITransaction tx) {
-		try {
-			ObjectMessage msg = session.createObjectMessage(order);
-			notifiyObserver(msg, false);
-			return true;
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-			return false;
-		}
+		return notify(ServiceRobot.class.getSimpleName(), false);
 
 	}
 
 	@Override
 	public boolean putPackedOrderInTerminal(PackedOrder packedOrder, ITransaction tx) {
-		try {
-			Message msg = session.createObjectMessage(packedOrder);
-			msg.setStringProperty(JMSConstants.Property.CUSTOMER_ID, packedOrder.getCustomerID().toString());
-			msg.setStringProperty(JMSConstants.Property.ORDER_ID, packedOrder.getOrderID().toString());
-			terminalQueueProducer.send(msg);
-			return true;
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-			return false;
-		}
+		return send(terminalQueueProducer, packedOrder);
 
 	}
 
 	@Override
 	public Map<String, Integer> getCounterStock() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Integer> map = JMSUtil.getBrowserContentSizeByValues(productCounterQueueBrowser,
+				SBCConstants.PRODUCTS_NAMES, JMSConstants.Property.TYPE);
+		map.forEach((s, i) -> map.replace(s, SBCConstants.COUNTER_MAX_CAPACITY - i));
+		return map;
 	}
 
-
 	@Override
-	public List<Product> getProductsFromStorage(String productType,int amount, ITransaction tx) {
+	public List<Product> getProductsFromStorage(String productType, int amount, ITransaction tx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -126,14 +101,14 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public void startRobot() {
-		// TODO Auto-generated method stub
-		
+		notify(ServiceRobot.class.getSimpleName(), false);
+
 	}
 
 	@Override
 	public void shutdownRobot() {
-		// TODO Auto-generated method stub
-		
+		notify(ServiceRobot.class.getSimpleName(), true);
+
 	}
 
 }

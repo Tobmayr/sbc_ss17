@@ -18,6 +18,7 @@ public class SBCConstants {
 	public static final Integer BAKE_SIZE = 5;
 
 	public static final Long BAKE_WAIT = 10000L;
+	
 
 	private SBCConstants() {
 	}

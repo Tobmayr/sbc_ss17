@@ -8,7 +8,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -73,7 +73,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		}
 		count.amount++;
 		addOrUpdate(count, productsInStorage);
-		ProductState state = product.getType() == ProductType.DOUGH ? ProductState.DOUGH_IN_STORAGE
+		ProductState state = product.getType() == BakeState.DOUGH ? ProductState.DOUGH_IN_STORAGE
 				: ProductState.PRODUCT_IN_STORAGE;
 
 		addOrUpdate(product, stateToProductsMap.get(state));
@@ -92,7 +92,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 				storageProductsCounterMap.remove(count.itemName);
 			}
 		}
-		ProductState state = product.getType() == ProductType.DOUGH ? ProductState.DOUGH_IN_STORAGE
+		ProductState state = product.getType() == BakeState.DOUGH ? ProductState.DOUGH_IN_STORAGE
 				: ProductState.PRODUCT_IN_STORAGE;
 		stateToProductsMap.get(state).remove(product);
 
@@ -201,7 +201,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	}
 
 	private String toFullProductName(Product product) {
-		String suffix = product.getType() == ProductType.DOUGH ? " (Base dough)" : "";
+		String suffix = product.getType() == BakeState.DOUGH ? " (Base dough)" : "";
 		return product.getProductName() + suffix;
 	}
 

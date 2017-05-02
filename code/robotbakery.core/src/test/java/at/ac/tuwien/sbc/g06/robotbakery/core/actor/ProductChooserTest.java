@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ProductChooser;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
@@ -30,9 +30,9 @@ public class ProductChooserTest {
 	@Before
 	public void setUp() {
 		baseDough1 = new Product(SBCConstants.PRODUCT1_NAME);
-		baseDough1.setType(ProductType.DOUGH);
+		baseDough1.setType(BakeState.DOUGH);
 		baseDough2 = new Product(SBCConstants.PRODUCT2_NAME);
-		baseDough2.setType(ProductType.DOUGH);
+		baseDough2.setType(BakeState.DOUGH);
 		ingredientStock = new TreeMap<IngredientType, Integer>(
 				);
 		counterStock = new HashMap<String, Integer>();

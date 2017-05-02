@@ -1,10 +1,16 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueBrowser;
@@ -14,9 +20,17 @@ import javax.jms.TopicConnection;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 
+import org.apache.activemq.command.ProducerAck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
@@ -61,20 +75,76 @@ public class AbstractJMSService {
 		notifier.send(notificationTopic, msg);
 	}
 
-	public static int size(QueueBrowser browser, String property, String value) throws JMSException {
-		int count = 0;
-		Enumeration<?> messages = browser.getEnumeration();
-		while (messages.hasMoreElements()) {
-			Object element = messages.nextElement();
-			if (element instanceof Message) {
-				String elementValue = ((Message) element).getStringProperty(property);
-				if (value.equals(elementValue))
-					count++;
-			}
-			count++;
-
+	/**
+	 * Helper method which creates an ObjectMessage containing modelObject which
+	 * is passed as input argument. In addition properties which are required
+	 * for this type of model object get attached to the message;
+	 * 
+	 * @param modelObject
+	 *            Object which should be wrapped in a message
+	 * @throws JMSException
+	 */
+	public <T extends Serializable> Message createMessage(T modelObject) throws JMSException {
+		Message msg = session.createObjectMessage(modelObject);
+		if (modelObject instanceof Order) {
+			Order order = (Order) modelObject;
+			msg.setStringProperty(JMSConstants.Property.STATE, order.getState().toString());
+		} else if (modelObject instanceof PackedOrder) {
+			PackedOrder packedOrder = (PackedOrder) modelObject;
+			msg.setStringProperty(JMSConstants.Property.CUSTOMER_ID, packedOrder.getCustomerID().toString());
+			msg.setStringProperty(JMSConstants.Property.ORDER_ID, packedOrder.getOrderID().toString());
+		} else if (modelObject instanceof Ingredient) {
+			Ingredient ingredient = (Ingredient) modelObject;
+			msg.setStringProperty(JMSConstants.Property.CLASS, Ingredient.class.getSimpleName());
+			msg.setStringProperty(JMSConstants.Property.TYPE, ingredient.getType().toString());
+		} else if (modelObject instanceof Product) {
+			Product product = (Product) modelObject;
+			msg.setStringProperty(JMSConstants.Property.CLASS, Product.class.getSimpleName());
+			msg.setStringProperty(JMSConstants.Property.TYPE, product.getProductName());
+			msg.setStringProperty(JMSConstants.Property.STATE, product.getType().toString());
+		} else if (modelObject instanceof WaterPipe) {
+			msg.setStringProperty(JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName());
 		}
-		return count;
+		return msg;
+	}
+
+	public boolean send(MessageProducer producer, Serializable messageObject) {
+		try {
+			Message msg = createMessage(messageObject);
+			producer.send(msg);
+			notifiyObserver(msg, false);
+			return true;
+		} catch (JMSException e) {
+			return false;
+		}
+
+	}
+
+	public boolean notify(Serializable messageObject, boolean remove) {
+		try {
+			Message msg = createMessage(messageObject);
+			notifiyObserver(msg, remove);
+			return true;
+		} catch (JMSException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+
+	public <T extends Serializable> T receive(MessageConsumer consumer) {
+		try {
+			Message msg = consumer.receive(500);
+			if (msg instanceof ObjectMessage) {
+				@SuppressWarnings("unchecked")
+				T cast = (T) ((ObjectMessage) msg).getObject();
+				return cast;
+			}
+
+		} catch (JMSException | ClassCastException e) {
+			logger.error(e.getMessage());
+		}
+		return null;
+
 	}
 
 }

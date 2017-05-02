@@ -29,7 +29,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
@@ -99,7 +99,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 
 		try {
 			Matchmaker product = Property.forName("*", "productName").equalTo(productName);
-			Matchmaker type = Property.forName("*", "ProductType").equalTo(ProductType.FINALPRODUCT);
+			Matchmaker type = Property.forName("*", "ProductType").equalTo(BakeState.FINALPRODUCT);
 			Query query = new Query().filter(Matchmakers.and(product, type)).cnt((amount));
 			return capi.take(containerReference,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
