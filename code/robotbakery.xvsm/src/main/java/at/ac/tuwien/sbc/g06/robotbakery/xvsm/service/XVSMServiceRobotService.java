@@ -6,11 +6,15 @@ import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_N
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.mozartspaces.capi3.*;
+import org.mozartspaces.capi3.ComparableProperty;
+import org.mozartspaces.capi3.Matchmaker;
+import org.mozartspaces.capi3.Matchmakers;
+import org.mozartspaces.capi3.Property;
+import org.mozartspaces.capi3.Query;
+import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -26,6 +30,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -38,12 +44,15 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	private final ContainerReference terminalContainer;
 	private final ContainerReference storageContainer;
 	private Capi capi;
+	private XVSMRobotService robotService;
 
 	public XVSMServiceRobotService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
+		this.robotService = new XVSMRobotService(capi, ServiceRobot.class.getSimpleName());
+
 	}
 
 	@Override
@@ -112,7 +121,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
 			return false;
-			
+
 		}
 
 	}
@@ -146,6 +155,17 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			logger.error(ex.getMessage());
 		}
 		return missingProducts;
+	}
+
+	@Override
+	public void startRobot() {
+		robotService.startRobot();
+	}
+
+	@Override
+	public void shutdownRobot() {
+		robotService.shutdownRobot();
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package at.ac.tuwien.sbc.g06.robotbakery.xvsm;
+package at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,16 +29,28 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;
 
+	private ArrayList<Notification> notifications;
+
 	public XVSMTabletUIChangeNotifier() {
 		super();
 		Capi capi = new Capi(DefaultMzsCore.newInstance());
 		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 		createNotifications(capi);
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				for (Notification notification : notifications) {
+					notification.destroy();
+				}
+			} catch (MzsCoreException e) {
+				// ignore
+			}
+		}));
 	}
 
 	private void createNotifications(Capi server) {
-		final List<Notification> notifications = new ArrayList<Notification>();
+		notifications = new ArrayList<Notification>();
 		NotificationManager manager = new NotificationManager(server.getCore());
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
@@ -57,12 +69,7 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 			return;
 		}
 		entries.forEach(ser -> {
-			Serializable object;
-			if (ser instanceof Entry) {
-				object = ((Entry) ser).getValue();
-			} else {
-				object = ser;
-			}
+			Serializable object= XVSMUtil.unwrap(ser);
 
 			if (object instanceof Product) {
 				Product product = (Product) object;

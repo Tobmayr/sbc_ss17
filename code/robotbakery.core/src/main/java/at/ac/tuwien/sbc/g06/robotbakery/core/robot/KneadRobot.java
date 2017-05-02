@@ -26,10 +26,12 @@ public class KneadRobot extends Robot {
 	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
 		this.service = service;
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	}
 
 	@Override
 	public void run() {
+		service.startRobot();
 		while (!Thread.interrupted()) {
 			doTask(bakeNextProduct);
 		}
@@ -67,7 +69,6 @@ public class KneadRobot extends Robot {
 	};
 
 	ITransactionalTask finishBaseDough = tx -> {
-	
 
 		// Get additional ingredients
 		for (Entry<IngredientType, Integer> entry : nextProduct.getRecipe().getAdditionalIngredients()) {
@@ -83,12 +84,13 @@ public class KneadRobot extends Robot {
 	};
 
 	ITransactionalTask bakeNextProduct = tx -> {
-		ProductChooser productChooser = new ProductChooser(service,null);
+		ProductChooser productChooser = new ProductChooser(service, null);
 		if (!productChooser.correctlyInitialized())
 			return false;
 		nextProduct = productChooser.getFinishableBaseDough();
 		if (nextProduct != null) {
-			// the product chooser is just read, so we have to take the basedough now for real
+			// the product chooser is just read, so we have to take the
+			// basedough now for real
 			nextProduct = service.getProductFromStorage(nextProduct.getId(), tx);
 			if (nextProduct == null)
 				return false;
@@ -100,7 +102,7 @@ public class KneadRobot extends Robot {
 		nextProduct = productChooser.getNextProduct();
 		if (nextProduct != null) {
 			if (doTask(makeNewBaseDough)) {
-				Product baseDough=nextProduct;
+				Product baseDough = nextProduct;
 				if (!doTask(finishBaseDough)) {
 					return service.putBaseDoughInStorage(baseDough, tx);
 				}

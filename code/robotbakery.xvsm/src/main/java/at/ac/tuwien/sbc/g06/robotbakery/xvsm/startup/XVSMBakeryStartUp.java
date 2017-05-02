@@ -4,7 +4,7 @@ import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.DefaultMzsCore;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.XVSMBakeryUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMBakeryUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardInitializer;

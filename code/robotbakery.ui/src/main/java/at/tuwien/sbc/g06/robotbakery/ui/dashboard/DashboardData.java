@@ -9,6 +9,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -23,6 +24,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	private final Map<String, ItemCount> counterProductsCounterMap = new HashMap<>();
 	private final Map<String, ItemCount> storageProductsCounterMap = new HashMap<>();
 	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
+	private DashboardController controller;
 
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
@@ -246,6 +248,22 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	public enum ProductState {
 		DOUGH_IN_STORAGE, DOUGH_IN_BAKEROOM, PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD;
+	}
+
+	@Override
+	public void onRobotStart(Class<? extends Robot> robot) {
+		controller.onRobotStart(robot);
+		
+	}
+
+	@Override
+	public void onRobotShutdown(Class<? extends Robot> robot) {
+		controller.onRobotShutdown(robot);
+		
+	}
+	
+	public void setController(DashboardController controller){
+		this.controller=controller;
 	}
 
 }

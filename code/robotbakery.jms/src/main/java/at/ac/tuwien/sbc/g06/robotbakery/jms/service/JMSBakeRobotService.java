@@ -20,4 +20,16 @@ public class JMSBakeRobotService implements IBakeRobotService {
 		return false;
 	}
 
+	@Override
+	public void startRobot() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void shutdownRobot() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

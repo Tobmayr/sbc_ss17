@@ -24,10 +24,13 @@ public class ServiceRobot extends Robot {
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
 		this.service = service;
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
+
 	};
 
 	@Override
 	public void run() {
+		service.startRobot();
 		while (!Thread.interrupted()) {
 
 			doTask(getProductFromStorage);
@@ -53,11 +56,11 @@ public class ServiceRobot extends Robot {
 			else
 				return false;
 		}
-		
-		//simulate packing duration
-		sleepFor(1000,3000);
 
-		for(Product product: packedOrder.getProducts()) {
+		// simulate packing duration
+		sleepFor(1000, 3000);
+
+		for (Product product : packedOrder.getProducts()) {
 			product.addContribution(getId(), ContributionType.PACK_UP, getClass());
 		}
 
@@ -94,8 +97,9 @@ public class ServiceRobot extends Robot {
 			if (temp != null && !temp.isEmpty())
 				productsForCounter.addAll(temp);
 		}
-		if(productsForCounter.isEmpty()) return false;
-		for (Product product: productsForCounter) {
+		if (productsForCounter.isEmpty())
+			return false;
+		for (Product product : productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
 		}
 		return service.addToCounter(productsForCounter, tx);

@@ -22,9 +22,6 @@ public class DashboardInitializer {
 			IBakeryUIService uiService, IBakeryService service) throws IOException {
 		service.initializeStorageWaterPipe(new WaterPipe(), null);
 
-		DashboardData dashboardData = new DashboardData();
-		changeNotifier.registerChangeListener(dashboardData);
-
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
 				DashboardInitializer.class.getClassLoader().getResource(UIConstants.DASHBOARD_FXML_FILENAME));
@@ -37,7 +34,11 @@ public class DashboardInitializer {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		primaryStage.setResizable(false);
+		DashboardData dashboardData = new DashboardData();
+		changeNotifier.registerChangeListener(dashboardData);
 		DashboardController controller = loader.getController();
+		dashboardData.setController(controller);
 		controller.initialize(dashboardData, primaryStage, uiService);
+		
 	}
 }

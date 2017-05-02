@@ -5,7 +5,7 @@ import java.util.UUID;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 
-public interface ITabletUIService {
+public interface ITabletUIService  {
 
 	boolean addOrderToCounter(Order order);
 

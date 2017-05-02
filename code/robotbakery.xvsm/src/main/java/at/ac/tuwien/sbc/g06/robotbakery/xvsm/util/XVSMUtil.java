@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
+import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
@@ -74,9 +76,9 @@ public class XVSMUtil {
 		case XVSMConstants.COUNTER_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
 		case XVSMConstants.STORAGE_CONTAINER_NAME:
-			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
+			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator(), new FifoCoordinator());
 		case XVSMConstants.BAKEROOM_CONTAINER_NAME:
-			return Arrays.asList(new FifoCoordinator(),new QueryCoordinator());
+			return Arrays.asList(new FifoCoordinator(), new QueryCoordinator());
 		case XVSMConstants.TERMINAL_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator());
 
@@ -102,6 +104,12 @@ public class XVSMUtil {
 		if (tx instanceof XVSMTransaction)
 			return ((XVSMTransaction) tx).unwrap();
 		return null;
+	}
+
+	public static Serializable unwrap(Serializable ser) {
+		if (ser instanceof Entry)
+			return ((Entry) ser).getValue();
+		return ser;
 	}
 
 }

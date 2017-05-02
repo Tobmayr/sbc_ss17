@@ -16,7 +16,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
  * @author Tobias Ortmayr, 1026279
  *
  */
-public interface IKneadRobotService {
+public interface IKneadRobotService extends IRobotService{
 
 	/**
 	 * Returns all (products considered as) base doughs in storage ordered by

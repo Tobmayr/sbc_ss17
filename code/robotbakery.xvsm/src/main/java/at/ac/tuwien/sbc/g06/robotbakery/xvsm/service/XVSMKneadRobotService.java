@@ -27,7 +27,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ProductType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -44,12 +46,14 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	private final ContainerReference counterContainer;
 	private final ContainerReference bakeroomContainer;
 	private Capi capi;
+	private IRobotService robotService;
 
 	public XVSMKneadRobotService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
 		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 		bakeroomContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.BAKEROOM_CONTAINER_NAME);
+		this.robotService = new XVSMRobotService(capi, KneadRobot.class.getSimpleName());
 	}
 
 	@Override
@@ -204,6 +208,18 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 			logger.error(ex.getMessage());
 			return false;
 		}
+	}
+
+	@Override
+	public void startRobot() {
+		robotService.startRobot();
+		
+	}
+
+	@Override
+	public void shutdownRobot() {
+		robotService.shutdownRobot();
+		
 	}
 
 }

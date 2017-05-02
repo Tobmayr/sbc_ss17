@@ -14,6 +14,10 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductState;
@@ -130,6 +134,13 @@ public class DashboardController {
 	@FXML
 	Button restockButton;
 
+	@FXML
+	TextField serviceRobotCounter;
+	@FXML
+	TextField kneadRobotCounter;
+	@FXML
+	TextField bakeRobotCounter;
+
 	private List<TableView<Product>> collectedProducTables;
 	private List<TableColumn<Product, String>> collectedProductsIds;
 	private List<TableColumn<Product, String>> collectedProductsTypes;
@@ -241,8 +252,7 @@ public class DashboardController {
 
 		ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldOrder, newOrder) -> {
 			if (newOrder != null) {
-				itemsTable.setItems(
-						FXCollections.observableArrayList(newOrder.getItemsMap().values()));
+				itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItemsMap().values()));
 				orderCustomerId.setText(newOrder.getCustomerId().toString());
 				if (newOrder.getServiceRobotId() != null) {
 					orderServiceId.setText(newOrder.getServiceRobotId().toString());
@@ -278,8 +288,6 @@ public class DashboardController {
 			});
 			field.setText("" + 0);
 		});
-		
-		
 
 	}
 
@@ -313,4 +321,35 @@ public class DashboardController {
 
 	}
 
+	public void onRobotStart(Class<? extends Robot> robot) {
+		if (robot.equals(ServiceRobot.class)) {
+			changeRobotCounter(serviceRobotCounter,true);
+		} else if (robot.equals(KneadRobot.class)) {
+			changeRobotCounter(kneadRobotCounter,true);
+		} else if (robot.equals(BakeRobot.class)) {
+			changeRobotCounter(bakeRobotCounter,true);
+		}
+
+	}
+
+
+	public void onRobotShutdown(Class<? extends Robot> robot) {
+		if (robot.equals(ServiceRobot.class)) {
+			changeRobotCounter(serviceRobotCounter,false);
+		} else if (robot.equals(KneadRobot.class)) {
+			changeRobotCounter(kneadRobotCounter,false);
+		} else if (robot.equals(BakeRobot.class)) {
+			changeRobotCounter(bakeRobotCounter,false);
+		}
+
+	}
+
+	private void changeRobotCounter(TextField field, boolean increment) {
+		int prev = Integer.parseInt(field.getText());
+		if (increment)
+			prev++;
+		else
+			prev--;
+		field.setText("" + prev);
+	}
 }

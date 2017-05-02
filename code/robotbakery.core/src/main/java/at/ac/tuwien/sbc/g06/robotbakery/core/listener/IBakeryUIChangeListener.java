@@ -3,6 +3,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.listener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 
 /**
  * 
@@ -43,6 +44,10 @@ public interface IBakeryUIChangeListener extends IChangeListener{
 	void onIngredientAddedToStorage(Ingredient ingredient);
 
 	void onIngredientRemovedFromStorage(Ingredient ingredient);
+	
+	void onRobotStart(Class<? extends Robot> robot);
+
+	void onRobotShutdown(Class<? extends Robot> robot);
 	
 
 }

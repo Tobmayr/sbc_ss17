@@ -16,11 +16,12 @@ public class BakeRobot extends Robot {
 	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager) {
 		super(transactionManager);
 		this.service = service;
-
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	};
 
 	@Override
 	public void run() {
+		service.startRobot();
 		while (!Thread.interrupted()) {
 			doTask(bakeProducts);
 

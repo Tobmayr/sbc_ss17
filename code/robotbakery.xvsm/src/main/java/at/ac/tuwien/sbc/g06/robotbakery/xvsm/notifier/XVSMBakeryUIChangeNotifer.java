@@ -1,4 +1,4 @@
-package at.ac.tuwien.sbc.g06.robotbakery.xvsm;
+package at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +21,10 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -34,6 +38,7 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 	private final ContainerReference storageContainer;
 	private ContainerReference terminalContainer;
 	private ContainerReference bakeroomContainer;
+	private List<Notification> notifications;
 
 	public XVSMBakeryUIChangeNotifer(Capi server) {
 		counterContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.COUNTER_CONTAINER_NAME);
@@ -41,10 +46,20 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 		terminalContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.TERMINAL_CONTAINER_NAME);
 		bakeroomContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		createNotifications(server);
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				for (Notification notification : notifications) {
+					notification.destroy();
+				}
+			} catch (MzsCoreException e) {
+				// ignore
+			}
+		}));
 	}
 
 	private void createNotifications(Capi server) {
-		final List<Notification> notifications = new ArrayList<Notification>();
+		notifications = new ArrayList<Notification>();
 		NotificationManager manager = new NotificationManager(server.getCore());
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
@@ -65,12 +80,7 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 			return;
 		}
 		entries.forEach(ser -> {
-			Serializable object;
-			if (ser instanceof Entry) {
-				object = ((Entry) ser).getValue();
-			} else {
-				object = ser;
-			}
+			Serializable object = XVSMUtil.unwrap(ser);
 
 			if (object instanceof Order) {
 				if (operation != Operation.WRITE)
@@ -90,6 +100,11 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 			else if (object instanceof Ingredient) {
 				Ingredient ingredient = (Ingredient) object;
 				notifiyListeners(ingredient, operation);
+			}
+
+			else if (object instanceof String) {
+				String msg = (String) object;
+				notifiyListeners(msg, operation);
 			}
 		});
 
@@ -148,6 +163,25 @@ public class XVSMBakeryUIChangeNotifer extends Bakery implements NotificationLis
 				}
 			}
 		});
+
+	}
+
+	private void notifiyListeners(String msg, Operation operation) {
+		final Class<? extends Robot> clazz;
+		if (msg.equals(ServiceRobot.class.getSimpleName())) {
+			clazz = ServiceRobot.class;
+		} else if (msg.equals(KneadRobot.class.getSimpleName())) {
+			clazz = KneadRobot.class;
+		} else if (msg.equals(BakeRobot.class.getSimpleName())) {
+			clazz = BakeRobot.class;
+		} else {
+			clazz = null;
+		}
+
+		if (operation == Operation.WRITE)
+			registeredChangeListeners.forEach(ls -> ls.onRobotStart(clazz));
+		else
+			registeredChangeListeners.forEach(ls -> ls.onRobotShutdown(clazz));
 
 	}
 

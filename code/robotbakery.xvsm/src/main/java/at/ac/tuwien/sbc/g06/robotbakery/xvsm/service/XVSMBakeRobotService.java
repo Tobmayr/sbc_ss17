@@ -1,7 +1,10 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -20,11 +23,14 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 	private final ContainerReference storageContainer;
 	private final ContainerReference bakeroomContainer;
 	private Capi capi;
+	private IRobotService robotService;
 
 	public XVSMBakeRobotService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
 		bakeroomContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		storageContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
+		this.robotService = new XVSMRobotService(capi, BakeRobot.class.getSimpleName());
+
 	}
 
 	@Override
@@ -54,5 +60,17 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 			logger.error(ex.getMessage());
 			return false;
 		}
+	}
+
+	@Override
+	public void startRobot() {
+		robotService.startRobot();
+
+	}
+
+	@Override
+	public void shutdownRobot() {
+		robotService.shutdownRobot();
+
 	}
 }
