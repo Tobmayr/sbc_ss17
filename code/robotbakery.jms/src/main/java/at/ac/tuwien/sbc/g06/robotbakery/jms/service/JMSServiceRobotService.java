@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +29,14 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private static Logger logger = LoggerFactory.getLogger(JMSTabletUIService.class);
 	private Queue orderQueue;
 	private Queue counterQueue;
+	private Queue storageQueue;
 	private Queue terminalQueue;
 	private MessageConsumer orderConsumer;
 	private MessageProducer counterProducer;
 	private MessageProducer terminalQueueProducer;
 	private QueueBrowser productCounterQueueBrowser;
+	private Map<String, MessageConsumer> counterProductTypeConsumers = new HashMap<>();
+	private Map<String, MessageConsumer> storageProductTypeConsumers = new HashMap<>();
 
 	public JMSServiceRobotService() {
 
@@ -40,6 +44,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
 			terminalQueue = session.createQueue(JMSConstants.Queue.TERMINAL);
 			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
+			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			counterProducer = session.createProducer(counterQueue);
 			orderConsumer = session.createConsumer(orderQueue,
 					String.format("%s='%s'", JMSConstants.Property.STATE, OrderState.OPEN));
@@ -47,6 +52,19 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			productCounterQueueBrowser = session.createBrowser(counterQueue,
 					String.format("%s='%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
 
+			for (String name : SBCConstants.PRODUCTS_NAMES) {
+				counterProductTypeConsumers.put(name,
+						session.createConsumer(counterQueue,
+								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
+										Product.class.getSimpleName(), JMSConstants.Property.TYPE, name)));
+			}
+
+			for (String name : SBCConstants.PRODUCTS_NAMES) {
+				storageProductTypeConsumers.put(name,
+						session.createConsumer(storageQueue,
+								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
+										Product.class.getSimpleName(), JMSConstants.Property.TYPE, name)));
+			}
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}
@@ -88,15 +106,14 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	}
 
 	@Override
-	public List<Product> getProductsFromStorage(String productType, int amount, ITransaction tx) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Product> getProductsFromStorage(String productName, int amount, ITransaction tx) {
+		return receive(storageProductTypeConsumers.get(productName), amount);
+
 	}
 
 	@Override
 	public List<Product> getProductsFromCounter(String productName, int amount, ITransaction tx) {
-		// TODO Auto-generated method stub
-		return null;
+		return receive(counterProductTypeConsumers.get(productName), amount);
 	}
 
 	@Override

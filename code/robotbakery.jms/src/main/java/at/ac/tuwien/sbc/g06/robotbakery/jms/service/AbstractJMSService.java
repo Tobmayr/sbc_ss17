@@ -71,7 +71,8 @@ public class AbstractJMSService {
 
 	protected void notifiyObserver(Message msg, boolean remove) throws JMSException {
 		msg.setBooleanProperty(JMSConstants.Property.REMOVED, remove);
-		msg.setStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION, msg.getJMSDestination().toString());
+		msg.setStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION,
+				msg.getJMSDestination() != null ? msg.getJMSDestination().toString() : "unavailable");
 		notifier.send(notificationTopic, msg);
 	}
 
@@ -133,10 +134,11 @@ public class AbstractJMSService {
 
 	public <T extends Serializable> T receive(MessageConsumer consumer) {
 		try {
-			Message msg = consumer.receive(500);
+			Message msg = consumer.receiveNoWait();
 			if (msg instanceof ObjectMessage) {
 				@SuppressWarnings("unchecked")
 				T cast = (T) ((ObjectMessage) msg).getObject();
+				notify(cast, true);
 				return cast;
 			}
 
@@ -144,6 +146,18 @@ public class AbstractJMSService {
 			logger.error(e.getMessage());
 		}
 		return null;
+
+	}
+
+	public <T extends Serializable> List<T> receive(MessageConsumer consumer, int amount) {
+		List<T> list = new ArrayList<>();
+		for (int i = 0; i < amount; i++) {
+			T element = receive(consumer);
+			if (element == null)
+				return null;
+			list.add(element);
+		}
+		return list;
 
 	}
 

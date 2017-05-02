@@ -2,7 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.startup;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSServer;
-import at.ac.tuwien.sbc.g06.robotbakery.jms.JSMBakery;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSBakery;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardInitializer;
 import javafx.application.Application;
@@ -15,7 +15,7 @@ public class JMSBakeryStartUp extends Application {
 		// Initialize Bakery-instance and required ui listeners
 		JMSServer server = new JMSServer();
 		server.startUp();
-		Bakery bakery = new JSMBakery();
+		Bakery bakery = new JMSBakery();
 
 		DashboardInitializer.initializeDashboard(primaryStage, bakery, new JMSBakeryUIService());
 

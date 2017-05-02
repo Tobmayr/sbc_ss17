@@ -33,19 +33,11 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 
 	@Override
 	public boolean addIngredientsToStorage(List<Ingredient> ingredients) {
-		try {
-			for (Ingredient ingredient : ingredients) {
-				Message msg = session.createObjectMessage(ingredient);
-				msg.setStringProperty(JMSConstants.Property.CLASS, Ingredient.class.getSimpleName());
-				msg.setStringProperty(JMSConstants.Property.TYPE, ingredient.getType().toString());
-				storageProducer.send(msg);
-				notifiyObserver(msg, false);
-			}
-			return true;
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-			return false;
+		for (Ingredient ingredient : ingredients) {
+			if (!send(storageProducer, ingredient))
+				return false;
 		}
+		return true;
 
 	}
 

@@ -17,10 +17,12 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 
 public class JMSTabletUIService extends AbstractJMSService implements ITabletUIService {
+	private static Logger logger = LoggerFactory.getLogger(AbstractJMSService.class);
 	private Queue orderQueue;
 	private MessageProducer orderProducer;
 	private Queue terminalQueue;
 	private MessageConsumer terminalConsumer;
+	private MessageConsumer orderConsumer;
 
 	public JMSTabletUIService() {
 
@@ -31,13 +33,17 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 			orderQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			terminalQueue = session.createQueue(JMSConstants.Queue.TERMINAL);
 			orderProducer = session.createProducer(orderQueue);
-			terminalConsumer = session.createConsumer(orderQueue,
+			// We keep the order in the counter as an history after payment, so
+			// we need this consumer to retrieve the old order message and
+			// update the state
+			orderConsumer = session.createConsumer(orderQueue,
+					String.format("%s= '%s'", JMSConstants.Property.ORDER_ID, orderID.toString()));
+			terminalConsumer = session.createConsumer(terminalQueue,
 					String.format("%s= '%s' AND %s='%s'", JMSConstants.Property.CUSTOMER_ID, customerID.toString(),
 							JMSConstants.Property.ORDER_ID, orderID.toString()));
 
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -54,8 +60,9 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public boolean payOrder(Order order) {
-		order.setState(OrderState.PAID);
-		return send(orderProducer, order);
+		Order oldOrder = receive(orderConsumer);
+		oldOrder.setState(OrderState.PAID);
+		return send(orderProducer, oldOrder);
 
 	}
 

@@ -10,6 +10,7 @@ public class JMSConstants {
 		public static final String REMOVED = "removed";
 		public static final String STATE = "orderState";
 		public static final String ORIGINAL_DESTINATION = "originalDestination";
+		public static final String ID = "uuid";
 
 		private Property() {
 		};

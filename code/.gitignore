@@ -196,4 +196,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/git,java,linux,maven,windows,eclipse,intellij
-/code/robotbakery.jms/activemq-data
+code/robotbakery.jms/activemq-data/
