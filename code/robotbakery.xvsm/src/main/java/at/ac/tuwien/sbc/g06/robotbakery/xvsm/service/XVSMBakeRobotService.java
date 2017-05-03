@@ -15,6 +15,7 @@ import org.mozartspaces.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,10 +38,27 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 	@Override
 	public List<Product> getUnbakedProducts(ITransaction tx) {
 		try {
-			Query query = new Query().cnt(1, SBCConstants.BAKE_SIZE);
-			List<Product> pls = capi.take(bakeroomContainer, Arrays.asList(FifoCoordinator.newSelector(SBCConstants.BAKE_SIZE), QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
-					SBCConstants.BAKE_WAIT, null);
-			return pls;
+			List<Product> products = new ArrayList<>();
+			Product product = (Product) capi.take(bakeroomContainer, FifoCoordinator.newSelector(1),
+					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
+			products.add(product);
+			long t = System.currentTimeMillis();
+			long end = t + SBCConstants.BAKE_WAIT;
+			while (System.currentTimeMillis() < end) {
+				try {
+					Product nextProduct = (Product) capi.take(bakeroomContainer, FifoCoordinator.newSelector(1),
+							MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
+					if (nextProduct != null)
+						products.add(nextProduct);
+					if (products.size() == SBCConstants.BAKE_SIZE)
+						break;
+				} catch (MzsCoreException e) {
+					// ignore
+				}
+
+			}
+
+			return products;
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
 			return null;
