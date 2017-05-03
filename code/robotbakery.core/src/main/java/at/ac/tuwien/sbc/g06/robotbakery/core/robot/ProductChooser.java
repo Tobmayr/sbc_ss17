@@ -14,6 +14,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
+/**
+ * product chooser heuristic
+ */
 public class ProductChooser {
 	private List<Product> baseDoughCandidates;
 	private Map<String, Integer> counterStock;

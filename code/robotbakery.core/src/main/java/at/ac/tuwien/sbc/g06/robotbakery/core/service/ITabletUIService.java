@@ -8,16 +8,42 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 
+/**
+ * Interface for Customer UI
+ */
 public interface ITabletUIService  {
 
+	/**
+	 * adds order to bakery
+	 * @param order order with products
+	 * @return true for success or false for exception
+	 */
 	boolean addOrderToCounter(Order order);
 
+	/**
+	 * get packed order from terminal
+	 * @return packed order with products in it
+	 */
 	PackedOrder getOrderPackage();
 
+	/**
+	 * pay order at terminal
+	 * @param order order to pay
+	 * @return true for success or false for exception
+	 */
 	boolean payOrder(Order order);
 
+	/**
+	 * register tablet for customer and notifications
+	 * @param customerID to which customer belongs the tablet
+	 * @param id id of tablet
+	 */
 	void initialize(UUID customerID, UUID id);
 
+	/**
+	 * looks up the current state of the counter
+	 * @return map with product names as key and the amount that is available in the counter as value
+	 */
 	Map<String, Integer> getInitialCounterProducts();
 
 

@@ -17,6 +17,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 
+/**
+ * Service robot implementation for both implementations
+ */
 public class ServiceRobot extends Robot {
 
 	private IServiceRobotService service;
