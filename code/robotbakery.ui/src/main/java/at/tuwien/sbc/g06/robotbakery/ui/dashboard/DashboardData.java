@@ -12,7 +12,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

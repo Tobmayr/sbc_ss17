@@ -24,7 +24,7 @@ public interface ITabletUIService  {
 	 * get packed order from terminal
 	 * @return packed order with products in it
 	 */
-	PackedOrder getOrderPackage();
+	PackedOrder getOrderPackage(Order order);
 
 	/**
 	 * pay order at terminal
@@ -32,13 +32,6 @@ public interface ITabletUIService  {
 	 * @return true for success or false for exception
 	 */
 	boolean payOrder(PackedOrder order);
-
-	/**
-	 * register tablet for customer and notifications
-	 * @param customerID to which customer belongs the tablet
-	 * @param id id of tablet
-	 */
-	void initialize(UUID customerID, UUID id);
 
 	/**
 	 * looks up the current state of the counter

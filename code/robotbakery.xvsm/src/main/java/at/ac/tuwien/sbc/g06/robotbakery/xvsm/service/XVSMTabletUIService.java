@@ -39,11 +39,10 @@ public class XVSMTabletUIService implements ITabletUIService {
 	private Capi capi;
 	private ContainerReference counterContainer;
 	private ContainerReference terminalContainer;
-	private UUID customerID;
-	private UUID orderID;
+	
 
 	public XVSMTabletUIService() {
-		this.capi = new Capi(DefaultMzsCore.newInstance());
+		capi = new Capi(DefaultMzsCore.newInstance());
 		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
 		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 	}
@@ -62,14 +61,14 @@ public class XVSMTabletUIService implements ITabletUIService {
 	}
 
 	@Override
-	public PackedOrder getOrderPackage() {
+	public PackedOrder getOrderPackage(Order order) {
 		try {
-			return (PackedOrder) capi
-					.take(terminalContainer,
-							Arrays.asList(QueryCoordinator.newSelector(matchingOrderQuery(),
-									MzsConstants.Selecting.COUNT_ALL)),
-							MzsConstants.RequestTimeout.DEFAULT, null)
-					.get(0);
+			return (PackedOrder) capi.take(terminalContainer,
+					Arrays.asList(QueryCoordinator.newSelector(
+							new Query().filter(Matchmakers.and(Property.forName("*", "customerID").equalTo( order.getCustomerId()),
+									Property.forName("*", "orderID").equalTo(order.getId()))).cnt(1),
+							MzsConstants.Selecting.COUNT_ALL)),
+					MzsConstants.RequestTimeout.DEFAULT, null).get(0);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
 			return null;
@@ -87,21 +86,6 @@ public class XVSMTabletUIService implements ITabletUIService {
 			logger.error(e.getMessage());
 			return false;
 		}
-
-	}
-
-	private Query matchingOrderQuery() {
-		return new Query().filter(Matchmakers.and(Property.forName("*", "customerID").equalTo(customerID),
-				Property.forName("*", "orderID").equalTo(orderID))).cnt(1);
-	}
-
-	@Override
-	public void initialize(UUID customerID, UUID orderID) {
-		capi = new Capi(DefaultMzsCore.newInstance());
-		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
-		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
-		this.customerID = customerID;
-		this.orderID = orderID;
 
 	}
 

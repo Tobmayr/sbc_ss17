@@ -196,8 +196,10 @@ public class TabletController {
 			} else
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
-			packedOrder = service.getOrderPackage();
-			service.payOrder(packedOrder);
+			packedOrder = service.getOrderPackage(order);
+			if (service.payOrder(packedOrder)){
+				statusButton.setText(getText(OrderState.PAID));
+			}
 		}
 
 	}

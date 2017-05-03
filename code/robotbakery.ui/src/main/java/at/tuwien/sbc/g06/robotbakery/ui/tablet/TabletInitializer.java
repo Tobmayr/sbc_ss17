@@ -39,7 +39,8 @@ public class TabletInitializer {
 		controller.initialize(tabletData, uiService, customerID);
 		Order order = controller.getOrder();
 		tabletData.delegateController(controller);
-		uiService.initialize(customerID, order.getId());
+		
+	
 
 	}
 
