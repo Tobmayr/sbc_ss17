@@ -40,6 +40,9 @@ public class ProductChooser {
 		Product product = getNextProductForCounter();
 		if (product == null)
 			product = getNextProductForStorage();
+		if (product == null) {
+			product = getNextBaseDoughForStorage();
+		}
 		return product;
 	}
 
@@ -81,8 +84,7 @@ public class ProductChooser {
 	}
 
 	public Product getNextBaseDoughForStorage() {
-		Recipe candiate = getSuitableRecipe(IngredientType.FLOUR,
-				ingredientStock.get(IngredientType.FLOUR), true);
+		Recipe candiate = getSuitableRecipe(IngredientType.FLOUR, ingredientStock.get(IngredientType.FLOUR), true);
 		if (candiate != null)
 			return new Product(candiate);
 		return null;
@@ -96,7 +98,8 @@ public class ProductChooser {
 	}
 
 	private boolean enoughIngredientsToFinishBaseDough(Recipe recipe) {
-		return recipe.getAmount(IngredientType.FLOUR) <= ingredientStock.get(IngredientType.FLOUR)*SBCConstants.FLOUR_PACK_SIZE;
+		return recipe.getAmount(IngredientType.FLOUR) <= ingredientStock.get(IngredientType.FLOUR)
+				* SBCConstants.FLOUR_PACK_SIZE;
 	}
 
 	private boolean enoughAddtionaIngredientsToFinish(Recipe recipe) {

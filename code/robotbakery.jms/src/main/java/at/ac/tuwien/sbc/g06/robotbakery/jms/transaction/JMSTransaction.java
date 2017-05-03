@@ -5,7 +5,15 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 public class JMSTransaction implements ITransaction{
 	
 	public JMSTransaction() {
-		// TODO Auto-generated constructor stub
+	
 	}
+
+	@Override
+	public boolean isRollbackOnly() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+
 
 }

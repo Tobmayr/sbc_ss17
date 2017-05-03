@@ -47,7 +47,7 @@ public class AbstractJMSService {
 	public AbstractJMSService() {
 		try {
 			connection = JMSUtil.createAndConnection();
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
 			this.notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			notifier = session.createProducer(notificationTopic);
 			connection.start();
@@ -158,5 +158,11 @@ public class AbstractJMSService {
 		return list;
 
 	}
+
+	public Session getSession() {
+		return session;
+	}
+	
+	
 
 }

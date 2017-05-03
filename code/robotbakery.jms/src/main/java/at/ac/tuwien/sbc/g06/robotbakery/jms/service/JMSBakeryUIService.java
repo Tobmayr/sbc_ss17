@@ -37,6 +37,13 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 			if (!send(storageProducer, ingredient))
 				return false;
 		}
+		
+		//Client.ACKNOWLEDGE is activated -> we need to commit
+		try {
+			session.commit();
+		} catch (JMSException e) {
+			return false;
+		}
 		return true;
 
 	}

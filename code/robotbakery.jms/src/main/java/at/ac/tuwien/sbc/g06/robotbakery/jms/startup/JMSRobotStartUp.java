@@ -19,13 +19,16 @@ public class JMSRobotStartUp {
 		}
 		switch (args[0]) {
 		case "service":
-			startRobot(new ServiceRobot(new JMSServiceRobotService(), new JMSTransactionManager()));
+			JMSServiceRobotService service = new JMSServiceRobotService();
+			startRobot(new ServiceRobot(service, new JMSTransactionManager(service.getSession())));
 			break;
 		case "knead":
-			startRobot(new KneadRobot(new JMSKneadRobotService(), new JMSTransactionManager()));
+			JMSKneadRobotService service1 = new JMSKneadRobotService();
+			startRobot(new KneadRobot(service1, new JMSTransactionManager(service1.getSession())));
 			break;
 		case "bake":
-			startRobot(new BakeRobot(new JMSBakeRobotService(), new JMSTransactionManager()));
+			JMSBakeRobotService service2 = new JMSBakeRobotService();
+			startRobot(new BakeRobot(service2, new JMSTransactionManager(service2.getSession())));
 			break;
 
 		default:
