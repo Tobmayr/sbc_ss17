@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.jms.JMSException;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 
@@ -64,6 +66,12 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 		oldOrder.setState(OrderState.PAID);
 		return send(orderProducer, oldOrder);
 
+	}
+
+	@Override
+	public List<Product> getInitialCounterProducts() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
