@@ -1,6 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
 public class JMSServiceRobotService extends AbstractJMSService implements IServiceRobotService {
-	private static Logger logger = LoggerFactory.getLogger(JMSTabletUIService.class);
+	private static Logger logger = LoggerFactory.getLogger(JMSServiceRobotService.class);
 	private Queue orderQueue;
 	private Queue counterQueue;
 	private Queue storageQueue;
@@ -77,16 +76,6 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	}
 
 	@Override
-	public boolean addToCounter(List<Product> products, ITransaction tx) {
-		for (Product product : products) {
-			if (!send(counterProducer, product))
-				return false;
-		}
-		return true;
-
-	}
-
-	@Override
 	public boolean updateOrder(Order order, ITransaction tx) {
 		return notify(ServiceRobot.class.getSimpleName(), false, orderQueue);
 
@@ -131,7 +120,13 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	public Session getSession() {
 		return session;
-		
+
+	}
+
+	@Override
+	public boolean addToCounter(Product product, ITransaction tx) {
+		return send(counterProducer, product);
+
 	}
 
 }

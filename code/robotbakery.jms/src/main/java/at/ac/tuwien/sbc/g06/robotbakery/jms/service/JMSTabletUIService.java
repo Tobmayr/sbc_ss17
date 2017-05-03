@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.jms.JMSException;
@@ -69,7 +70,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	}
 
 	@Override
-	public List<Product> getInitialCounterProducts() {
+	public Map<String, Integer> getInitialCounterProducts() {
 		// TODO Auto-generated method stub
 		return null;
 	}

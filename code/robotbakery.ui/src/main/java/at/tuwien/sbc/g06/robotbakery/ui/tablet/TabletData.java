@@ -1,5 +1,7 @@
 package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,8 @@ import java.util.Map;
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.ITableUIChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
+import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -32,8 +36,15 @@ public class TabletData implements ITableUIChangeListener {
 		this.delegateController = controller;
 		// Get the initial state of the counter from the bakery. Every update
 		// after this will be invoked via observer
-		List<Product> products = delegateController.getService().getInitialCounterProducts();
-		products.forEach(product -> onProductsAddedToCounter(product));
+		Map<String, Integer> initialCounterStock = delegateController.getService().getInitialCounterProducts();
+		initialCounterStock.forEach((s, i) -> {
+			CounterInformation info = new CounterInformation(s, i,
+					RecipeRegistry.getInstance().getRecipeByName(s).getPricePerUnit());
+			counterProductsCounterMap.put(s, info);
+			counterInformationData.add(info);
+			FXCollections.sort(counterInformationData);
+
+		});
 	}
 
 	@Override
@@ -75,7 +86,7 @@ public class TabletData implements ITableUIChangeListener {
 
 	}
 
-	public class CounterInformation {
+	public class CounterInformation implements Comparable<CounterInformation> {
 		private final String type;
 		private int stock;
 		private final double pricePerPiece;
@@ -111,6 +122,11 @@ public class TabletData implements ITableUIChangeListener {
 				return this.type.equals(that.type);
 			}
 			return super.equals(obj);
+		}
+
+		@Override
+		public int compareTo(CounterInformation o) {
+			return this.getType().compareTo(o.getType());
 		}
 
 	}

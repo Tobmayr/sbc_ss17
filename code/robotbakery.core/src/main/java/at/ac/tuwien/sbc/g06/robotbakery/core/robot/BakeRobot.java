@@ -23,27 +23,24 @@ public class BakeRobot extends Robot {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			doTask(bakeProducts);
+			List<Product> products = service.getUnbakedProducts(null);
+			if (products == null || products.isEmpty())
+				continue;
+			System.out.println(String.format("New charge of size: %s received. Init baking process", products.size()));
+			// Baking
+			sleepFor(5000);
+			for (Product product : products) {
+				product.addContribution(getId(), ContributionType.BAKE, getClass());
+				product.setType(BakeState.FINALPRODUCT);
+				if (!service.putBakedProductsInStorage(product, null)) {
+					System.out.println(String.format(
+							"Error! Couldn't put product wiht id \"%s\" in storage. Product might be lost",
+							product.getId()));
+				}
+			}
 
 		}
 
 	}
-
-	ITransactionalTask bakeProducts = tx -> {
-		List<Product> products = service.getUnbakedProducts(null);
-		if (products == null || products.isEmpty())
-			return false;
-		sleepFor(5000);
-		for (Product product : products) {
-			product.addContribution(getId(), ContributionType.BAKE, getClass());
-			product.setType(BakeState.FINALPRODUCT);
-			if (!service.putBakedProductsInStorage(product, tx)) {
-				System.out.println("Could not put Product with id " + product.getId() + " in storage!");
-				return false;
-			}
-		}
-
-		return true;
-	};
 
 }

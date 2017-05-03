@@ -18,7 +18,7 @@ public interface ITabletUIService  {
 
 	void initialize(UUID customerID, UUID id);
 
-	List<Product> getInitialCounterProducts();
+	Map<String, Integer> getInitialCounterProducts();
 
 
 

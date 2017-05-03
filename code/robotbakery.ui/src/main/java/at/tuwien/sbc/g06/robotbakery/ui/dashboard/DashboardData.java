@@ -1,6 +1,7 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -29,6 +31,18 @@ public class DashboardData implements IBakeryUIChangeListener {
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
 				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
+
+		SBCConstants.PRODUCTS_NAMES.forEach(p->{
+			ItemCount count= new ItemCount(p);
+			storageProductsCounterMap.put(p, count);
+			productsInStorage.add(count);
+			count= new ItemCount(p);
+			counterProductsCounterMap.put(p, count);
+			productsInCounter.add(count);
+		});
+		
+		FXCollections.sort(productsInCounter);
+		FXCollections.sort(productsInStorage);
 
 	}
 
@@ -69,7 +83,6 @@ public class DashboardData implements IBakeryUIChangeListener {
 			count = new ItemCount(toFullProductName(product));
 			storageProductsCounterMap.put(toFullProductName(product), count);
 			productsInStorage.add(count);
-			FXCollections.sort(productsInStorage);
 		}
 		count.amount++;
 		addOrUpdate(count, productsInStorage);
@@ -105,7 +118,6 @@ public class DashboardData implements IBakeryUIChangeListener {
 			count = new ItemCount(product.getProductName());
 			counterProductsCounterMap.put(product.getProductName(), count);
 			productsInCounter.add(count);
-			FXCollections.sort(productsInCounter);
 		}
 		count.amount++;
 		addOrUpdate(count, productsInCounter);
@@ -253,17 +265,17 @@ public class DashboardData implements IBakeryUIChangeListener {
 	@Override
 	public void onRobotStart(Class<? extends Robot> robot) {
 		controller.onRobotStart(robot);
-		
+
 	}
 
 	@Override
 	public void onRobotShutdown(Class<? extends Robot> robot) {
 		controller.onRobotShutdown(robot);
-		
+
 	}
-	
-	public void setController(DashboardController controller){
-		this.controller=controller;
+
+	public void setController(DashboardController controller) {
+		this.controller = controller;
 	}
 
 }

@@ -44,8 +44,8 @@ public class XVSMTabletUIService implements ITabletUIService {
 
 	public XVSMTabletUIService() {
 		this.capi = new Capi(DefaultMzsCore.newInstance());
-		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
-		terminalContainer= XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
+		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
+		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 	}
 
 	@Override
@@ -106,13 +106,20 @@ public class XVSMTabletUIService implements ITabletUIService {
 	}
 
 	@Override
-	public List<Product> getInitialCounterProducts() {
+	public Map<String, Integer> getInitialCounterProducts() {
 		try {
-			return capi.take(counterContainer,
-					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),
-					RequestTimeout.TRY_ONCE, null);
-		} catch (MzsCoreException ex) {
-			logger.error(ex.getMessage());
+			Map<String, Integer> map = new HashMap<>();
+			for (String productName : SBCConstants.PRODUCTS_NAMES) {
+				Query query = new Query().filter(Property.forName("*", "productName").equalTo(productName));
+				map.put(productName,
+						capi.test(counterContainer,
+								Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
+										TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX)),
+								MzsConstants.RequestTimeout.TRY_ONCE, null));
+			}
+			return map;
+		} catch (MzsCoreException e) {
+			logger.error(e.getMessage());
 			return null;
 		}
 
