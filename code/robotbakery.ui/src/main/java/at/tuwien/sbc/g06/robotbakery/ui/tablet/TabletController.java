@@ -281,6 +281,13 @@ public class TabletController {
 		return order;
 	}
 
+	public ITabletUIService getService() {
+		return service;
+	}
+	
+	
+	
+
 
 	
 }

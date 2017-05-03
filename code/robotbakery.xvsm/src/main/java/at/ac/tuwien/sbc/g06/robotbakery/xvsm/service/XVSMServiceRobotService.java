@@ -100,7 +100,7 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 		try {
 			Matchmaker product = Property.forName("*", "productName").equalTo(productName);
 			Matchmaker type = Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT);
-			Query query = new Query().filter(Matchmakers.and(product, type)).cnt(0,amount);
+			Query query = new Query().filter(Matchmakers.and(product, type)).cnt(0, amount);
 			return capi.take(containerReference,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 					RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));

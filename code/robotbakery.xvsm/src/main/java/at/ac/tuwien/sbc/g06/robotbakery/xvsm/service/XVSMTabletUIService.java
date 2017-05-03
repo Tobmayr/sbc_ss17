@@ -1,17 +1,23 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.mozartspaces.capi3.Matchmaker;
 import org.mozartspaces.capi3.Matchmakers;
 import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
+import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
@@ -19,8 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -34,7 +43,9 @@ public class XVSMTabletUIService implements ITabletUIService {
 	private UUID orderID;
 
 	public XVSMTabletUIService() {
-
+		this.capi = new Capi(DefaultMzsCore.newInstance());
+		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.STORAGE_CONTAINER_NAME);
+		terminalContainer= XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
 	}
 
 	@Override
@@ -93,4 +104,18 @@ public class XVSMTabletUIService implements ITabletUIService {
 		this.orderID = orderID;
 
 	}
+
+	@Override
+	public List<Product> getInitialCounterProducts() {
+		try {
+			return capi.take(counterContainer,
+					TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX),
+					RequestTimeout.TRY_ONCE, null);
+		} catch (MzsCoreException ex) {
+			logger.error(ex.getMessage());
+			return null;
+		}
+
+	}
+
 }

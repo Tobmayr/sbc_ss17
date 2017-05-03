@@ -1,11 +1,18 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
+
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mozartspaces.capi3.Coordinator;
 import org.mozartspaces.capi3.FifoCoordinator;
+import org.mozartspaces.capi3.Property;
+import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
@@ -112,4 +119,5 @@ public class XVSMUtil {
 		return ser;
 	}
 
+	
 }

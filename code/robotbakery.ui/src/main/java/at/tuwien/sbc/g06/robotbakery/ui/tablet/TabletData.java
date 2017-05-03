@@ -1,6 +1,7 @@
 package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.ITableUIChangeListener;
@@ -23,16 +24,23 @@ public class TabletData implements ITableUIChangeListener {
 		return counterProductsCounterMap;
 	}
 
-	public TabletData(TabletController delegateController) {
-		this.delegateController = delegateController;
+	public TabletData() {
+
 	}
 
+	public void delegateController(TabletController controller) {
+		this.delegateController = controller;
+		// Get the initial state of the counter from the bakery. Every update
+		// after this will be invoked via observer
+		List<Product> products = delegateController.getService().getInitialCounterProducts();
+		products.forEach(product -> onProductsAddedToCounter(product));
+	}
 
 	@Override
 	public void onProductsAddedToCounter(Product product) {
 		CounterInformation info = counterProductsCounterMap.get(product.getProductName());
 		if (info == null) {
-			info = new CounterInformation(product.getProductName(),0, product.getRecipe().getPricePerUnit());
+			info = new CounterInformation(product.getProductName(), 0, product.getRecipe().getPricePerUnit());
 			counterProductsCounterMap.put(product.getProductName(), info);
 			counterInformationData.add(info);
 		}
@@ -75,7 +83,7 @@ public class TabletData implements ITableUIChangeListener {
 		public CounterInformation(String type, int stock, double pricePerPiece) {
 			super();
 			this.type = type;
-			this.stock=stock;
+			this.stock = stock;
 			this.pricePerPiece = pricePerPiece;
 		}
 
@@ -106,4 +114,5 @@ public class TabletData implements ITableUIChangeListener {
 		}
 
 	}
+
 }

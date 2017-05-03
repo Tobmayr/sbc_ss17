@@ -145,6 +145,7 @@ public class DashboardController {
 	private List<TableColumn<Product, String>> collectedProductsIds;
 	private List<TableColumn<Product, String>> collectedProductsTypes;
 	private List<TextField> collectedRestockFields;
+
 	private Stage mainStage;
 	private IBakeryUIService uiService;
 
@@ -323,23 +324,22 @@ public class DashboardController {
 
 	public void onRobotStart(Class<? extends Robot> robot) {
 		if (robot.equals(ServiceRobot.class)) {
-			changeRobotCounter(serviceRobotCounter,true);
+			changeRobotCounter(serviceRobotCounter, true);
 		} else if (robot.equals(KneadRobot.class)) {
-			changeRobotCounter(kneadRobotCounter,true);
+			changeRobotCounter(kneadRobotCounter, true);
 		} else if (robot.equals(BakeRobot.class)) {
-			changeRobotCounter(bakeRobotCounter,true);
+			changeRobotCounter(bakeRobotCounter, true);
 		}
 
 	}
 
-
 	public void onRobotShutdown(Class<? extends Robot> robot) {
 		if (robot.equals(ServiceRobot.class)) {
-			changeRobotCounter(serviceRobotCounter,false);
+			changeRobotCounter(serviceRobotCounter, false);
 		} else if (robot.equals(KneadRobot.class)) {
-			changeRobotCounter(kneadRobotCounter,false);
+			changeRobotCounter(kneadRobotCounter, false);
 		} else if (robot.equals(BakeRobot.class)) {
-			changeRobotCounter(bakeRobotCounter,false);
+			changeRobotCounter(bakeRobotCounter, false);
 		}
 
 	}
@@ -351,5 +351,9 @@ public class DashboardController {
 		else
 			prev--;
 		field.setText("" + prev);
+	}
+
+	public IBakeryUIService getUiService() {
+		return uiService;
 	}
 }
