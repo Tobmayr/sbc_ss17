@@ -22,6 +22,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductState;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -252,14 +253,17 @@ public class DashboardController {
 		collectedProductsTypes.forEach(pID -> pID.setCellValueFactory(new PropertyValueFactory<>("productName")));
 
 		ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldOrder, newOrder) -> {
-			if (newOrder != null) {
-				itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItemsMap().values()));
-				orderCustomerId.setText(newOrder.getCustomerId().toString());
-				if (newOrder.getServiceRobotId() != null) {
-					orderServiceId.setText(newOrder.getServiceRobotId().toString());
-				}
+			Platform.runLater(() -> {
+				if (newOrder != null) {
+					itemsTable.setItems(FXCollections.observableArrayList(newOrder.getItemsMap().values()));
+					orderCustomerId.setText(newOrder.getCustomerId().toString());
+					if (newOrder.getServiceRobotId() != null) {
+						orderServiceId.setText(newOrder.getServiceRobotId().toString());
+					}
 
-			}
+				}
+			});
+
 		});
 
 		collectedProducTables.forEach(table -> {
