@@ -197,7 +197,7 @@ public class TabletController {
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
 			packedOrder = service.getOrderPackage();
-			service.payOrder(order);
+			service.payOrder(packedOrder);
 		}
 
 	}

@@ -31,7 +31,7 @@ public interface ITabletUIService  {
 	 * @param order order to pay
 	 * @return true for success or false for exception
 	 */
-	boolean payOrder(Order order);
+	boolean payOrder(PackedOrder order);
 
 	/**
 	 * register tablet for customer and notifications

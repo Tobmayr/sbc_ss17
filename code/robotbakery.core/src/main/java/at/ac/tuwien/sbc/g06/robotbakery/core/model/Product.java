@@ -99,8 +99,8 @@ public class Product implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof Product) {
 			Product that = (Product) obj;
-			return this.getId().equals(that.getId()) && this.getProductName().equals(that.getProductName())
-					&& this.getType() == that.getType() && this.getRecipe().equals(that.getRecipe());
+			return this.getId().toString().equals(that.getId().toString())
+					&& this.getProductName().equals(that.getProductName()) && this.getType().toString().equals(that.getType().toString());
 		}
 		return super.equals(obj);
 	}

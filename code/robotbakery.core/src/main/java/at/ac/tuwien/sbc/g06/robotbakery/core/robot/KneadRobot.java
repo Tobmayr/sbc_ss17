@@ -65,16 +65,18 @@ public class KneadRobot extends Robot {
 	ITransactionalTask getBaseIngredients = tx -> {
 		int flourAmount = nextProduct.getRecipe().getAmount(IngredientType.FLOUR);
 		// Take flour
-		FlourPack pack = null;
-		while (flourAmount > 0) {
-			pack = (FlourPack) service.getPackFromStorage(tx);
-			if (pack == null)
-				return false;
-			flourAmount = pack.takeFlour(flourAmount);
-		}
-		if (pack.getCurrentAmount() > 0) {
-			service.putPackInStorage(pack, tx);
-		}
+//		FlourPack pack = null;
+//		while (flourAmount > 0) {
+//			pack = (FlourPack) service.getPackFromStorage(tx);
+//			if (pack == null)
+//				return false;
+//			flourAmount = pack.takeFlour(flourAmount);
+//		}
+//		if (pack.getCurrentAmount() > 0) {
+//			service.putPackInStorage(pack, tx);
+//		}
+		
+		service.takeFlourFromStorage(flourAmount, tx);
 		// Take water
 		long time = (long) (nextProduct.getRecipe().getAmount(IngredientType.WATER) / 500d * 2000);
 		if (!service.useWaterPipe(time, tx))

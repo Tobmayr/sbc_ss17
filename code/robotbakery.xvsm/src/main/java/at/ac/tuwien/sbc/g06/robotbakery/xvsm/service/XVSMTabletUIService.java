@@ -78,7 +78,7 @@ public class XVSMTabletUIService implements ITabletUIService {
 	}
 
 	@Override
-	public boolean payOrder(Order order) {
+	public boolean payOrder(PackedOrder order) {
 		try {
 			order.setState(OrderState.PAID);
 			capi.write(counterContainer, RequestTimeout.TRY_ONCE, null, new Entry(order));

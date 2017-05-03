@@ -9,28 +9,26 @@ import java.util.UUID;
  * packed order that is sold to the customer
  */
 @SuppressWarnings("serial")
-public class PackedOrder implements Serializable {
+public class PackedOrder extends Order implements Serializable {
 
-	private final UUID customerID;
-	private final UUID orderID;
 	private final List<Product> products;
 
-	public PackedOrder(UUID customerID, UUID orderID) {
-		super();
-		this.customerID = customerID;
-		this.orderID = orderID;
+	public PackedOrder(Order order) {
+		super(order.getId());
+		setCustomerId(order.getCustomerId());
 		this.products = new ArrayList<Product>();
 	}
 
-	public void addAll(List<Product> products){
+	public void addAll(List<Product> products) {
 		this.products.addAll(products);
 	}
+
 	public UUID getCustomerID() {
-		return customerID;
+		return getCustomerID();
 	}
 
 	public UUID getOrderID() {
-		return orderID;
+		return getId();
 	}
 
 	public void addProduct(Product product) {

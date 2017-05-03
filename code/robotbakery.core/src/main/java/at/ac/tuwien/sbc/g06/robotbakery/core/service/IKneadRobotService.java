@@ -75,20 +75,6 @@ public interface IKneadRobotService extends IRobotService{
 	 */
 	Product getProductFromStorage(UUID id, ITransaction tx);
 
-	/**
-	 * get flour from storage, prefer open packs
-	 * @param tx Transaction
-	 * @return FlourPack
-	 */
-	FlourPack getPackFromStorage(ITransaction tx);
-
-	/**
-	 * puts flour pack to storage
-	 * @param pack pack to put in storage
-	 * @param tx Transaction
-	 * @return true for success and false for exception
-	 */
-	boolean putPackInStorage(FlourPack pack, ITransaction tx);
 
 	/**
 	 * Put finished dough in bakeroom
@@ -97,6 +83,13 @@ public interface IKneadRobotService extends IRobotService{
 	 * @return true for success or false for exception
 	 */
 	boolean putDoughInBakeroom(Product nextProduct, ITransaction tx);
+	/**
+	 * Takes needed amout of flour form the storage, and puts open packs back.
+	 * @param amount needed amount for recipe
+	 * @param tx Transaction
+	 * @return true for success or false for exception
+	 */
+	boolean takeFlourFromStorage(int amount, ITransaction tx);
 
 	
 

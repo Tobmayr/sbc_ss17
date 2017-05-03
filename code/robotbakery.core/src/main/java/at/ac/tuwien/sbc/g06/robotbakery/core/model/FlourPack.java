@@ -34,7 +34,7 @@ public class FlourPack extends Ingredient {
 		}
 	}
 
-	public int getCurrentAmount() {
+	public Integer getCurrentAmount() {
 		return currentAmount;
 	}
 

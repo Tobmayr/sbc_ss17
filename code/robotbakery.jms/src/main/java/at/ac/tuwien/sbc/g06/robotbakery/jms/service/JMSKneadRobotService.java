@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
+import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private MessageConsumer waterConsumer;
 
 	public JMSKneadRobotService() {
+		super(true, Session.CLIENT_ACKNOWLEDGE);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);
@@ -139,25 +142,85 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	@Override
 	public Product getProductFromStorage(UUID id, ITransaction tx) {
-		try {
-			MessageConsumer consumer = session.createConsumer(storageQueue,
-					String.format(String.format("%s = '%s'", JMSConstants.Property.ID, id.toString())));
-			return receive(consumer);
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
+		List<Product> products = JMSUtil.toList(productStorageBrowser, JMSConstants.Property.STATE,
+				BakeState.DOUGH.toString(), null);
+		Product returnVal = products.stream().filter(p -> p.getId().toString().equals(id.toString())).findFirst().orElse(null);
+		if (returnVal == null)
 			return null;
+
+		String compare = returnVal.getId().toString();
+		List<Product> pushBack = new ArrayList<>();
+		MessageConsumer consumer = storageProductTypeConsumers.get(returnVal.getProductName());
+		while (compare != null) {
+			Product temp = receive(consumer);
+			if (temp == null)
+				return null;
+			if (temp.getId().toString().equals(compare)) {
+				compare = null;
+			} else {
+				pushBack.add(temp);
+			}
+
 		}
 
+		for (Product p : pushBack) {
+			if (!send(storageProducer, p)) {
+				return null;
+			}
+		}
+
+		return returnVal;
+
 	}
 
 	@Override
-	public FlourPack getPackFromStorage(ITransaction tx) {
-		return receive(storageIngredientTypeConsumers.get(IngredientType.FLOUR));
+	public boolean takeFlourFromStorage(int amount, ITransaction tx) {
+		List<Ingredient> list = JMSUtil.toList(ingredientBrowser, JMSConstants.Property.TYPE,
+				IngredientType.FLOUR.toString(), null);
+		if (list.isEmpty())
+			return false;
+		if (list.size() > 1)
+			list.sort((i, j) -> ((FlourPack) i).getCurrentAmount().compareTo(((FlourPack) j).getCurrentAmount()));
+		List<String> used = new ArrayList<String>();
+		FlourPack open = null;
+		for (int i = 0; i < list.size(); i++) {
+			FlourPack pack = (FlourPack) list.get(i);
+			amount = pack.takeFlour(amount);
+			if (pack.getCurrentAmount() > 0) {
+				open = pack;
+			} else {
+				used.add(pack.getId().toString());
+			}
+			if (amount == 0) {
+				break;
+			}
+		}
+		if (open != null)
+			used.add(open.getId().toString());
+		return doRealDelete(used, open);
+
 	}
 
-	@Override
-	public boolean putPackInStorage(FlourPack pack, ITransaction tx) {
-		return send(storageProducer, pack);
+	private boolean doRealDelete(List<String> used, FlourPack open) {
+		MessageConsumer consumer = storageIngredientTypeConsumers.get(IngredientType.FLOUR);
+		List<Ingredient> pushBack = new ArrayList<Ingredient>();
+		while (!used.isEmpty()) {
+			Ingredient temp = receive(consumer);
+			if (temp == null)
+				return false;
+			if (!used.remove(temp.getId().toString())) {
+				pushBack.add(temp);
+			}
+
+		}
+		if (open != null)
+			pushBack.add(open);
+		for (Ingredient i : pushBack) {
+			if (!send(storageProducer, i))
+				return false;
+		}
+
+		return true;
 	}
 
 	@Override
