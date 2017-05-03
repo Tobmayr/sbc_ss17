@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
@@ -36,17 +37,13 @@ public class XVSMBakeRobotService implements IBakeRobotService {
 	@Override
 	public List<Product> getUnbakedProducts(ITransaction tx) {
 		try {
-			List<Product> pls = capi.take(bakeroomContainer, FifoCoordinator.newSelector(SBCConstants.BAKE_SIZE),
+			Query query = new Query().cnt(1, SBCConstants.BAKE_SIZE);
+			List<Product> pls = capi.take(bakeroomContainer, Arrays.asList(FifoCoordinator.newSelector(SBCConstants.BAKE_SIZE), QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 					SBCConstants.BAKE_WAIT, null);
 			return pls;
 		} catch (MzsCoreException e) {
-			try {
-				return capi.take(bakeroomContainer, FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_MAX),
-						MzsConstants.RequestTimeout.TRY_ONCE, null);
-			} catch (MzsCoreException ex) {
-				logger.error(ex.getMessage());
-				return null;
-			}
+			logger.error(e.getMessage());
+			return null;
 		}
 	}
 
