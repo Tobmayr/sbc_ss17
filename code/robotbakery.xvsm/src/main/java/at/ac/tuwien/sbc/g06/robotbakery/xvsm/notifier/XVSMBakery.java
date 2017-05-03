@@ -116,9 +116,6 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 	private void notifiyListeners(Ingredient ingredient, Operation operation) {
 		registeredChangeListeners.forEach(ls -> {
 			if (operation == Operation.WRITE) {
-				if (ingredient instanceof FlourPack
-						&& ((FlourPack) ingredient).getCurrentAmount() != SBCConstants.FLOUR_PACK_SIZE)
-					return;
 				ls.onIngredientAddedToStorage(ingredient);
 			} else if (operation == Operation.TAKE) {
 				ls.onIngredientRemovedFromStorage(ingredient);

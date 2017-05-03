@@ -59,14 +59,14 @@
                   </VBox>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="171.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="424.0" minWidth="10.0" prefWidth="419.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="209.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="424.0" minWidth="10.0" prefWidth="381.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <VBox alignment="CENTER" prefWidth="100.0">
+                        <VBox alignment="CENTER" prefHeight="285.0" prefWidth="218.0">
                            <children>
                               <Label text="Restock ingredients:">
                                  <VBox.margin>
@@ -106,12 +106,12 @@
                               </VBox>
                               <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="499.0">
                                  <children>
-                                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonClicked" prefHeight="25.0" prefWidth="53.0" text="Clear">
+                                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonClicked" prefHeight="25.0" prefWidth="65.0" text="Clear">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button fx:id="restockButton" mnemonicParsing="false" onAction="#restockButtonClicked" text="Restock">
+                                    <Button fx:id="restockButton" mnemonicParsing="false" onAction="#restockButtonClicked" prefHeight="25.0" prefWidth="85.0" text="Restock">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>

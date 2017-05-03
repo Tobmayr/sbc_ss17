@@ -126,6 +126,9 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	@Override
 	public List<Ingredient> getIngredientsFromStorage(IngredientType type, Integer amount, ITransaction tx) {
 		try {
+			if (type==IngredientType.FLOUR){
+				System.out.println();
+			}
 			Query query = new Query().filter(Property.forName("*", "type").equalTo(type)).cnt(amount);
 			return capi.take(storageContainer,
 					Arrays.asList(QueryCoordinator.newSelector(query, amount),

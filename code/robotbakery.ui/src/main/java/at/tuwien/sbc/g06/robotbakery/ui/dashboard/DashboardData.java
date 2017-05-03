@@ -1,11 +1,11 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -33,22 +33,25 @@ public class DashboardData implements IBakeryUIChangeListener {
 		Arrays.asList(ProductState.values())
 				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
 
-		SBCConstants.PRODUCTS_NAMES.forEach(p->{
-			ItemCount count= new ItemCount(p);
+		SBCConstants.PRODUCTS_NAMES.forEach(p -> {
+			ItemCount count = new ItemCount(p);
+			ItemCount c2 = new ItemCount(p + " (Base dough)");
 			storageProductsCounterMap.put(p, count);
+			storageProductsCounterMap.put(p, c2);
 			productsInStorage.add(count);
-			count= new ItemCount(p);
+			productsInStorage.add(c2);
+			count = new ItemCount(p);
 			counterProductsCounterMap.put(p, count);
 			productsInCounter.add(count);
 		});
-		
+
 		FXCollections.sort(productsInCounter);
 		FXCollections.sort(productsInStorage);
 
-		Arrays.asList(IngredientType.values()).stream().filter(i->i!=IngredientType.WATER).forEach(i->{
-			String name=getIngredientName(new Ingredient(i));
-			ItemCount count= new ItemCount(name);
-			ingredientsCounterMap.put(name,count);
+		Arrays.asList(IngredientType.values()).stream().filter(i -> i != IngredientType.WATER).forEach(i -> {
+			String name = getIngredientName(new Ingredient(i));
+			ItemCount count = new ItemCount(name);
+			ingredientsCounterMap.put(name, count);
 			ingredients.add(count);
 			FXCollections.sort(ingredients);
 		});
@@ -184,7 +187,13 @@ public class DashboardData implements IBakeryUIChangeListener {
 			ingredientsCounterMap.put(ingredientName, count);
 			ingredients.add(count);
 		}
-		count.amount++;
+		if (ingredient instanceof FlourPack) {
+			FlourPack pack = (FlourPack) ingredient;
+			count.amount += pack.getCurrentAmount();
+		} else {
+			count.amount++;
+		}
+
 		addOrUpdate(count, ingredients);
 	}
 
@@ -194,7 +203,13 @@ public class DashboardData implements IBakeryUIChangeListener {
 		ItemCount count = ingredientsCounterMap.get(ingredientName);
 		if (count != null) {
 			if (count.amount > 0) {
-				count.amount--;
+				if (ingredient instanceof FlourPack) {
+					FlourPack pack = (FlourPack) ingredient;
+					count.amount -= pack.getCurrentAmount();
+				} else {
+					count.amount--;
+				}
+
 				addOrUpdate(count, ingredients);
 			} else {
 				ingredients.remove(count);
@@ -207,7 +222,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	private String getIngredientName(Ingredient ingredient) {
 		switch (ingredient.getType()) {
 		case FLOUR:
-			return "Flour (500g)";
+			return "Flour (in g)";
 		case EGGS:
 			return "Eggs";
 		case BAKING_MIX_SPICY:
