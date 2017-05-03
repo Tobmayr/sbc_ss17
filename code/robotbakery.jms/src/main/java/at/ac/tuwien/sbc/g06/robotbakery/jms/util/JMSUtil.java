@@ -59,7 +59,7 @@ public class JMSUtil {
 	 * @throws JMSException
 	 */
 	public static int test(QueueBrowser browser, String[] properties, String[] values) {
-		List<?> list = toList(browser, properties, values);
+		List<?> list = toList(browser, properties, values,null);
 		return list == null ? -1 : list.size();
 	}
 
@@ -72,13 +72,15 @@ public class JMSUtil {
 	 * @param browser
 	 *            Browser for the queue which should be tested
 	 * @param properties
+	 * @param maxSize
 	 * @param valueues
 	 * @return
 	 * @throws JMSException
 	 */
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Serializable> List<T> toList(QueueBrowser browser, String[] properties, String[] values) {
+	public static <T extends Serializable> List<T> toList(QueueBrowser browser, String[] properties, String[] values,
+			Integer maxSize) {
 		List<T> list = new ArrayList<T>();
 		try {
 			if (properties.length != values.length)
@@ -94,6 +96,8 @@ public class JMSUtil {
 					}
 					if (keep)
 						list.add((T) msg.getObject());
+					if (maxSize != null && maxSize.equals(list.size()))
+						return list;
 
 				}
 
@@ -106,8 +110,9 @@ public class JMSUtil {
 
 	}
 
-	public static <T extends Serializable> List<T> toList(QueueBrowser browser, String property, String value) {
-		return toList(browser, new String[] { property }, new String[] { value });
+	public static <T extends Serializable> List<T> toList(QueueBrowser browser, String property, String value,
+			Integer maxSize) {
+		return toList(browser, new String[] { property }, new String[] { value }, maxSize);
 	}
 
 	/**
@@ -133,5 +138,3 @@ public class JMSUtil {
 	private JMSUtil() {
 	};
 }
-
-	

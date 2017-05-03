@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import javax.jms.Connection;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -37,7 +38,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 public class AbstractJMSService {
 	private static Logger logger = LoggerFactory.getLogger(AbstractJMSService.class);
 
-	private Connection connection;
+	protected Connection connection;
 
 	protected Topic notificationTopic;
 	protected MessageProducer notifier;
@@ -69,13 +70,6 @@ public class AbstractJMSService {
 
 	}
 
-	protected void notifiyObserver(Message msg, boolean remove) throws JMSException {
-		msg.setBooleanProperty(JMSConstants.Property.REMOVED, remove);
-		msg.setStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION,
-				msg.getJMSDestination() != null ? msg.getJMSDestination().toString() : "unavailable");
-		notifier.send(notificationTopic, msg);
-	}
-
 	/**
 	 * Helper method which creates an ObjectMessage containing modelObject which
 	 * is passed as input argument. In addition properties which are required
@@ -103,6 +97,7 @@ public class AbstractJMSService {
 			msg.setStringProperty(JMSConstants.Property.CLASS, Product.class.getSimpleName());
 			msg.setStringProperty(JMSConstants.Property.TYPE, product.getProductName());
 			msg.setStringProperty(JMSConstants.Property.STATE, product.getType().toString());
+			msg.setStringProperty(JMSConstants.Property.ID, product.getId().toString());
 		} else if (modelObject instanceof WaterPipe) {
 			msg.setStringProperty(JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName());
 		}
@@ -113,7 +108,7 @@ public class AbstractJMSService {
 		try {
 			Message msg = createMessage(messageObject);
 			producer.send(msg);
-			notifiyObserver(msg, false);
+			notify(messageObject, false,producer.getDestination());
 			return true;
 		} catch (JMSException e) {
 			return false;
@@ -121,10 +116,13 @@ public class AbstractJMSService {
 
 	}
 
-	public boolean notify(Serializable messageObject, boolean remove) {
+	public boolean notify(Serializable messageObject, boolean remove, Destination originalDestination) {
 		try {
 			Message msg = createMessage(messageObject);
-			notifiyObserver(msg, remove);
+			msg.setBooleanProperty(JMSConstants.Property.REMOVED, remove);
+			msg.setStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION,
+					originalDestination != null ? originalDestination.toString() : "unavailable");
+			notifier.send(notificationTopic, msg);
 			return true;
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
@@ -138,7 +136,7 @@ public class AbstractJMSService {
 			if (msg instanceof ObjectMessage) {
 				@SuppressWarnings("unchecked")
 				T cast = (T) ((ObjectMessage) msg).getObject();
-				notify(cast, true);
+				notify(cast, true, msg.getJMSDestination());
 				return cast;
 			}
 

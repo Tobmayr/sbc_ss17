@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,7 +38,6 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private Queue storageQueue;
 	private Queue bakeroomQueue;
 	private Queue counterQueue;
-
 	private QueueBrowser ingredientBrowser;
 	private QueueBrowser productCounterBrowser;
 	private QueueBrowser productStorageBrowser;
@@ -45,21 +45,16 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private MessageProducer bakeroomProducer;
 	private MessageProducer storageProducer;
 
-	private MessageConsumer waterConsumer;
-	private MessageConsumer flourPackConsumer;
+	private Map<String, MessageConsumer> storageProductTypeConsumers = new HashMap<>();
+	private Map<IngredientType, MessageConsumer> storageIngredientTypeConsumers = new HashMap<>();
 
-	private Map<String, MessageConsumer> storageProductTypeConsumers;
-	private Map<IngredientType, MessageConsumer> storageIngredientTypeConsumers;
+	private MessageProducer counterProducer;
+	private MessageConsumer waterConsumer;
 
 	public JMSKneadRobotService() {
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);
-			waterConsumer = session.createConsumer(storageQueue,
-					String.format("%s = '%s'", JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName()));
-			flourPackConsumer = session.createConsumer(storageQueue,
-					String.format("%s = '%s'", JMSConstants.Property.TYPE, IngredientType.FLOUR));
-
 			productStorageBrowser = session.createBrowser(storageQueue,
 					String.format("%s = '%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
 			ingredientBrowser = session.createBrowser(storageQueue,
@@ -71,20 +66,25 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
 
 			bakeroomProducer = session.createProducer(bakeroomQueue);
+			counterProducer = session.createProducer(counterQueue);
 
 			for (String name : SBCConstants.PRODUCTS_NAMES) {
 				storageProductTypeConsumers.put(name,
 						session.createConsumer(storageQueue,
-								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
+								String.format("%s='%s' AND %s='%s'", JMSConstants.Property.CLASS,
 										Product.class.getSimpleName(), JMSConstants.Property.TYPE, name)));
 			}
 
 			for (IngredientType type : IngredientType.values()) {
 				storageIngredientTypeConsumers.put(type,
 						session.createConsumer(storageQueue,
-								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
-										Product.class.getSimpleName(), JMSConstants.Property.TYPE, type.toString())));
+								String.format("%s='%s' AND %s='%s' ", JMSConstants.Property.CLASS,
+										Ingredient.class.getSimpleName(), JMSConstants.Property.TYPE,
+										type.toString())));
 			}
+
+			waterConsumer = session.createConsumer(counterQueue, String
+					.format(String.format("%s = '%s'", JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName())));
 
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
@@ -93,7 +93,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	@Override
 	public List<Product> checkBaseDoughsInStorage() {
-		return JMSUtil.toList(productStorageBrowser, JMSConstants.Property.STATE, BakeState.DOUGH.toString());
+		return JMSUtil.toList(productStorageBrowser, JMSConstants.Property.STATE, BakeState.DOUGH.toString(), null);
 	}
 
 	@Override
@@ -116,12 +116,14 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	@Override
 	public boolean useWaterPipe(long time, ITransaction tx) {
 		try {
+
 			WaterPipe pipe = receive(waterConsumer);
 			if (pipe != null) {
 				Thread.sleep(time);
-				send(storageProducer, pipe);
+				send(counterProducer, pipe);
 				return true;
 			}
+			waterConsumer.close();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -138,19 +140,19 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	@Override
 	public Product getProductFromStorage(UUID id, ITransaction tx) {
 		try {
-			MessageConsumer cs = session.createConsumer(storageQueue,
-					String.format("%s = '%s'", JMSConstants.Property.ID, id));
-			return receive(cs);
+			MessageConsumer consumer = session.createConsumer(storageQueue,
+					String.format(String.format("%s = '%s'", JMSConstants.Property.ID, id.toString())));
+			return receive(consumer);
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 			return null;
 		}
-	
+
 	}
 
 	@Override
 	public FlourPack getPackFromStorage(ITransaction tx) {
-		return receive(flourPackConsumer);
+		return receive(storageIngredientTypeConsumers.get(IngredientType.FLOUR));
 	}
 
 	@Override
@@ -165,13 +167,13 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	@Override
 	public void startRobot() {
-		notify(KneadRobot.class.getSimpleName(), false);
+		notify(KneadRobot.class.getSimpleName(), false, storageQueue);
 
 	}
 
 	@Override
 	public void shutdownRobot() {
-		notify(KneadRobot.class.getSimpleName(), true);
+		notify(KneadRobot.class.getSimpleName(), true, storageQueue);
 
 	}
 

@@ -33,7 +33,7 @@ public class JMSBakery extends Bakery implements MessageListener {
 	private static Logger logger = LoggerFactory.getLogger(JMSBakery.class);
 	private TopicConnection connection;
 	private TopicSession session;
-	private MessageProducer storageQueueMessageProducer;
+	private MessageProducer counterQueueMessageProducer;
 	private Session queueSession;
 
 	public JMSBakery() {
@@ -43,8 +43,8 @@ public class JMSBakery extends Bakery implements MessageListener {
 			session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			Topic notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			TopicSubscriber subscriber = session.createSubscriber(notificationTopic);
-			Queue storageQueue = queueSession.createQueue(JMSConstants.Queue.STORAGE);
-			storageQueueMessageProducer = queueSession.createProducer(storageQueue);
+			Queue counterQueue = queueSession.createQueue(JMSConstants.Queue.COUNTER);
+			counterQueueMessageProducer = queueSession.createProducer(counterQueue);
 			subscriber.setMessageListener(this);
 			connection.start();
 		} catch (JMSException e) {
@@ -143,7 +143,7 @@ public class JMSBakery extends Bakery implements MessageListener {
 		try {
 			Message msg = queueSession.createObjectMessage(new WaterPipe());
 			msg.setStringProperty(JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName());
-			storageQueueMessageProducer.send(msg);
+			counterQueueMessageProducer.send(msg);
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}

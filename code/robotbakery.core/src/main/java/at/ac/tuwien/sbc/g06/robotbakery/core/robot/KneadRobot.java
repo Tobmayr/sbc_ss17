@@ -91,7 +91,7 @@ public class KneadRobot extends Robot {
 		if (nextProduct != null) {
 			// the product chooser is just read, so we have to take the
 			// basedough now for real
-			nextProduct = service.getProductFromStorage(nextProduct.getId(), tx);
+			nextProduct=service.getProductFromStorage(nextProduct.getId(), tx);
 			if (nextProduct == null)
 				return false;
 			if (!doTask(finishBaseDough))
@@ -103,7 +103,9 @@ public class KneadRobot extends Robot {
 		if (nextProduct != null) {
 			if (doTask(makeNewBaseDough)) {
 				Product baseDough = nextProduct;
-				if (!doTask(finishBaseDough)) {
+				if (!
+
+				doTask(finishBaseDough)) {
 					return service.putBaseDoughInStorage(baseDough, tx);
 				}
 				return service.putDoughInBakeroom(nextProduct, tx);

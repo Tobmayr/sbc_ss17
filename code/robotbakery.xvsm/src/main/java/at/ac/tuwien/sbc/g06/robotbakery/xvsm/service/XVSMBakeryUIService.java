@@ -36,7 +36,7 @@ public class XVSMBakeryUIService implements IBakeryUIService {
 			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
-			return false; 
+			return false;
 		}
 	}
 

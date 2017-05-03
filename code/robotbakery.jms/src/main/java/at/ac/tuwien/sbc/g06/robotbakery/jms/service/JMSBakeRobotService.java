@@ -47,7 +47,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 			products.add(firstProduct);
 			long t = System.currentTimeMillis();
 			long end = t + SBCConstants.BAKE_WAIT;
-			while (System.currentTimeMillis() > end) {
+			while (System.currentTimeMillis() < end) {
 				Product nextProduct = receive(bakeroomQueueConsumer);
 				if (nextProduct != null) {
 					products.add(nextProduct);
@@ -67,13 +67,13 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 
 	@Override
 	public void startRobot() {
-		notify(BakeRobot.class.getSimpleName(), false);
+		notify(BakeRobot.class.getSimpleName(), false,storageQueue);
 
 	}
 
 	@Override
 	public void shutdownRobot() {
-		notify(BakeRobot.class.getSimpleName(), true);
+		notify(BakeRobot.class.getSimpleName(), true,storageQueue);
 
 	}
 

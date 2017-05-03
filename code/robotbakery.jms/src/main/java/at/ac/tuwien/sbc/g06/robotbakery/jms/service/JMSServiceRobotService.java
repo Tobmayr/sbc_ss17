@@ -55,14 +55,14 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			for (String name : SBCConstants.PRODUCTS_NAMES) {
 				counterProductTypeConsumers.put(name,
 						session.createConsumer(counterQueue,
-								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
+								String.format("%s='%s' AND %s='%s' ", JMSConstants.Property.CLASS,
 										Product.class.getSimpleName(), JMSConstants.Property.TYPE, name)));
 			}
 
 			for (String name : SBCConstants.PRODUCTS_NAMES) {
 				storageProductTypeConsumers.put(name,
 						session.createConsumer(storageQueue,
-								String.format("%s='%s' AND %s='%s ", JMSConstants.Property.CLASS,
+								String.format("%s='%s' AND %s='%s' ", JMSConstants.Property.CLASS,
 										Product.class.getSimpleName(), JMSConstants.Property.TYPE, name)));
 			}
 		} catch (JMSException e) {
@@ -87,7 +87,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public boolean updateOrder(Order order, ITransaction tx) {
-		return notify(ServiceRobot.class.getSimpleName(), false);
+		return notify(ServiceRobot.class.getSimpleName(), false, orderQueue);
 
 	}
 
@@ -118,13 +118,13 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public void startRobot() {
-		notify(ServiceRobot.class.getSimpleName(), false);
+		notify(ServiceRobot.class.getSimpleName(), false, storageQueue);
 
 	}
 
 	@Override
 	public void shutdownRobot() {
-		notify(ServiceRobot.class.getSimpleName(), true);
+		notify(ServiceRobot.class.getSimpleName(), true, storageQueue);
 
 	}
 
