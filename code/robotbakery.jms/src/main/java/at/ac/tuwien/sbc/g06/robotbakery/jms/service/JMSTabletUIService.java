@@ -61,7 +61,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	}
 
 	@Override
-	public boolean payOrder(Order order) {
+	public boolean payOrder(PackedOrder order) {
 		Order oldOrder = receive(orderConsumer);
 		oldOrder.setState(OrderState.PAID);
 		return send(orderProducer, oldOrder);

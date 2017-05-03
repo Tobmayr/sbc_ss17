@@ -34,7 +34,7 @@ public class ServiceRobot extends Robot {
 		service.startRobot();
 		while (!Thread.interrupted()) {
 
-			 doTask(getProductFromStorage);
+			doTask(getProductFromStorage);
 			doTask(processNextOrder);
 
 		}
@@ -42,7 +42,9 @@ public class ServiceRobot extends Robot {
 	}
 
 	private boolean packOrderAndPutInTerminal(ITransaction tx) {
-		PackedOrder packedOrder = new PackedOrder(currentOrder.getCustomerId(), currentOrder.getId());
+		PackedOrder packedOrder = new PackedOrder(currentOrder);
+		packedOrder.setState(OrderState.DELIVERED);
+		packedOrder.setServiceRobotId(getId());
 		for (Item item : currentOrder.getItemsMap().values()) {
 			List<Product> temp = service.getProductsFromCounter(item.getProductName(), item.getAmount(), tx);
 			if (temp != null && temp.size() == item.getAmount())
@@ -56,13 +58,8 @@ public class ServiceRobot extends Robot {
 		// Update contribution
 		packedOrder.getProducts().forEach(p -> p.addContribution(getId(), ContributionType.PACK_UP, getClass()));
 
-		if (service.putPackedOrderInTerminal(packedOrder, tx)) {
-			currentOrder.setState(OrderState.DELIVERED);
-			currentOrder.setServiceRobotId(getId());
-			System.out.println("Placing packed order in terminal");
-			return service.updateOrder(currentOrder, tx);
-		}
-		return false;
+		return service.putPackedOrderInTerminal(packedOrder, tx);
+
 	};
 
 	ITransactionalTask processNextOrder = tx -> {

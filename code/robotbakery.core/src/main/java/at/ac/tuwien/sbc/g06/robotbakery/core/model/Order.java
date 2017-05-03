@@ -18,18 +18,22 @@ public class Order implements Serializable {
 	public enum OrderState {
 		OPEN, DELIVERED, PAID, UNDELIVERABLE;
 	}
-	
+
 	private final UUID orderID;
 	private UUID customerID;
 	private UUID serviceRobotId;
-	private OrderState state=OrderState.OPEN;
-	private Timestamp timestamp; 
+	private OrderState state = OrderState.OPEN;
+	private Timestamp timestamp;
 
 	private double totalSum;
-	private final Map<String,Item> itemsMap;
+	private final Map<String, Item> itemsMap;
 
 	public Order() {
-		orderID = UUID.randomUUID();
+		this(UUID.randomUUID());
+	}
+
+	public Order(UUID orderID) {
+		this.orderID = orderID;
 		itemsMap = new HashMap<>();
 	}
 
@@ -41,8 +45,7 @@ public class Order implements Serializable {
 		return item;
 	}
 
-	
-	public Timestamp getTimestamp(){
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 
@@ -55,7 +58,7 @@ public class Order implements Serializable {
 	}
 
 	public Item removeItem(String productName) {
-		Item item=itemsMap.remove(productName);
+		Item item = itemsMap.remove(productName);
 		totalSum -= item.getCost();
 		return item;
 
@@ -94,17 +97,13 @@ public class Order implements Serializable {
 		this.state = state;
 	}
 
-
 	public Map<String, Item> getItemsMap() {
 		return itemsMap;
 	}
 
-
 	public UUID getId() {
 		return orderID;
 	}
-
-	
 
 	@Override
 	public String toString() {
@@ -172,4 +171,3 @@ public class Order implements Serializable {
 	}
 
 }
-

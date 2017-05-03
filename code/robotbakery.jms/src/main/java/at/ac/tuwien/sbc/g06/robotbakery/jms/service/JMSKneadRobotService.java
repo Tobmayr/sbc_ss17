@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.jms.JMSException;
@@ -143,14 +142,34 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	@Override
 	public Product getProductFromStorage(UUID id, ITransaction tx) {
-		try {
-			MessageConsumer consumer = session.createConsumer(storageQueue,
-					String.format(String.format("%s = '%s'", JMSConstants.Property.ID, id.toString())));
-			return receive(consumer);
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
+		List<Product> products = JMSUtil.toList(productStorageBrowser, JMSConstants.Property.STATE,
+				BakeState.DOUGH.toString(), null);
+		Product returnVal = products.stream().filter(p -> p.getId().toString().equals(id.toString())).findFirst().orElse(null);
+		if (returnVal == null)
 			return null;
+
+		String compare = returnVal.getId().toString();
+		List<Product> pushBack = new ArrayList<>();
+		MessageConsumer consumer = storageProductTypeConsumers.get(returnVal.getProductName());
+		while (compare != null) {
+			Product temp = receive(consumer);
+			if (temp == null)
+				return null;
+			if (temp.getId().toString().equals(compare)) {
+				compare = null;
+			} else {
+				pushBack.add(temp);
+			}
+
 		}
+
+		for (Product p : pushBack) {
+			if (!send(storageProducer, p)) {
+				return null;
+			}
+		}
+
+		return returnVal;
 
 	}
 

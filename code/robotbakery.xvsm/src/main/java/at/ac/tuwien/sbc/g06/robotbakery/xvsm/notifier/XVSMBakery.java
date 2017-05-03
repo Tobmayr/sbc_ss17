@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
@@ -89,7 +90,8 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 				if (operation != Operation.WRITE)
 					return;
 				Order order = (Order) object;
-				notifiyListeners(order);
+				String containerName = XVSMUtil.getNameForContainer(notification.getObservedContainer());
+				notifiyListeners(order, containerName);
 
 			}
 
@@ -185,8 +187,18 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 
 	}
 
-	private void notifiyListeners(Order order) {
+	private void notifiyListeners(Order order, String containerName) {
 		registeredChangeListeners.forEach(ls -> ls.onOrderAddedOrUpdated(order));
+		if (order instanceof PackedOrder) {
+			((PackedOrder) order).getProducts().forEach(p -> registeredChangeListeners.forEach(ls -> {
+				if (containerName.equals(XVSMConstants.TERMINAL_CONTAINER_NAME)) {
+					ls.onProductRemovedFromCounter(p);
+					ls.onProductAddedToTerminal(p);
+				} else if (containerName.equals(XVSMConstants.COUNTER_CONTAINER_NAME)) {
+					ls.onProductRemovedFromTerminal(p);
+				}
+			}));
+		}
 
 	}
 

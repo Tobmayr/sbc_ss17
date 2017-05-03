@@ -14,7 +14,7 @@ public interface ITabletUIService  {
 
 	PackedOrder getOrderPackage();
 
-	boolean payOrder(Order order);
+	boolean payOrder(PackedOrder order);
 
 	void initialize(UUID customerID, UUID id);
 

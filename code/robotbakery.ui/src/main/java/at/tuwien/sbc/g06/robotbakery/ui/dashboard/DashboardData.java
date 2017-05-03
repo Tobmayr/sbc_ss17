@@ -33,18 +33,6 @@ public class DashboardData implements IBakeryUIChangeListener {
 		Arrays.asList(ProductState.values())
 				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
 
-		SBCConstants.PRODUCTS_NAMES.forEach(p -> {
-			ItemCount count = new ItemCount(p);
-			ItemCount c2 = new ItemCount(p + " (Base dough)");
-			storageProductsCounterMap.put(p, count);
-			storageProductsCounterMap.put(p, c2);
-			productsInStorage.add(count);
-			productsInStorage.add(c2);
-			count = new ItemCount(p);
-			counterProductsCounterMap.put(p, count);
-			productsInCounter.add(count);
-		});
-
 		FXCollections.sort(productsInCounter);
 		FXCollections.sort(productsInStorage);
 

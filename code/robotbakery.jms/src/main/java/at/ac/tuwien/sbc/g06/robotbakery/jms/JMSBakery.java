@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
@@ -39,7 +40,7 @@ public class JMSBakery extends Bakery implements MessageListener {
 	public JMSBakery() {
 		try {
 			connection = JMSUtil.createAndTopicConnection();
-			queueSession=connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			queueSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			Topic notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			TopicSubscriber subscriber = session.createSubscriber(notificationTopic);
@@ -76,9 +77,18 @@ public class JMSBakery extends Bakery implements MessageListener {
 	}
 
 	private void notify(Order ser, boolean removed, String originalDest) {
-		if (originalDest.equals(getQueueAdress(JMSConstants.Queue.ORDER))) {
-			if (!removed)
-				registeredChangeListeners.forEach(ls -> ls.onOrderAddedOrUpdated((Order) ser));
+		if (removed)
+			return;
+		registeredChangeListeners.forEach(ls -> ls.onOrderAddedOrUpdated(ser));
+		if (ser instanceof PackedOrder) {
+			((PackedOrder) ser).getProducts().forEach(p -> registeredChangeListeners.forEach(ls -> {
+				if (originalDest.equals(JMSConstants.Queue.TERMINAL)) {
+					ls.onProductRemovedFromCounter(p);
+					ls.onProductAddedToTerminal(p);
+				} else if (originalDest.equals(JMSConstants.Queue.ORDER)) {
+					ls.onProductRemovedFromTerminal(p);
+				}
+			}));
 		}
 
 	}
