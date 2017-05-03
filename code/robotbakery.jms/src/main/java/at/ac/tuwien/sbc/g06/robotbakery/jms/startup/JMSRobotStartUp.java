@@ -14,21 +14,23 @@ import at.ac.tuwien.sbc.g06.robotbakery.jms.transaction.JMSTransactionManager;
 public class JMSRobotStartUp {
 
 	public static void main(String[] args) throws IOException {
-		if (args.length != 1) {
+		if (args.length < 1 || args.length > 2) {
 			throw new IllegalArgumentException("Usage: RobotStartUp TYPE (service|knead|bake)");
 		}
+		String id = null;
+		if(args.length==2) id = args[1];
 		switch (args[0]) {
 		case "service":
 			JMSServiceRobotService service = new JMSServiceRobotService();
-			startRobot(new ServiceRobot(service, new JMSTransactionManager(service.getSession())));
+			startRobot(new ServiceRobot(service, new JMSTransactionManager(service.getSession()), id));
 			break;
 		case "knead":
 			JMSKneadRobotService service1 = new JMSKneadRobotService();
-			startRobot(new KneadRobot(service1, new JMSTransactionManager(service1.getSession())));
+			startRobot(new KneadRobot(service1, new JMSTransactionManager(service1.getSession()), id));
 			break;
 		case "bake":
 			JMSBakeRobotService service2 = new JMSBakeRobotService();
-			startRobot(new BakeRobot(service2, new JMSTransactionManager(service2.getSession())));
+			startRobot(new BakeRobot(service2, new JMSTransactionManager(service2.getSession()), id));
 			break;
 
 		default:

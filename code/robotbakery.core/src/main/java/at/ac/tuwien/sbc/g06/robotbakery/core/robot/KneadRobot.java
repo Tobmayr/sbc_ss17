@@ -19,8 +19,8 @@ public class KneadRobot extends Robot {
 
 	private Product nextProduct;
 
-	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager) {
-		super(transactionManager);
+	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager, String id) {
+		super(transactionManager, id);
 		this.service = service;
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	}

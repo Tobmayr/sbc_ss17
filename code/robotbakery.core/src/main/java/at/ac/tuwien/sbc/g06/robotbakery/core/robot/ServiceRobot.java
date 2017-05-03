@@ -25,8 +25,8 @@ public class ServiceRobot extends Robot {
 	private IServiceRobotService service;
 	private Order currentOrder;
 
-	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager) {
-		super(transactionManager);
+	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager, String id) {
+		super(transactionManager, id);
 		this.service = service;
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 

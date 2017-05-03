@@ -16,8 +16,9 @@ public abstract class Robot implements Runnable {
 	private final UUID id;
 	private ITransactionManager transactionManager;
 
-	public Robot(ITransactionManager transactionManager) {
-		id = UUID.randomUUID();
+	public Robot(ITransactionManager transactionManager, String id) {
+		if(id != null) this.id = UUID.fromString(id);
+		else this.id = UUID.randomUUID();
 		this.transactionManager = transactionManager;
 	}
 

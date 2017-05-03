@@ -13,8 +13,8 @@ public class BakeRobot extends Robot {
 
 	private IBakeRobotService service;
 
-	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager) {
-		super(transactionManager);
+	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager, String id) {
+		super(transactionManager, id);
 		this.service = service;
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	};

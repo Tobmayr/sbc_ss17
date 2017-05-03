@@ -14,18 +14,20 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransactionManager;
 public class XVSMRobotStartUp {
 
 	public static void main(String[] args) throws IOException {
-		if (args.length != 1) {
-			throw new IllegalArgumentException("Usage: RobotStartUp TYPE (ervice|knead|bake)");
+		if (args.length < 1 || args.length > 2) {
+			throw new IllegalArgumentException("Usage: RobotStartUp TYPE (service|knead|bake) (ID)");
 		}
+		String id = null;
+		if(args.length==2) id = args[1];
 		switch (args[0]) {
 		case "service":
-			startRobot(new ServiceRobot(new XVSMServiceRobotService(), new XVSMTransactionManager()));
+			startRobot(new ServiceRobot(new XVSMServiceRobotService(), new XVSMTransactionManager(), id));
 			break;
 		case "knead":
-			startRobot(new KneadRobot(new XVSMKneadRobotService(), new XVSMTransactionManager()));
+			startRobot(new KneadRobot(new XVSMKneadRobotService(), new XVSMTransactionManager(), id));
 			break;
 		case "bake":
-			startRobot(new BakeRobot(new XVSMBakeRobotService(), new XVSMTransactionManager()));
+			startRobot(new BakeRobot(new XVSMBakeRobotService(), new XVSMTransactionManager(), id));
 			break;
 
 		default:
