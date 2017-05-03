@@ -101,8 +101,9 @@ public class ServiceRobot extends Robot {
 			return false;
 		for (Product product : productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
+			if(!service.addToCounter(product, tx)) return false;
 		}
-		return service.addToCounter(productsForCounter, tx);
+		return true;
 	};
 
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import org.mozartspaces.capi3.ComparableProperty;
 import org.mozartspaces.capi3.Matchmaker;
 import org.mozartspaces.capi3.Matchmakers;
@@ -71,11 +72,13 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	}
 
 	@Override
-	public boolean addToCounter(List<Product> products, ITransaction tx) {
+	public boolean addToCounter(Product product, ITransaction tx) {
 		try {
-			List<Entry> entries = new ArrayList<>();
-			products.forEach(product -> entries.add(new Entry(product)));
-			capi.write(entries, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			Query query = new Query().filter(Property.forName("*", "productName").equalTo(product.getProductName()));
+			Integer available = capi.test(counterContainer,
+					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
+					RequestTimeout.TRY_ONCE, null);
+			if(available < SBCConstants.COUNTER_MAX_CAPACITY) capi.write(new Entry(product), counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());

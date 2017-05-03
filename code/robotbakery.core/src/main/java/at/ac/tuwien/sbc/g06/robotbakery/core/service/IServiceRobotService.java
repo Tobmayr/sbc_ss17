@@ -12,7 +12,7 @@ public interface IServiceRobotService extends IRobotService{
 
 	Order getNextOrder(ITransaction tx);
 
-	boolean addToCounter(List<Product> products, ITransaction tx);
+	boolean addToCounter(Product product, ITransaction tx);
 
     Map<String, Integer> getCounterStock();
 
