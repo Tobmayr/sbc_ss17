@@ -10,6 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
@@ -44,6 +45,13 @@ public class DashboardData implements IBakeryUIChangeListener {
 		FXCollections.sort(productsInCounter);
 		FXCollections.sort(productsInStorage);
 
+		Arrays.asList(IngredientType.values()).stream().filter(i->i!=IngredientType.WATER).forEach(i->{
+			String name=getIngredientName(new Ingredient(i));
+			ItemCount count= new ItemCount(name);
+			ingredientsCounterMap.put(name,count);
+			ingredients.add(count);
+			FXCollections.sort(ingredients);
+		});
 	}
 
 	public ObservableList<Order> getOrders() {

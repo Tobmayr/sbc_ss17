@@ -80,15 +80,14 @@ public class TabletController {
 		productsTable.setItems(data.getCounterInformationData());
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
-		
-//		//TODO: Convenience Method for testing. REMOVE AFTER IMPLEMENTATION
-//		productCombo.getItems().forEach(s -> {
-//			CounterInformation c = data.new CounterInformation(s, 50, 500d);
-//			productsTable.getItems().add(c);
-//			counterMap.put(s, c);
-//		});
-		
-		
+
+		// //TODO: Convenience Method for testing. REMOVE AFTER IMPLEMENTATION
+		// productCombo.getItems().forEach(s -> {
+		// CounterInformation c = data.new CounterInformation(s, 50, 500d);
+		// productsTable.getItems().add(c);
+		// counterMap.put(s, c);
+		// });
+
 		customerIdText.setText(customerID.toString());
 		order.setCustomerId(customerID);
 
@@ -197,7 +196,7 @@ public class TabletController {
 			} else
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
-			packedOrder=service.getOrderPackage();
+			packedOrder = service.getOrderPackage();
 			service.payOrder(order);
 		}
 
@@ -267,7 +266,7 @@ public class TabletController {
 	}
 
 	private void disableOrderEdit(boolean value) {
-		addButton.setDisable(true);
+		addButton.setDisable(value);
 		productCombo.setDisable(value);
 		amountText.setDisable(value);
 		statusButton.setDisable(value);
@@ -277,17 +276,12 @@ public class TabletController {
 		return packedOrder;
 	}
 
-	public Order getOrder(){
+	public Order getOrder() {
 		return order;
 	}
 
 	public ITabletUIService getService() {
 		return service;
 	}
-	
-	
-	
 
-
-	
 }

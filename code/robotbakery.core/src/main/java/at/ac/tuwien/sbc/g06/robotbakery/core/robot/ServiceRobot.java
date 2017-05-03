@@ -34,7 +34,7 @@ public class ServiceRobot extends Robot {
 		service.startRobot();
 		while (!Thread.interrupted()) {
 
-			doTask(getProductFromStorage);
+			//doTask(getProductFromStorage);
 			doTask(processNextOrder);
 
 		}
@@ -45,7 +45,7 @@ public class ServiceRobot extends Robot {
 		PackedOrder packedOrder = new PackedOrder(currentOrder.getCustomerId(), currentOrder.getId());
 		for (Item item : currentOrder.getItemsMap().values()) {
 			List<Product> temp = service.getProductsFromCounter(item.getProductName(), item.getAmount(), tx);
-			if (temp != null && !temp.isEmpty())
+			if (temp != null && temp.size()==item.getAmount())
 				packedOrder.addAll(temp);
 			else
 				return false;

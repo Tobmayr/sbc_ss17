@@ -140,7 +140,9 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 	@Override
 	public boolean useWaterPipe(long time, ITransaction tx) {
 		try {
-			WaterPipe pipe = (WaterPipe) capi.take(storageContainer, TypeCoordinator.newSelector(WaterPipe.class),2000, XVSMUtil.unwrap(tx)).get(0);
+			WaterPipe pipe = (WaterPipe) capi
+					.take(storageContainer, TypeCoordinator.newSelector(WaterPipe.class), 2000, XVSMUtil.unwrap(tx))
+					.get(0);
 			Thread.sleep(time);
 			capi.write(storageContainer, new Entry(pipe));
 			return true;
