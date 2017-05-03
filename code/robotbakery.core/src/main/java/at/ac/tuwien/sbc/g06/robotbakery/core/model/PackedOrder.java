@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * packed order that is sold to the customer
+ */
 @SuppressWarnings("serial")
 public class PackedOrder implements Serializable {
 

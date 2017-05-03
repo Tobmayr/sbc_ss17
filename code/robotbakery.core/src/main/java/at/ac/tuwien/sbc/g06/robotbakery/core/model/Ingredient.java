@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 
+/**
+ * ingredient super class
+ */
 @SuppressWarnings("serial")
 public class Ingredient implements Serializable {
 

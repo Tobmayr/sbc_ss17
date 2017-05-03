@@ -44,6 +44,11 @@ public class ServiceRobot extends Robot {
 
 	}
 
+	/**
+	 * pack order and put it in terminal for customer
+	 * @param tx Transaction
+	 * @return true if success, false if not enough products in counter or exception
+	 */
 	private boolean packOrderAndPutInTerminal(ITransaction tx) {
 		PackedOrder packedOrder = new PackedOrder(currentOrder.getCustomerId(), currentOrder.getId());
 		for (Item item : currentOrder.getItemsMap().values()) {
@@ -68,6 +73,9 @@ public class ServiceRobot extends Robot {
 		return false;
 	};
 
+	/**
+	 * get next order to work on
+	 */
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
 		if (currentOrder == null)
@@ -82,6 +90,9 @@ public class ServiceRobot extends Robot {
 
 	};
 
+	/**
+	 * get products from storage to fill up counter, get only products that are missing in counter
+	 */
 	ITransactionalTask getProductFromStorage = tx -> {
 		System.out.println("Stocking up the counter");
 		Map<String, Integer> missingProducts = service.getCounterStock();

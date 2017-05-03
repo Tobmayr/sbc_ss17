@@ -3,6 +3,9 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
+/**
+ * Flour Pack ingredient
+ */
 @SuppressWarnings("serial")
 public class FlourPack extends Ingredient {
 

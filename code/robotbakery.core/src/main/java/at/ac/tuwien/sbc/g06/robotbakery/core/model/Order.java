@@ -9,7 +9,7 @@ import java.util.UUID;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
- * 
+ * order class
  * @author Tobias Ortmayr (1026279)
  *
  */
@@ -33,6 +33,12 @@ public class Order implements Serializable {
 		itemsMap = new HashMap<>();
 	}
 
+	/**
+	 * add an item to order
+	 * @param productName name of the added product
+	 * @param amount amount of items
+	 * @return return the created and added item
+	 */
 	public Item addItem(String productName, Integer amount) {
 		Item item = new Item(productName, amount);
 		itemsMap.put(productName, item);
@@ -126,6 +132,9 @@ public class Order implements Serializable {
 		return super.equals(obj);
 	}
 
+	/**
+	 * item subclass, item represents a product in order
+	 */
 	public class Item implements Serializable {
 		private final String productName;
 		private final int amount;

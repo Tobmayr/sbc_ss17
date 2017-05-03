@@ -11,7 +11,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
- * 
+ * product class
  * @author Tobias Ortmayr (1026279)
  *
  */
@@ -56,6 +56,12 @@ public class Product implements Serializable {
 		this.recipe = recipe;
 	}
 
+	/**
+	 * history: which robot worked on the product
+	 * @param contributerId id of the robot
+	 * @param type which type of contribution
+	 * @param contributor robot class
+	 */
 	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
 		contributions.add(new Contribution(contributerId, type, contributor));
 	}
@@ -99,6 +105,9 @@ public class Product implements Serializable {
 		return super.equals(obj);
 	}
 
+	/**
+	 * contribution subclass
+	 */
 	public class Contribution implements Serializable {
 
 		final UUID contributerId;

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * 
+ * recipe that is used to make a product
  * @author Tobias Ortmayr (1026279)
  *
  */
@@ -52,6 +52,10 @@ public class Recipe implements Serializable {
 		return ingredients;
 	}
 
+	/**
+	 * get the ingredients for the recipe that are used to finish a base dough
+	 * @return set of ingredienttypes and amount
+	 */
 	public Set<Entry<IngredientType, Integer>> getAdditionalIngredients() {
 		return ingredients.entrySet().stream()
 				.filter(e -> e.getKey() != IngredientType.FLOUR && e.getKey() != IngredientType.WATER)

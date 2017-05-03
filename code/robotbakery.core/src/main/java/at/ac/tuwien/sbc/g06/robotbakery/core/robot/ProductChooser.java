@@ -49,6 +49,10 @@ public class ProductChooser {
 		return product;
 	}
 
+	/**
+	 * choose next product based off the products in the counter, make the product which is most needed and has the ingredients in storage
+	 * @return product that is chosen to be the most needed
+	 */
 	private Product getNextProductForCounter() {
 		if (counterStock.isEmpty()
 				|| SBCConstants.COUNTER_MAX_CAPACITY.equals(counterStock.values().stream().findFirst().orElse(null)))
@@ -62,6 +66,10 @@ public class ProductChooser {
 
 	}
 
+	/**
+	 * looks up how much ingredients are in the storage to choose the recipe
+	 * @return product
+	 */
 	private Product getNextProductForStorage() {
 		Recipe candiate = ingredientStock.keySet().stream().filter(type -> type != IngredientType.FLOUR)
 				.map(i -> getSuitableRecipe(i, ingredientStock.get(i), false)).filter(r -> r != null).findFirst()

@@ -25,6 +25,11 @@ public class KneadRobot extends Robot {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	}
 
+	/**
+	 * get ingredients from storage for a recipe to finish a base dough
+	 * @param tx Transaction
+	 * @return return true if ingredients are fetched and false for exceptions or when there are not enough in the storage
+	 */
 	private boolean getAdditionalIngredients(ITransaction tx) {
 		for (Entry<IngredientType, Integer> entry : nextProduct.getRecipe().getAdditionalIngredients()) {
 			List<Ingredient> ingredients = service.getIngredientsFromStorage(entry.getKey(), entry.getValue(), tx);
@@ -34,6 +39,11 @@ public class KneadRobot extends Robot {
 		return true;
 	}
 
+	/**
+	 * use ingredients and base dough to make the final dough and put it in the bakeroom
+	 * @param tx Transaction
+	 * @return true if dough is finished and put in bakeroom, false if exception
+	 */
 	private boolean addAddtionalIngredientsAndFinsish(ITransaction tx) {
 		// If we don't have enough ingredients for finishing, put it in storage
 		if (!getAdditionalIngredients(tx)) {
@@ -49,6 +59,9 @@ public class KneadRobot extends Robot {
 		return service.putDoughInBakeroom(nextProduct, tx);
 	}
 
+	/**
+	 * get flour and water for base dough
+	 */
 	ITransactionalTask getBaseIngredients = tx -> {
 		int flourAmount = nextProduct.getRecipe().getAmount(IngredientType.FLOUR);
 		// Take flour
@@ -70,6 +83,9 @@ public class KneadRobot extends Robot {
 
 	};
 
+	/**
+	 * make base dough and emulate working time
+	 */
 	ITransactionalTask tryToMakeDough = tx -> {
 		debug("Trying to make new fresh dough");
 		// Taking base ingredients is a own subtask, so that the transaction can
@@ -88,6 +104,9 @@ public class KneadRobot extends Robot {
 
 	};
 
+	/**
+	 * get base dough from storage and try to finish it with getting the ingredients
+	 */
 	ITransactionalTask tryToFinishExistingDough = tx -> {
 		debug("Trying to finish basedough");
 		nextProduct = service.getProductFromStorage(nextProduct.getId(), tx);
