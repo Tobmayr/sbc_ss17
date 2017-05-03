@@ -56,6 +56,8 @@ public interface IKneadRobotService extends IRobotService{
 
 	boolean putDoughInBakeroom(Product nextProduct, ITransaction tx);
 
+	boolean takeFlourFromStorage(int amount, ITransaction tx);
+
 	
 
 

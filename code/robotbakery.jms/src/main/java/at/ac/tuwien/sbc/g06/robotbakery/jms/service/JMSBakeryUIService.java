@@ -6,6 +6,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.Session;
 
 import org.omg.CORBA.OMGVMCID;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 	private MessageProducer storageProducer;
 
 	public JMSBakeryUIService() {
-
+		super(false, Session.AUTO_ACKNOWLEDGE);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);
@@ -38,12 +39,6 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 				return false;
 		}
 		
-		//Client.ACKNOWLEDGE is activated -> we need to commit
-		try {
-			session.commit();
-		} catch (JMSException e) {
-			return false;
-		}
 		return true;
 
 	}

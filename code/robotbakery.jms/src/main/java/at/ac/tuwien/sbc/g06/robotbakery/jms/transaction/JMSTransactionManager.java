@@ -16,8 +16,7 @@ public class JMSTransactionManager implements ITransactionManager {
 
 	@Override
 	public ITransaction createTransaction() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JMSTransaction();
 	}
 
 	@Override

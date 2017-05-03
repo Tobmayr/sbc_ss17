@@ -1,6 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -8,6 +7,7 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 
@@ -28,7 +27,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	private MessageConsumer orderConsumer;
 
 	public JMSTabletUIService() {
-
+		super(false, Session.AUTO_ACKNOWLEDGE);
 	}
 
 	public void initialize(UUID customerID, UUID orderID) {

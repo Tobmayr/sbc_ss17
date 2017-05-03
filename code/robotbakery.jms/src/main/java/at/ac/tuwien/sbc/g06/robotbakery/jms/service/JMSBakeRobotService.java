@@ -7,13 +7,13 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -28,6 +28,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	private MessageConsumer bakeroomQueueConsumer;
 
 	public JMSBakeRobotService() {
+		super(false, Session.AUTO_ACKNOWLEDGE);
 
 		try {
 			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
@@ -67,13 +68,13 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 
 	@Override
 	public void startRobot() {
-		notify(BakeRobot.class.getSimpleName(), false,storageQueue);
+		notify(BakeRobot.class.getSimpleName(), false, storageQueue);
 
 	}
 
 	@Override
 	public void shutdownRobot() {
-		notify(BakeRobot.class.getSimpleName(), true,storageQueue);
+		notify(BakeRobot.class.getSimpleName(), true, storageQueue);
 
 	}
 

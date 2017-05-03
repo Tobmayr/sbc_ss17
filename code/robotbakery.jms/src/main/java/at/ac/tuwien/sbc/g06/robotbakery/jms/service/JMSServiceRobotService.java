@@ -39,6 +39,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private Map<String, MessageConsumer> storageProductTypeConsumers = new HashMap<>();
 
 	public JMSServiceRobotService() {
+		super(true, Session.CLIENT_ACKNOWLEDGE);
 
 		try {
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);

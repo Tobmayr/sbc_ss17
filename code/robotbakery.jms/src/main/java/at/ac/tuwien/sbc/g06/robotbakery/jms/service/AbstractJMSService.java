@@ -44,10 +44,10 @@ public class AbstractJMSService {
 	protected MessageProducer notifier;
 	protected Session session;
 
-	public AbstractJMSService() {
+	public AbstractJMSService(boolean transacted, int ackMode) {
 		try {
 			connection = JMSUtil.createAndConnection();
-			session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
+			session = connection.createSession(transacted, ackMode);
 			this.notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			notifier = session.createProducer(notificationTopic);
 			connection.start();
@@ -92,6 +92,7 @@ public class AbstractJMSService {
 			Ingredient ingredient = (Ingredient) modelObject;
 			msg.setStringProperty(JMSConstants.Property.CLASS, Ingredient.class.getSimpleName());
 			msg.setStringProperty(JMSConstants.Property.TYPE, ingredient.getType().toString());
+			msg.setStringProperty(JMSConstants.Property.ID, ingredient.getId().toString());
 		} else if (modelObject instanceof Product) {
 			Product product = (Product) modelObject;
 			msg.setStringProperty(JMSConstants.Property.CLASS, Product.class.getSimpleName());
@@ -108,7 +109,7 @@ public class AbstractJMSService {
 		try {
 			Message msg = createMessage(messageObject);
 			producer.send(msg);
-			notify(messageObject, false,producer.getDestination());
+			notify(messageObject, false, producer.getDestination());
 			return true;
 		} catch (JMSException e) {
 			return false;
@@ -162,7 +163,5 @@ public class AbstractJMSService {
 	public Session getSession() {
 		return session;
 	}
-	
-	
 
 }

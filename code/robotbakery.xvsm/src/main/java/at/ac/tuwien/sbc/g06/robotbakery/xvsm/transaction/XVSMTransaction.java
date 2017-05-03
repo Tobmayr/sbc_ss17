@@ -25,10 +25,4 @@ public class XVSMTransaction implements ITransaction {
 		return transactionReference;
 	}
 
-	@Override
-	public boolean isRollbackOnly() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

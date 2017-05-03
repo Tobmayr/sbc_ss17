@@ -1,9 +1,11 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.jms.JMSException;
@@ -11,6 +13,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
+import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +55,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private MessageConsumer waterConsumer;
 
 	public JMSKneadRobotService() {
+		super(true, Session.CLIENT_ACKNOWLEDGE);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);
@@ -151,8 +155,81 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	}
 
 	@Override
+	public boolean takeFlourFromStorage(int amount, ITransaction tx) {
+		List<Ingredient> list = JMSUtil.toList(ingredientBrowser, JMSConstants.Property.TYPE,
+				IngredientType.FLOUR.toString(), null);
+		if (list.isEmpty())
+			return false;
+		if (list.size() > 1)
+			list.sort((i, j) -> ((FlourPack) i).getCurrentAmount().compareTo(((FlourPack) j).getCurrentAmount()));
+		List<String> used = new ArrayList<String>();
+		FlourPack open = null;
+		for (int i = 0; i < list.size(); i++) {
+			FlourPack pack = (FlourPack) list.get(i);
+			amount = pack.takeFlour(amount);
+			if (pack.getCurrentAmount() > 0) {
+				open = pack;
+			} else {
+				used.add(pack.getId().toString());
+			}
+			if (amount == 0) {
+				break;
+			}
+		}
+		return doRealDelete(used, open);
+
+	}
+
+	private boolean doRealDelete(List<String> used, FlourPack open) {
+		MessageConsumer consumer = storageIngredientTypeConsumers.get(IngredientType.FLOUR);
+		List<Ingredient> pushBack = new ArrayList<Ingredient>();
+		while (!used.isEmpty()) {
+			Ingredient temp = receive(consumer);
+			if (temp == null)
+				return false;
+			if (used.remove(temp.getId().toString())) {
+				pushBack.add(temp);
+			}
+
+		}
+		if (open != null)
+			pushBack.add(open);
+		for (Ingredient i : pushBack) {
+			if (!send(storageProducer, i))
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public FlourPack getPackFromStorage(ITransaction tx) {
-		return receive(storageIngredientTypeConsumers.get(IngredientType.FLOUR));
+		List<Ingredient> list = JMSUtil.toList(ingredientBrowser, JMSConstants.Property.TYPE,
+				IngredientType.FLOUR.toString(), null);
+		if (list.isEmpty())
+			return null;
+		if (list.size() > 1)
+			list.sort((i, j) -> ((FlourPack) i).getCurrentAmount().compareTo(((FlourPack) j).getCurrentAmount()));
+		Ingredient element = list.get(0);
+		List<Ingredient> pushBack = new ArrayList<Ingredient>();
+		MessageConsumer consumer = storageIngredientTypeConsumers.get(IngredientType.FLOUR);
+		Ingredient temp = receive(consumer);
+		while (temp != null) {
+			String s = temp.getId().toString();
+			String b = element.getId().toString();
+			if (s.equals(b))
+				break;
+
+			pushBack.add(temp);
+			temp = receive(consumer);
+		}
+
+		for (Ingredient i : pushBack) {
+			if (!send(storageProducer, i))
+				;
+			return null;
+		}
+		return (FlourPack) element;
 	}
 
 	@Override
