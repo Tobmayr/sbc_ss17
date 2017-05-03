@@ -179,30 +179,8 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 
 	}
 
-	@Override
-	public FlourPack getPackFromStorage(ITransaction tx) {
-		try {
-			Query query = new Query().sortup(ComparableProperty.forName("*", "currentAmount")).cnt(1);
-			return (FlourPack) capi.take(storageContainer,
-					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Ingredient.class)),
-					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
-		} catch (MzsCoreException e) {
-			logger.error(e.getMessage());
-			return null;
-		}
-	}
+	
 
-	@Override
-	public boolean putPackInStorage(FlourPack pack, ITransaction tx) {
-		try {
-			Entry entry = new Entry(pack);
-			capi.write(entry, storageContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
-			return true;
-		} catch (MzsCoreException ex) {
-			logger.error(ex.getMessage());
-			return false;
-		}
-	}
 
 	@Override
 	public boolean putDoughInBakeroom(Product nextProduct, ITransaction tx) {
@@ -230,8 +208,41 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 
 	@Override
 	public boolean takeFlourFromStorage(int amount, ITransaction tx) {
-		// TODO Auto-generated method stub
-		return false;
+
+		FlourPack pack = null;
+		while (amount > 0) {
+			pack = (FlourPack) getPackFromStorage(tx);
+			if (pack == null)
+				return false;
+			amount = pack.takeFlour(amount);
+		}
+		if (pack.getCurrentAmount() > 0) {
+			if (!putPackInStorage(pack, tx))
+				return false;
+		}
+		return true;
 	}
 
+	private FlourPack getPackFromStorage(ITransaction tx) {
+		try {
+			Query query = new Query().sortup(ComparableProperty.forName("*", "currentAmount")).cnt(1);
+			return (FlourPack) capi.take(storageContainer,
+					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Ingredient.class)),
+					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
+		} catch (MzsCoreException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
+	}
+
+	private boolean putPackInStorage(FlourPack pack, ITransaction tx) {
+		try {
+			Entry entry = new Entry(pack);
+			capi.write(entry, storageContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return true;
+		} catch (MzsCoreException ex) {
+			logger.error(ex.getMessage());
+			return false;
+		}
+	}
 }

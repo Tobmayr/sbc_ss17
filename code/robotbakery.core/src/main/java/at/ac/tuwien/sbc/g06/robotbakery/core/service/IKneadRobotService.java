@@ -50,10 +50,6 @@ public interface IKneadRobotService extends IRobotService{
 
 	Product getProductFromStorage(UUID id, ITransaction tx);
 
-	FlourPack getPackFromStorage(ITransaction tx);
-
-	boolean putPackInStorage(FlourPack pack, ITransaction tx);
-
 	boolean putDoughInBakeroom(Product nextProduct, ITransaction tx);
 
 	boolean takeFlourFromStorage(int amount, ITransaction tx);

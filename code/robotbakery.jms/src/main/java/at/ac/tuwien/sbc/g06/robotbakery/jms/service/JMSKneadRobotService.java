@@ -176,6 +176,8 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 				break;
 			}
 		}
+		if (open != null)
+			used.add(open.getId().toString());
 		return doRealDelete(used, open);
 
 	}
@@ -187,7 +189,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 			Ingredient temp = receive(consumer);
 			if (temp == null)
 				return false;
-			if (used.remove(temp.getId().toString())) {
+			if (!used.remove(temp.getId().toString())) {
 				pushBack.add(temp);
 			}
 
@@ -200,41 +202,6 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 		}
 
 		return true;
-	}
-
-	@Override
-	public FlourPack getPackFromStorage(ITransaction tx) {
-		List<Ingredient> list = JMSUtil.toList(ingredientBrowser, JMSConstants.Property.TYPE,
-				IngredientType.FLOUR.toString(), null);
-		if (list.isEmpty())
-			return null;
-		if (list.size() > 1)
-			list.sort((i, j) -> ((FlourPack) i).getCurrentAmount().compareTo(((FlourPack) j).getCurrentAmount()));
-		Ingredient element = list.get(0);
-		List<Ingredient> pushBack = new ArrayList<Ingredient>();
-		MessageConsumer consumer = storageIngredientTypeConsumers.get(IngredientType.FLOUR);
-		Ingredient temp = receive(consumer);
-		while (temp != null) {
-			String s = temp.getId().toString();
-			String b = element.getId().toString();
-			if (s.equals(b))
-				break;
-
-			pushBack.add(temp);
-			temp = receive(consumer);
-		}
-
-		for (Ingredient i : pushBack) {
-			if (!send(storageProducer, i))
-				;
-			return null;
-		}
-		return (FlourPack) element;
-	}
-
-	@Override
-	public boolean putPackInStorage(FlourPack pack, ITransaction tx) {
-		return send(storageProducer, pack);
 	}
 
 	@Override
