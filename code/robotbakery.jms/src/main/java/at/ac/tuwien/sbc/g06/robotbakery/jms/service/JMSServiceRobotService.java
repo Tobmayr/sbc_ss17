@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private Map<String, MessageConsumer> storageProductTypeConsumers = new HashMap<>();
 
 	public JMSServiceRobotService() {
-		super(true, Session.CLIENT_ACKNOWLEDGE);
+		super(true, Session.SESSION_TRANSACTED);
 
 		try {
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -78,7 +79,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public boolean updateOrder(Order order, ITransaction tx) {
-		return notify(ServiceRobot.class.getSimpleName(), false, orderQueue);
+		return notify(order, false, orderQueue);
 
 	}
 
@@ -98,8 +99,15 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public List<Product> getProductsFromStorage(String productName, int amount, ITransaction tx) {
-		return receive(storageProductTypeConsumers.get(productName), amount);
-
+		MessageConsumer consumer = storageProductTypeConsumers.get(productName);
+		List<Product> list = new ArrayList<>();
+		for (int i = 0; i < amount; i++) {
+			Product element = receive(consumer);
+			if (element == null)
+				return list;
+			list.add(element);
+		}
+		return null;
 	}
 
 	@Override

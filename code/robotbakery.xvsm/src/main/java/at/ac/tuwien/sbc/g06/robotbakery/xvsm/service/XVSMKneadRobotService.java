@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.mozartspaces.capi3.ComparableProperty;
+import org.mozartspaces.capi3.IsolationLevel;
 import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
@@ -228,7 +229,7 @@ public class XVSMKneadRobotService implements IKneadRobotService {
 			Query query = new Query().sortup(ComparableProperty.forName("*", "currentAmount")).cnt(1);
 			return (FlourPack) capi.take(storageContainer,
 					Arrays.asList(QueryCoordinator.newSelector(query), TypeCoordinator.newSelector(Ingredient.class)),
-					MzsConstants.RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx)).get(0);
+					MzsConstants.RequestTimeout.TRY_ONCE,XVSMUtil.unwrap(tx), IsolationLevel.READ_COMMITTED,null).get(0);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());
 			return null;

@@ -82,10 +82,10 @@ public class JMSBakery extends Bakery implements MessageListener {
 		registeredChangeListeners.forEach(ls -> ls.onOrderAddedOrUpdated(ser));
 		if (ser instanceof PackedOrder) {
 			((PackedOrder) ser).getProducts().forEach(p -> registeredChangeListeners.forEach(ls -> {
-				if (originalDest.equals(JMSConstants.Queue.TERMINAL)) {
+				if (originalDest.equals(getQueueAdress(JMSConstants.Queue.TERMINAL))) {
 					ls.onProductRemovedFromCounter(p);
 					ls.onProductAddedToTerminal(p);
-				} else if (originalDest.equals(JMSConstants.Queue.ORDER)) {
+				} else if (originalDest.equals(getQueueAdress(JMSConstants.Queue.ORDER))) {
 					ls.onProductRemovedFromTerminal(p);
 				}
 			}));

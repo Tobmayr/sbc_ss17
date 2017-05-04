@@ -14,15 +14,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public interface IBakeryUIChangeListener extends IChangeListener{
+public interface IBakeryUIChangeListener extends IChangeListener {
 
-	/**
-	 * Is invoked when an order has been added to the counter or an existing
-	 * order has been modified;
-	 * 
-	 * @param order
-	 *            newly added or updated order
-	 */
 	void onOrderAddedOrUpdated(Order order);
 
 	void onProductAddedToStorage(Product product);
@@ -32,22 +25,21 @@ public interface IBakeryUIChangeListener extends IChangeListener{
 	void onProductAddedToCounter(Product product);
 
 	void onProductRemovedFromCounter(Product product);
-	
+
 	void onProductAddedToBakeroom(Product product);
-	
+
 	void onProductRemovedFromBakeroom(Product product);
-	
+
 	void onProductAddedToTerminal(Product product);
-	
+
 	void onProductRemovedFromTerminal(Product product);
 
 	void onIngredientAddedToStorage(Ingredient ingredient);
 
 	void onIngredientRemovedFromStorage(Ingredient ingredient);
-	
+
 	void onRobotStart(Class<? extends Robot> robot);
 
 	void onRobotShutdown(Class<? extends Robot> robot);
-	
 
 }

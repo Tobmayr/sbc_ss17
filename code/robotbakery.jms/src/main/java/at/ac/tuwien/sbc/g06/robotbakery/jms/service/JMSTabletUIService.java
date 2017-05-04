@@ -73,17 +73,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public boolean payOrder(PackedOrder order) {
-		MessageConsumer orderConsumer;
-		try {
-			orderConsumer = session.createConsumer(orderQueue,
-					String.format("%s= '%s'", JMSConstants.Property.ORDER_ID, order.getOrderID().toString()));
-			Order oldOrder = receive(orderConsumer);
-			oldOrder.setState(OrderState.PAID);
-			return send(orderProducer, oldOrder);
-		} catch (JMSException e) {
-			logger.error(e.getMessage());
-		}
-		return false;
+		return send(orderProducer, order);
 
 	}
 

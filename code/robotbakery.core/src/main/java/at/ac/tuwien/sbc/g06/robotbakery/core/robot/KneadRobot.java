@@ -27,8 +27,11 @@ public class KneadRobot extends Robot {
 
 	/**
 	 * get ingredients from storage for a recipe to finish a base dough
-	 * @param tx Transaction
-	 * @return return true if ingredients are fetched and false for exceptions or when there are not enough in the storage
+	 * 
+	 * @param tx
+	 *            Transaction
+	 * @return return true if ingredients are fetched and false for exceptions
+	 *         or when there are not enough in the storage
 	 */
 	private boolean getAdditionalIngredients(ITransaction tx) {
 		for (Entry<IngredientType, Integer> entry : nextProduct.getRecipe().getAdditionalIngredients()) {
@@ -40,8 +43,11 @@ public class KneadRobot extends Robot {
 	}
 
 	/**
-	 * use ingredients and base dough to make the final dough and put it in the bakeroom
-	 * @param tx Transaction
+	 * use ingredients and base dough to make the final dough and put it in the
+	 * bakeroom
+	 * 
+	 * @param tx
+	 *            Transaction
 	 * @return true if dough is finished and put in bakeroom, false if exception
 	 */
 	private boolean addAddtionalIngredientsAndFinsish(ITransaction tx) {
@@ -64,19 +70,10 @@ public class KneadRobot extends Robot {
 	 */
 	ITransactionalTask getBaseIngredients = tx -> {
 		int flourAmount = nextProduct.getRecipe().getAmount(IngredientType.FLOUR);
-		// Take flour
-//		FlourPack pack = null;
-//		while (flourAmount > 0) {
-//			pack = (FlourPack) service.getPackFromStorage(tx);
-//			if (pack == null)
-//				return false;
-//			flourAmount = pack.takeFlour(flourAmount);
-//		}
-//		if (pack.getCurrentAmount() > 0) {
-//			service.putPackInStorage(pack, tx);
-//		}
-		
-		service.takeFlourFromStorage(flourAmount, tx);
+
+		if (!service.takeFlourFromStorage(flourAmount, tx)) {
+			return false;
+		}
 		// Take water
 		long time = (long) (nextProduct.getRecipe().getAmount(IngredientType.WATER) / 500d * 2000);
 		if (!service.useWaterPipe(time, tx))
@@ -107,7 +104,8 @@ public class KneadRobot extends Robot {
 	};
 
 	/**
-	 * get base dough from storage and try to finish it with getting the ingredients
+	 * get base dough from storage and try to finish it with getting the
+	 * ingredients
 	 */
 	ITransactionalTask tryToFinishExistingDough = tx -> {
 		debug("Trying to finish basedough");

@@ -18,8 +18,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
-
 public class JMSUtil {
 	private static Logger logger = LoggerFactory.getLogger(JMSUtil.class);
 

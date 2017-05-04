@@ -91,7 +91,7 @@ public class ServiceRobot extends Robot {
 	 * get products from storage to fill up counter, get only products that are missing in counter
 	 */
 	ITransactionalTask getProductFromStorage = tx -> {
-		System.out.println("Stocking up the counter");
+		
 		Map<String, Integer> missingProducts = service.getCounterStock();
 		if (missingProducts == null || missingProducts.isEmpty())
 			return false;
@@ -106,6 +106,7 @@ public class ServiceRobot extends Robot {
 
 		if (productsForCounter.isEmpty())
 			return false;
+		System.out.println("Stocking up the counter");
 		for (Product product : productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
 			if (!service.addToCounter(product, tx))
