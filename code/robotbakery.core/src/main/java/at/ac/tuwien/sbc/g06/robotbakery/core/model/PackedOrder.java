@@ -16,6 +16,7 @@ public class PackedOrder extends Order implements Serializable {
 	public PackedOrder(Order order) {
 		super(order.getId());
 		setCustomerId(order.getCustomerId());
+		order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
 		this.products = new ArrayList<Product>();
 	}
 
