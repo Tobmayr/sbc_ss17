@@ -12,12 +12,18 @@ import java.util.UUID;
 public class PackedOrder extends Order implements Serializable {
 
 	private final List<Product> products;
+	private boolean delivery = false;
 
 	public PackedOrder(Order order) {
 		super(order.getId());
-		setCustomerId(order.getCustomerId());
-		order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
 		this.products = new ArrayList<Product>();
+
+		setCustomerId(order.getCustomerId());
+		setServiceRobotId(order.getServiceRobotId());
+		setTimestamp(order.getTimestamp());
+		order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
+		this.delivery = order instanceof DeliveryOrder;
+
 	}
 
 	public void addAll(List<Product> products) {
@@ -39,5 +45,15 @@ public class PackedOrder extends Order implements Serializable {
 	public List<Product> getProducts() {
 		return products;
 	}
+
+	public boolean isDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(boolean delivery) {
+		this.delivery = delivery;
+	}
+	
+	
 
 }

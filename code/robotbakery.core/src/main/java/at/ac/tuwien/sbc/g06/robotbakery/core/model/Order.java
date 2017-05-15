@@ -10,6 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
  * order class
+ * 
  * @author Tobias Ortmayr (1026279)
  *
  */
@@ -39,8 +40,11 @@ public class Order implements Serializable {
 
 	/**
 	 * add an item to order
-	 * @param productName name of the added product
-	 * @param amount amount of items
+	 * 
+	 * @param productName
+	 *            name of the added product
+	 * @param amount
+	 *            amount of items
 	 * @return return the created and added item
 	 */
 	public Item addItem(String productName, Integer amount) {

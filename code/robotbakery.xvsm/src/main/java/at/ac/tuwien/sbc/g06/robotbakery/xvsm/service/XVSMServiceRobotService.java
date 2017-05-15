@@ -26,6 +26,7 @@ import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -78,7 +79,8 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 			Integer available = capi.test(counterContainer,
 					Arrays.asList(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX)),
 					RequestTimeout.TRY_ONCE, null);
-			if(available < SBCConstants.COUNTER_MAX_CAPACITY) capi.write(new Entry(product), counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			if (available < SBCConstants.COUNTER_MAX_CAPACITY)
+				capi.write(new Entry(product), counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
 			return true;
 		} catch (MzsCoreException ex) {
 			logger.error(ex.getMessage());
@@ -169,6 +171,18 @@ public class XVSMServiceRobotService implements IServiceRobotService {
 	public void shutdownRobot() {
 		robotService.shutdownRobot();
 
+	}
+
+	@Override
+	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
+		try {
+			Entry entry = new Entry(currentOrder);
+			capi.write(entry, counterContainer, RequestTimeout.TRY_ONCE, XVSMUtil.unwrap(tx));
+			return true;
+		} catch (MzsCoreException ex) {
+			logger.error(ex.getMessage());
+			return false;
+		}
 	}
 
 }

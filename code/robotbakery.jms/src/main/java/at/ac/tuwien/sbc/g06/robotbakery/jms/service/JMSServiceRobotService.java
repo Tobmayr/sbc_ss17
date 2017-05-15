@@ -15,6 +15,7 @@ import javax.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -136,6 +137,11 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	public boolean addToCounter(Product product, ITransaction tx) {
 		return send(counterProducer, product);
 
+	}
+
+	@Override
+	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
+		return send(counterProducer, currentOrder);
 	}
 
 }

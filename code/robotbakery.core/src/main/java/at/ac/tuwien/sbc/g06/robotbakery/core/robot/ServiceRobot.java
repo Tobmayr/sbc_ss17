@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.mockito.internal.matchers.InstanceOf;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
@@ -46,8 +49,11 @@ public class ServiceRobot extends Robot {
 
 	/**
 	 * pack order and put it in terminal for customer
-	 * @param tx Transaction
-	 * @return true if success, false if not enough products in counter or exception
+	 * 
+	 * @param tx
+	 *            Transaction
+	 * @return true if success, false if not enough products in counter or
+	 *         exception
 	 */
 	private boolean packOrderAndPutInTerminal(ITransaction tx) {
 		PackedOrder packedOrder = new PackedOrder(currentOrder);
@@ -79,19 +85,27 @@ public class ServiceRobot extends Robot {
 			return false;
 		System.out.println("New order with id: " + currentOrder.getId() + " is now processed & prepared for packing");
 		if (!packOrderAndPutInTerminal(tx)) {
-			System.out.println("Not enough products in stock. Order has been declined!");
-			currentOrder.setState(OrderState.UNDELIVERABLE);
-			return service.updateOrder(currentOrder, tx);
+			if (currentOrder instanceof DeliveryOrder) {
+				System.out.println("Not enough products in stock. Order has is returned to collection area!");
+				currentOrder.setState(OrderState.OPEN);
+				return service.returnDeliveryOrder((DeliveryOrder) currentOrder,tx);
+			} else {
+				System.out.println("Not enough products in stock. Order has been declined!");
+				currentOrder.setState(OrderState.UNDELIVERABLE);
+				return service.updateOrder(currentOrder, tx);
+			}
+
 		}
 		return true;
 
 	};
 
 	/**
-	 * get products from storage to fill up counter, get only products that are missing in counter
+	 * get products from storage to fill up counter, get only products that are
+	 * missing in counter
 	 */
 	ITransactionalTask getProductFromStorage = tx -> {
-		
+
 		Map<String, Integer> missingProducts = service.getCounterStock();
 		if (missingProducts == null || missingProducts.isEmpty())
 			return false;
