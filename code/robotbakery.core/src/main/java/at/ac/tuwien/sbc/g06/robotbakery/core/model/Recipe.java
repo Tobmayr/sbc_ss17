@@ -24,9 +24,10 @@ public class Recipe implements Serializable {
 	private final Map<IngredientType, Integer> ingredients = new HashMap<>();
 	private final String productName;
 	private final double pricePerUnit;
+	private final int bakeTime;
 
 	public Recipe(String productName, List<IngredientType> ingredientTypes, List<Integer> amounts,
-			double pricePerUnit) {
+			double pricePerUnit, int bakeTime) {
 		super();
 		this.productName = productName;
 		if (ingredientTypes.size() == amounts.size()) {
@@ -34,6 +35,7 @@ public class Recipe implements Serializable {
 		}
 
 		this.pricePerUnit = pricePerUnit;
+		this.bakeTime=bakeTime;
 	}
 
 	public String getProductName() {
@@ -50,6 +52,12 @@ public class Recipe implements Serializable {
 
 	public Map<IngredientType, Integer> getIngredients() {
 		return ingredients;
+	}
+	
+	
+
+	public int getBakeTime() {
+		return bakeTime;
 	}
 
 	/**
