@@ -1,6 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
