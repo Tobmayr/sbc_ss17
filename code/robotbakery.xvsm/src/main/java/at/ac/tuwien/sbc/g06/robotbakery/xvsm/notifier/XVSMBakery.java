@@ -203,7 +203,7 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 	}
 
 	@Override
-	public void initializeStorageWaterPipe() {
+	public void init() {
 
 		try {
 			Entry entry = new Entry(new WaterPipe());
@@ -212,6 +212,18 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 			logger.error(ex.getMessage());
 		}
 
+	}
+
+	@Override
+	public void addItemsToStorage(List<Serializable> items) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addProductsToCounter(List<Product> products) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

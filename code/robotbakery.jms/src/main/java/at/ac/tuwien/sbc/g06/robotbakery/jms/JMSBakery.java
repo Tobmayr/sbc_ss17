@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -149,7 +150,7 @@ public class JMSBakery extends Bakery implements MessageListener {
 	}
 
 	@Override
-	public void initializeStorageWaterPipe() {
+	public void init() {
 		try {
 			Message msg = queueSession.createObjectMessage(new WaterPipe());
 			msg.setStringProperty(JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName());
@@ -162,6 +163,18 @@ public class JMSBakery extends Bakery implements MessageListener {
 
 	private String getQueueAdress(String queueName) {
 		return "queue://" + queueName;
+	}
+
+	@Override
+	public void addItemsToStorage(List<Serializable> items) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addProductsToCounter(List<Product> products) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

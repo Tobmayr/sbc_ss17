@@ -20,7 +20,7 @@ public class DashboardInitializer {
 
 	public static void initializeDashboard(Stage primaryStage, Bakery bakery, IBakeryUIService uiService)
 			throws IOException {
-		bakery.initializeStorageWaterPipe();
+		bakery.init();
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
