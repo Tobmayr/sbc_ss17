@@ -1,0 +1,48 @@
+package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
+import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
+
+/**
+ * Created by Matthias Höllthaler on 20.05.2017.
+ */
+public class DeliveryRobot extends Robot {
+
+    private IDeliveryRobotService service;
+
+    private DeliveryOrder delivery;
+
+    public DeliveryRobot(IDeliveryRobotService service, ITransactionManager transactionManager, String id) {
+        super(transactionManager, id);
+        this.service = service;
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
+
+    };
+
+
+    @Override
+    public void run() {
+        service.startRobot();
+        while(!Thread.interrupted()) {
+            doTask(processNextDelivery);
+        }
+
+    }
+
+    ITransactionalTask processNextDelivery = tx -> {
+        delivery = service.getDelivery();
+        if(delivery == null) {
+            return false;
+        }
+        System.out.println("New delivery order with id: " + delivery.getId() + " is now processed & delivered");
+        if(service.checkDestination()) {
+            sleepFor(5000);
+            service.deliverOrder();
+        } else {
+            return false;
+        }
+        return true;
+    };
+}

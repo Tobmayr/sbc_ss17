@@ -1,21 +1,48 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Created by Matthias Höllthaler on 13.05.2017.
+ */
 @SuppressWarnings("serial")
 public class DeliveryOrder extends Order {
 
-	private String customerAddress;
+    private final List<Product> products;
 
-	public DeliveryOrder(String customerAddress) {
-		super();
-		this.customerAddress = customerAddress;
-	}
+    private final String destination;
 
-	public String getCustomerAddress() {
-		return customerAddress;
-	}
+    public DeliveryOrder(Order order, String destination) {
+        super(order.getId());
+        setCustomerId(order.getCustomerId());
+        order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
+        this.products = new ArrayList<Product>();
+        this.destination = destination;
+    }
 
-	public void setCustomerAddress(String customerAddress) {
-		this.customerAddress = customerAddress;
-	}
+    public void addAll(List<Product> products) {
+        this.products.addAll(products);
+    }
 
+    public UUID getCustomerID() {
+        return getCustomerID();
+    }
+
+    public UUID getOrderID() {
+        return getId();
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
 }
