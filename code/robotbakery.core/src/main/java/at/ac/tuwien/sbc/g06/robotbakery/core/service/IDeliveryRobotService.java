@@ -9,7 +9,7 @@ public interface IDeliveryRobotService extends IRobotService {
 
     DeliveryOrder getDelivery();
 
-    boolean checkDestination();
+    boolean checkDestination(String destination);
 
-    boolean deliverOrder();
+    boolean deliverOrder(DeliveryOrder order);
 }

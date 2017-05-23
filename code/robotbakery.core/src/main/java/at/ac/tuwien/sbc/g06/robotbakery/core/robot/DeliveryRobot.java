@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
@@ -27,6 +28,7 @@ public class DeliveryRobot extends Robot {
         service.startRobot();
         while(!Thread.interrupted()) {
             doTask(processNextDelivery);
+            delivery = null;
         }
 
     }
@@ -37,10 +39,12 @@ public class DeliveryRobot extends Robot {
             return false;
         }
         System.out.println("New delivery order with id: " + delivery.getId() + " is now processed & delivered");
-        if(service.checkDestination()) {
+        if(service.checkDestination(delivery.getDestination())) {
             sleepFor(5000);
-            service.deliverOrder();
+            service.deliverOrder(delivery);
+            sleepFor(5000);
         } else {
+            delivery.setState(Order.OrderState.UNDELIVERABLE);
             return false;
         }
         return true;
