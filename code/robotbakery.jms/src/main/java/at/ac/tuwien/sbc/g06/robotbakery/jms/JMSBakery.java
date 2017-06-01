@@ -177,4 +177,10 @@ public class JMSBakery extends Bakery implements MessageListener {
 		
 	}
 
+	@Override
+	public void addProductsToBakeroom(List<Product> forBakeroom) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

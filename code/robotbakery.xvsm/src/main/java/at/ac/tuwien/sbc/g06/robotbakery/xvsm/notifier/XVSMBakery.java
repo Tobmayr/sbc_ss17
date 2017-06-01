@@ -204,7 +204,6 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 
 	@Override
 	public void init() {
-
 		try {
 			Entry entry = new Entry(new WaterPipe());
 			server.write(storageContainer, RequestTimeout.TRY_ONCE, null, entry);
@@ -216,12 +215,18 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 
 	@Override
 	public void addItemsToStorage(List<Serializable> items) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void addProductsToCounter(List<Product> products) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addProductsToBakeroom(List<Product> forBakeroom) {
 		// TODO Auto-generated method stub
 		
 	}

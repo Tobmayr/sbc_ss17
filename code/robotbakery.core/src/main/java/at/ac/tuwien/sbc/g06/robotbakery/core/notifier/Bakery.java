@@ -9,10 +9,15 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
@@ -41,36 +46,110 @@ public abstract class Bakery extends ChangeNotifer<IBakeryUIChangeListener> impl
 	@Override
 	public void init() {
 		if (initProperties != null) {
-			UUID id = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
-			List<Serializable> forStorage = new ArrayList<>();
-			SBCConstants.Keys.ALL_STORAGE_BASE.forEach(key -> {
-				int amount = getAmount(key);
-				if (amount > 0) {
-					IntStream.range(0, amount).forEach(i -> {
-						Product product = new Product(getName(key));
-						product.setTimestamp(new Timestamp(System.currentTimeMillis()));
-						product.setType(BakeState.DOUGH);
-						product.addContribution(id, ContributionType.DOUGH_BASE, KneadRobot.class);
-						forStorage.add(product);
-					});
+			loadTestData();
 
-				}
-			});
+		}
+	}
 
-			SBCConstants.Keys.ALL_STORAGE_FINAL.forEach(key -> {
-				int amount = getAmount(key);
-				if (amount > 0) {
-					IntStream.range(0, amount).forEach(i -> {
-						Product product = new Product(getName(key));
-						product.setTimestamp(new Timestamp(System.currentTimeMillis()));
-						product.setType(BakeState.DOUGH);
-						product.addContribution(id, ContributionType.DOUGH_BASE, KneadRobot.class);
-						forStorage.add(product);
-					});
+	private void loadTestData() {
+		UUID kneadRobotID = UUID.fromString("11111111-8cf0-11bd-b23e-10b96e4ef00d");
+		UUID serviceRobotID = UUID.fromString("22222222-8cf0-11bd-b23e-10b96e4ef00d");
+		UUID bakeRobotID = UUID.fromString("33333333-8cf0-11bd-b23e-10b96e4ef00d");
+		List<Serializable> forStorage = new ArrayList<>();
+		List<Product> forCounter = new ArrayList<>();
+		List<Product> forBakeroom = new ArrayList<>();
+		SBCConstants.Keys.ALL_STORAGE_BASE.forEach(key -> {
+			int amount = getAmount(key);
+			if (amount > 0) {
+				IntStream.range(0, amount).forEach(i -> {
+					Product product = new Product(getName(key));
+					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
+					product.setType(BakeState.DOUGH);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
+					forStorage.add(product);
+				});
 
-				}
-			});
+			}
+		});
 
+		SBCConstants.Keys.ALL_STORAGE_FINAL.forEach(key -> {
+			int amount = getAmount(key);
+			if (amount > 0) {
+				IntStream.range(0, amount).forEach(i -> {
+					Product product = new Product(getName(key));
+					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
+					product.setType(BakeState.FINALPRODUCT);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
+					product.addContribution(bakeRobotID, ContributionType.BAKE, BakeRobot.class);
+					forCounter.add(product);
+				});
+
+			}
+		});
+
+		SBCConstants.Keys.ALL_INGREDIENTS.forEach(key -> {
+			int amount = getAmount(key);
+			if (amount > 0) {
+				IntStream.range(0, amount).forEach(i -> {
+					Ingredient ingredient;
+					if (key.equals(SBCConstants.Keys.DOUGH)) {
+						ingredient = new FlourPack();
+					} else {
+						ingredient = new Ingredient(getType(key));
+					}
+					forStorage.add(ingredient);
+				});
+
+			}
+		});
+
+		SBCConstants.Keys.ALL_COUNTER.forEach(key -> {
+			int amount = getAmount(key);
+			if (amount > 0) {
+				IntStream.range(0, amount).forEach(i -> {
+					Product product = new Product(getName(key));
+					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
+					product.setType(BakeState.FINALPRODUCT);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
+					product.addContribution(serviceRobotID, ContributionType.TRANSFER_TO_COUNTER, ServiceRobot.class);
+					forStorage.add(product);
+				});
+
+			}
+		});
+
+		SBCConstants.Keys.ALL_BAKEROOM.forEach(key -> {
+			int amount = getAmount(key);
+			if (amount > 0) {
+				IntStream.range(0, amount).forEach(i -> {
+					Product product = new Product(getName(key));
+					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
+					product.setType(BakeState.DOUGH);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
+					forBakeroom.add(product);
+				});
+
+			}
+		});
+		addItemsToStorage(forStorage);
+		addProductsToCounter(forCounter);
+		addProductsToBakeroom(forBakeroom);
+
+	}
+
+	private IngredientType getType(String key) {
+		switch (key) {
+		case SBCConstants.Keys.EGGS:
+			return IngredientType.FLOUR;
+		case SBCConstants.Keys.BAKEMIX_SPICY:
+			return IngredientType.BAKING_MIX_SPICY;
+		case SBCConstants.Keys.BAKEMIX_SWEET:
+			return IngredientType.BAKING_MIX_SWEET;
+		default:
+			return null;
 		}
 	}
 

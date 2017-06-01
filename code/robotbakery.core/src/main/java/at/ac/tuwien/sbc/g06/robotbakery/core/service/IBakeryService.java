@@ -26,4 +26,6 @@ public interface IBakeryService {
 	void addItemsToStorage(List<Serializable> items);
 
 	void addProductsToCounter(List<Product> products);
+
+	void addProductsToBakeroom(List<Product> forBakeroom);
 }
