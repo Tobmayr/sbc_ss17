@@ -3,7 +3,6 @@ package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 import java.io.IOException;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
@@ -37,7 +36,6 @@ public class TabletInitializer {
 		TabletData tabletData = new TabletData();
 		changeNotifer.registerChangeListener(tabletData);
 		controller.initialize(tabletData, uiService, customerID);
-		Order order = controller.getOrder();
 		tabletData.delegateController(controller);
 		
 	

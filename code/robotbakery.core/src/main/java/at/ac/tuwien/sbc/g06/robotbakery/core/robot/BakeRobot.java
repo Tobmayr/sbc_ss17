@@ -1,13 +1,12 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import java.util.List;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
-import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
-
-import java.util.List;
 
 public class BakeRobot extends Robot {
 

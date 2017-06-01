@@ -3,12 +3,10 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 import java.util.List;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 
-import org.omg.CORBA.OMGVMCID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

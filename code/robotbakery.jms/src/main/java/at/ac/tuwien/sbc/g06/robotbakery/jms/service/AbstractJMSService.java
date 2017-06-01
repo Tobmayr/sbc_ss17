@@ -2,10 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 
 import javax.jms.Connection;
 import javax.jms.Destination;
@@ -14,14 +11,9 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
-import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicPublisher;
-import javax.jms.TopicSession;
 
-import org.apache.activemq.command.ProducerAck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +22,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 

@@ -1,8 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.startup;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
-import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSServer;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSBakery;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSServer;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardInitializer;
 import javafx.application.Application;

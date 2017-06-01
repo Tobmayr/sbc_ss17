@@ -7,8 +7,8 @@ import java.util.List;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.Entry;
-import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
+import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.notifications.Notification;
 import org.mozartspaces.notifications.NotificationListener;
 import org.mozartspaces.notifications.NotificationManager;
@@ -16,7 +16,6 @@ import org.mozartspaces.notifications.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -27,8 +26,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
-import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 

@@ -29,7 +29,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
 /**
  * 

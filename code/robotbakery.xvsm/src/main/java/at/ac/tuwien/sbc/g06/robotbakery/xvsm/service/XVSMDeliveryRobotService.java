@@ -1,15 +1,22 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import org.mozartspaces.capi3.ComparableProperty;
+import org.mozartspaces.capi3.Matchmakers;
+import org.mozartspaces.capi3.Property;
+import org.mozartspaces.capi3.Query;
+import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.ContainerReference;
+import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.MzsConstants;
+import org.mozartspaces.core.MzsCoreException;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
-import org.mozartspaces.capi3.*;
-import org.mozartspaces.core.*;
 
 /**
  * Created by Matthias Höllthaler on 20.05.2017.

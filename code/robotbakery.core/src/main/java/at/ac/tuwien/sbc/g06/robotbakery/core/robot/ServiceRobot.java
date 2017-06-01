@@ -3,9 +3,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.mockito.internal.matchers.InstanceOf;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;

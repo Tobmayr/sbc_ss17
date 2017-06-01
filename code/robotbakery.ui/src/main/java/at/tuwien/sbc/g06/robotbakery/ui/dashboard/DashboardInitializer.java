@@ -2,9 +2,7 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
 import java.io.IOException;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
-import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;

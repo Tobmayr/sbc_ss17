@@ -3,7 +3,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import java.util.List;
 import java.util.Map.Entry;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
