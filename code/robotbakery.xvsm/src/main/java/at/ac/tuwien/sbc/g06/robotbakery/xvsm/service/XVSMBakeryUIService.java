@@ -10,7 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
-public class XVSMBakeryUIService extends AbstractXVSMService implements IBakeryUIService {
+public class XVSMBakeryUIService extends GenericXVSMService implements IBakeryUIService {
 
 	private final ContainerReference storageContainer;
 

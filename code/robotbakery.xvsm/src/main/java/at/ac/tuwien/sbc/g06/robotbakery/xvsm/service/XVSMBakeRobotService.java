@@ -21,7 +21,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
-public class XVSMBakeRobotService extends AbstractXVSMService implements IBakeRobotService {
+public class XVSMBakeRobotService extends GenericXVSMService implements IBakeRobotService {
 
 	private static Logger logger = LoggerFactory.getLogger(XVSMKneadRobotService.class);
 	private final ContainerReference storageContainer;

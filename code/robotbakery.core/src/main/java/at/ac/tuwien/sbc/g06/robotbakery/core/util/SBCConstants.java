@@ -27,6 +27,7 @@ public final class SBCConstants {
 	public static final String COORDINATION_ROOM_BAKEROOM = "Bakeroom";
 
 	public static final class Keys {
+		public static final String IGNORE_FILE="ignore.file";
 		public static final String DOUGH = "dough";
 		public static final String EGGS = "eggs";
 		public static final String BAKEMIX_SWEET = "bakemix.sweet";

@@ -24,13 +24,13 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public class AbstractXVSMService {
-	private static Logger logger = LoggerFactory.getLogger(AbstractXVSMService.class);
+public class GenericXVSMService {
+	private static Logger logger = LoggerFactory.getLogger(GenericXVSMService.class);
 	protected Capi capi;
 
 	private Map<String, ContainerReference> containers = new HashMap<>();
 
-	public AbstractXVSMService(Capi capi) {
+	public GenericXVSMService(Capi capi) {
 		this.capi = capi;
 	}
 

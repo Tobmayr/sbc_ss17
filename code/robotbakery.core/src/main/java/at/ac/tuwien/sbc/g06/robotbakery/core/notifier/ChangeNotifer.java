@@ -22,3 +22,4 @@ public abstract class ChangeNotifer {
 		return registeredChangeListeners.remove(listener);
 	}
 }
+ 

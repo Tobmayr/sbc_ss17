@@ -28,4 +28,6 @@ public interface IBakeryService {
 	void addProductsToCounter(List<Product> products);
 
 	void addProductsToBakeroom(List<Product> forBakeroom);
+	
+	boolean initFromProperties(String filename);
 }

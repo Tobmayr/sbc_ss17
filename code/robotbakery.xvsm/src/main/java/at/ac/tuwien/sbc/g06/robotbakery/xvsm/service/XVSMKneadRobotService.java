@@ -35,7 +35,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
  * @author Tobias Ortmayr, 1026279
  *
  */
-public class XVSMKneadRobotService extends AbstractXVSMService implements IKneadRobotService {
+public class XVSMKneadRobotService extends GenericXVSMService implements IKneadRobotService {
 	private static Logger logger = LoggerFactory.getLogger(XVSMKneadRobotService.class);
 	private final ContainerReference storageContainer;
 	private final ContainerReference counterContainer;

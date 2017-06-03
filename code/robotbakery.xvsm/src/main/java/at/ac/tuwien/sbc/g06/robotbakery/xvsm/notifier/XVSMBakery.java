@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
-import org.mozartspaces.core.Entry;
-import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.notifications.Notification;
 import org.mozartspaces.notifications.NotificationListener;
@@ -19,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.GenericXVSMService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -31,14 +30,15 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 	private ContainerReference terminalContainer;
 	private ContainerReference bakeroomContainer;
 	private List<Notification> notifications;
-	private Capi server;
+	private GenericXVSMService service;
 
 	public XVSMBakery(Capi server) {
-		this.server = server;
-		counterContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.COUNTER_CONTAINER_NAME);
-		storageContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.STORAGE_CONTAINER_NAME);
-		terminalContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.TERMINAL_CONTAINER_NAME);
-		bakeroomContainer = XVSMUtil.getOrCreateContainer(server, XVSMConstants.BAKEROOM_CONTAINER_NAME);
+		super();
+		service = new GenericXVSMService(server);
+		counterContainer = service.getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
+		storageContainer = service.getContainer(XVSMConstants.STORAGE_CONTAINER_NAME);
+		terminalContainer = service.getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
+		bakeroomContainer = service.getContainer(XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		createNotifications(server);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -82,30 +82,26 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 
 	@Override
 	public void init() {
-		try {
-			Entry entry = new Entry(new WaterPipe());
-			server.write(storageContainer, RequestTimeout.TRY_ONCE, null, entry);
-		} catch (MzsCoreException ex) {
-			logger.error(ex.getMessage());
-		}
+		service.write(new WaterPipe(), storageContainer, null);
 
 	}
 
 	@Override
 	public void addItemsToStorage(List<Serializable> items) {
-
+		service.write(items, storageContainer, null);
 	}
 
 	@Override
 	public void addProductsToCounter(List<Product> products) {
-		// TODO Auto-generated method stub
+		service.write(products, counterContainer, null);
 
 	}
 
 	@Override
 	public void addProductsToBakeroom(List<Product> forBakeroom) {
-		// TODO Auto-generated method stub
+		service.write(forBakeroom, bakeroomContainer, null);
 
 	}
+
 
 }

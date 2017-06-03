@@ -21,7 +21,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 /**
  * Created by Matthias Höllthaler on 20.05.2017.
  */
-public class XVSMDeliveryRobotService extends AbstractXVSMService implements IDeliveryRobotService {
+public class XVSMDeliveryRobotService extends GenericXVSMService implements IDeliveryRobotService {
 
     private XVSMRobotService robotService;
     private ContainerReference terminalContainer;

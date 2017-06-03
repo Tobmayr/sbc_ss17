@@ -8,7 +8,7 @@ import org.mozartspaces.core.ContainerReference;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
-public class XVSMRobotService extends AbstractXVSMService implements IRobotService {
+public class XVSMRobotService extends GenericXVSMService implements IRobotService {
 
 	private ContainerReference storageContainer;
 	private String message;

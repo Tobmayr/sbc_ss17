@@ -31,7 +31,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
-public class XVSMServiceRobotService extends AbstractXVSMService implements IServiceRobotService {
+public class XVSMServiceRobotService extends GenericXVSMService implements IServiceRobotService {
 
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;

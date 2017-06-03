@@ -1,5 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.notifier;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -7,6 +10,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
@@ -28,7 +34,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
  *
  */
 public abstract class Bakery extends ChangeNotifer implements IBakeryService {
-
+	private static Logger logger = LoggerFactory.getLogger(Bakery.class);
 	private static Bakery INSTANCE = null;
 	private Properties initProperties;
 
@@ -41,19 +47,39 @@ public abstract class Bakery extends ChangeNotifer implements IBakeryService {
 		INSTANCE = this;
 	}
 
-	public Bakery(Properties initProperties) {
-		this.initProperties = initProperties;
+	public Properties loadProperties(String fileName) {
+		Properties properties = new Properties();
+		InputStream input = null;
+		try {
+			input = new FileInputStream(fileName);
+			initProperties.load(input);
+			input.close();
+			return properties;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
-	public void init() {
+	public boolean initFromProperties(String filename) {
+		initProperties = loadProperties(filename);
 		if (initProperties != null) {
 			loadTestData();
-
+			return true;
 		}
+		return false;
 	}
 
+	/**
+	 * Convenience helper method which enables to load an abitary bakery state
+	 * (products, ingredients, counter etc.) from a properties file to speed up
+	 * testing.
+	 * 
+	 * @param initProperties2
+	 */
 	private void loadTestData() {
+
 		UUID kneadRobotID = UUID.fromString("11111111-8cf0-11bd-b23e-10b96e4ef00d");
 		UUID serviceRobotID = UUID.fromString("22222222-8cf0-11bd-b23e-10b96e4ef00d");
 		UUID bakeRobotID = UUID.fromString("33333333-8cf0-11bd-b23e-10b96e4ef00d");
@@ -177,4 +203,5 @@ public abstract class Bakery extends ChangeNotifer implements IBakeryService {
 	public static Bakery getInstance() {
 		return INSTANCE;
 	}
+
 }

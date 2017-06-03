@@ -18,6 +18,7 @@ public class XVSMBakeryStartUp extends Application {
 		Capi server = new Capi(DefaultMzsCore.newInstance());
 		Bakery bakery = new XVSMBakery(server);
 		DashboardInitializer.initializeDashboard(primaryStage, bakery, new XVSMBakeryUIService(server));
+	
 
 	}
 
