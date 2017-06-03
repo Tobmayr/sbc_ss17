@@ -1,5 +1,6 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ItemCount;
 import at.tuwien.sbc.g06.robotbakery.ui.dashboard.DashboardData.ProductState;
+import at.tuwien.sbc.g06.robotbakery.ui.test.TestDataInitializer;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -37,6 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -149,6 +152,13 @@ public class DashboardController {
 
 	private Stage mainStage;
 	private IBakeryUIService uiService;
+	@FXML
+	TextField fileChooserText;
+	@FXML
+	Button fileChoserOpenButton;
+	@FXML
+	Button loadPropButton;
+	private TestDataInitializer testDataInitializer;
 
 	public DashboardController() {
 	}
@@ -156,6 +166,7 @@ public class DashboardController {
 	public void initialize(DashboardData data, Stage mainStage, IBakeryUIService uiService) {
 		this.mainStage = mainStage;
 		this.uiService = uiService;
+		testDataInitializer = new TestDataInitializer(uiService);
 		initializeUIData(data);
 
 	}
@@ -359,5 +370,27 @@ public class DashboardController {
 
 	public IBakeryUIService getUiService() {
 		return uiService;
+	}
+
+	@FXML
+	public void openFileChooser() {
+		FileChooser fileChooser = new FileChooser();
+
+		// Set extension filter
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Properties Files", "*.properties");
+		fileChooser.getExtensionFilters().add(extFilter);
+
+		// Show open file dialog
+		File file = fileChooser.showOpenDialog(null);
+		testDataInitializer.setFile(file);
+		fileChooserText.setText(file.getPath());
+	}
+
+	@FXML
+	public void loadTestData() {
+		if (fileChooserText.getText()!=null && !fileChooserText.getText().isEmpty()){
+			testDataInitializer.initFromProperties();
+		}
+		
 	}
 }

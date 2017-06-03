@@ -145,6 +145,13 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="fileChooserText" editable="false" />
+                                    <Button fx:id="fileChoserOpenButton" mnemonicParsing="false" onAction="#openFileChooser" text="Open" />
+                                    <Button fx:id="loadPropButton" mnemonicParsing="false" onAction="#loadTestData" text="Load Testdata" />
+                                 </children>
+                              </HBox>
                            </children>
                            <GridPane.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -1,10 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 
-import java.io.Serializable;
-import java.util.List;
-
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-
 /**
  * Interface for bakery
  */
@@ -23,11 +18,5 @@ public interface IBakeryService {
 	 * @param fileName
 	 *            Properties filename
 	 */
-	void addItemsToStorage(List<Serializable> items);
-
-	void addProductsToCounter(List<Product> products);
-
-	void addProductsToBakeroom(List<Product> forBakeroom);
 	
-	boolean initFromProperties(String filename);
 }

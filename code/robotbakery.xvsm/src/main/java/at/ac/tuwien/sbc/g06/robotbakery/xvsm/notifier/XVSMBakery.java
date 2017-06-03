@@ -14,7 +14,6 @@ import org.mozartspaces.notifications.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.GenericXVSMService;
@@ -86,22 +85,7 @@ public class XVSMBakery extends Bakery implements NotificationListener {
 
 	}
 
-	@Override
-	public void addItemsToStorage(List<Serializable> items) {
-		service.write(items, storageContainer, null);
-	}
-
-	@Override
-	public void addProductsToCounter(List<Product> products) {
-		service.write(products, counterContainer, null);
-
-	}
-
-	@Override
-	public void addProductsToBakeroom(List<Product> forBakeroom) {
-		service.write(forBakeroom, bakeroomContainer, null);
-
-	}
+	
 
 
 }

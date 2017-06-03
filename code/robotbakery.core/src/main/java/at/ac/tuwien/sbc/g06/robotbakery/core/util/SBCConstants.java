@@ -27,8 +27,7 @@ public final class SBCConstants {
 	public static final String COORDINATION_ROOM_BAKEROOM = "Bakeroom";
 
 	public static final class Keys {
-		public static final String IGNORE_FILE="ignore.file";
-		public static final String DOUGH = "dough";
+		public static final String FLOUR = "flour";
 		public static final String EGGS = "eggs";
 		public static final String BAKEMIX_SWEET = "bakemix.sweet";
 		public static final String BAKEMIX_SPICY = "bakemix.spicy";
@@ -45,22 +44,22 @@ public final class SBCConstants {
 		public static final String STORAGE_BASE_PRODUCT4 = "storage.base.product4";
 		public static final String STORAGE_BASE_PRODUCT5 = "storage.base.product5";
 
-		public static final String COUNTER_PRODUCT1 = "counter.product.1";
-		public static final String COUNTER_PRODUCT2 = "counter.product.2";
-		public static final String COUNTER_PRODUCT3 = "counter.product.3";
-		public static final String COUNTER_PRODUCT4 = "counter.product.4";
-		public static final String COUNTER_PRODUCT5 = "counter.product.5";
+		public static final String COUNTER_PRODUCT1 = "counter.product1";
+		public static final String COUNTER_PRODUCT2 = "counter.product2";
+		public static final String COUNTER_PRODUCT3 = "counter.product3";
+		public static final String COUNTER_PRODUCT4 = "counter.product4";
+		public static final String COUNTER_PRODUCT5 = "counter.product5";
 
-		public static final String BAKEROOM_PRODUCT1 = "bakeroom.product.1";
-		public static final String BAKEROOM_PRODUCT2 = "bakeroom.product.2";
-		public static final String BAKEROOM_PRODUCT3 = "bakeroom.product.3";
-		public static final String BAKEROOM_PRODUCT4 = "bakeroom.product.4";
-		public static final String BAKEROOM_PRODUCT5 = "bakeroom.product.5";
+		public static final String BAKEROOM_PRODUCT1 = "bakeroom.product1";
+		public static final String BAKEROOM_PRODUCT2 = "bakeroom.product2";
+		public static final String BAKEROOM_PRODUCT3 = "bakeroom.product3";
+		public static final String BAKEROOM_PRODUCT4 = "bakeroom.product4";
+		public static final String BAKEROOM_PRODUCT5 = "bakeroom.product5";
 
 		public static final List<String> ALL_STORAGE_BASE = Arrays.asList(STORAGE_BASE_PRODUCT1, STORAGE_BASE_PRODUCT2,
 				STORAGE_BASE_PRODUCT3, STORAGE_BASE_PRODUCT4, STORAGE_BASE_PRODUCT5);
 
-		public static final List<String> ALL_INGREDIENTS = Arrays.asList(DOUGH, EGGS, BAKEMIX_SWEET, BAKEMIX_SPICY);
+		public static final List<String> ALL_INGREDIENTS = Arrays.asList(FLOUR, EGGS, BAKEMIX_SWEET, BAKEMIX_SPICY);
 		public static final List<String> ALL_STORAGE_FINAL = Arrays.asList(STORAGE_FINAL_PRODUCT1,
 				STORAGE_FINAL_PRODUCT2, STORAGE_FINAL_PRODUCT3, STORAGE_FINAL_PRODUCT4, STORAGE_FINAL_PRODUCT5);
 		public static final List<String> ALL_COUNTER = Arrays.asList(COUNTER_PRODUCT1, COUNTER_PRODUCT2,

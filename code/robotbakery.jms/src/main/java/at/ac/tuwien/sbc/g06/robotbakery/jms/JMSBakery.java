@@ -79,22 +79,5 @@ public class JMSBakery extends Bakery implements MessageListener {
 
 	}
 
-	@Override
-	public void addItemsToStorage(List<Serializable> items) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addProductsToCounter(List<Product> products) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addProductsToBakeroom(List<Product> forBakeroom) {
-		// TODO Auto-generated method stub
-
-	}
 
 }
