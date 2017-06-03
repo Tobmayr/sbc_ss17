@@ -16,12 +16,32 @@ public class TabletInitializer {
 
 	}
 
-	public static void intitalizeTablet(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
+	public static void initializeTabletStartUp(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
 			ITabletUIService uiService) throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(
+				TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLET_STARTUP_DIALOG_FMXL));
+		Parent root = loader.load();
+		primaryStage.setTitle(UIConstants.TABLET_STARTUP_TITLE);
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(
+				TabletInitializer.class.getClassLoader().getResource(UIConstants.MAIN_CSS_FILENAME).toExternalForm());
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		primaryStage.setOnCloseRequest(we -> System.exit(0));
+		primaryStage.setResizable(false);
+		TabletStartUpController controller = loader.getController();
+		controller.initialize(uiService, changeNotifer);
+
+	}
+
+	public static void intitalizeTablet(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
+			ITabletUIService uiService, boolean normalTablet) throws IOException {
 		UUID customerID = UUID.randomUUID();
 		changeNotifer.setCustomerID(customerID);
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLE_FXML_FILENAME));
+		String fxmlFile = normalTablet ? UIConstants.TABLET_FXML : UIConstants.DELIVERY_TABLET_FMXL;
+		loader.setLocation(TabletInitializer.class.getClassLoader().getResource(fxmlFile));
 		Parent root = loader.load();
 		primaryStage.setTitle(UIConstants.TABLET_TITLE);
 		Scene scene = new Scene(root);
@@ -37,8 +57,6 @@ public class TabletInitializer {
 		changeNotifer.registerChangeListener(tabletData);
 		controller.initialize(tabletData, uiService, customerID);
 		tabletData.delegateController(controller);
-		
-	
 
 	}
 

@@ -22,7 +22,7 @@ public class DashboardInitializer {
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
-				DashboardInitializer.class.getClassLoader().getResource(UIConstants.DASHBOARD_FXML_FILENAME));
+				DashboardInitializer.class.getClassLoader().getResource(UIConstants.DASHBOARD_FXML));
 		Parent root = loader.load();
 		primaryStage.setTitle(UIConstants.DASHBOARD_TITLE);
 		Scene scene = new Scene(root);

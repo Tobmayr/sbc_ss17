@@ -14,7 +14,7 @@ public class JMSTabletStartUp extends Application {
 		// Initialize Customer-instance and required ui listeners;
 
 		TabletUIChangeNotifer changeNotifer = new JMSTabletUIChangeNotifier();
-		TabletInitializer.intitalizeTablet(primaryStage, changeNotifer, new JMSTabletUIService());
+		//TabletInitializer.intitalizeTablet(primaryStage, changeNotifer, new JMSTabletUIService());
 
 	}
 

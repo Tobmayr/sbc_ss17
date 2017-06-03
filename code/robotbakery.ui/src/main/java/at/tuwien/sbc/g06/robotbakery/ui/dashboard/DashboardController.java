@@ -183,7 +183,7 @@ public class DashboardController {
 	public void showContributionDetails(Product product) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getClassLoader().getResource(UIConstants.CONTRIBUTION_DIALOG_FXML_FILENAME));
+			loader.setLocation(getClass().getClassLoader().getResource(UIConstants.CONTRIBUTION_DIALOG_FXML));
 			Parent root = loader.load();
 
 			Stage dialogStage = new Stage();
