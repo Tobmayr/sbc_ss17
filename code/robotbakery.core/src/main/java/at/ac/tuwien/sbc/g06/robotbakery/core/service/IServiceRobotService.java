@@ -6,6 +6,7 @@ import java.util.Map;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 
@@ -75,7 +76,8 @@ public interface IServiceRobotService extends IRobotService {
 	 * @return List of products from defined type or null for exception
 	 */
 	List<Product> getProductsFromStorage(String productType, int amount, ITransaction tx);
-
+	
+	List<Product> getProductsFromStorage(int amount, ITransaction tx);
 	/**
 	 * get products from counter with specified name
 	 * 
@@ -97,6 +99,10 @@ public interface IServiceRobotService extends IRobotService {
 	 * @return
 	 */
 	boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx);
+	
+	boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx);
+
+	int readAllPrepackages();
 
 
 }

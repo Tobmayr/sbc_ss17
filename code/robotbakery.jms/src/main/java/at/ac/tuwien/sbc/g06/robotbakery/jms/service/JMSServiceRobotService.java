@@ -19,6 +19,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
@@ -142,6 +143,23 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	@Override
 	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
 		return send(counterProducer, currentOrder);
+	}
+
+	@Override
+	public boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx) {
+		return send(terminalQueueProducer, prepackage);
+	}
+
+	@Override
+	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
+		//TODO: implement;
+		return null;
+	}
+
+	@Override
+	public int readAllPrepackages() {
+		//TODO: implement;
+				return -1;
 	}
 
 }

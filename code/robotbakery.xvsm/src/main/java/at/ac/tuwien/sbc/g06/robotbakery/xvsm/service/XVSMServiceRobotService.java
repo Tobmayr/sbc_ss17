@@ -22,6 +22,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
@@ -125,6 +126,23 @@ public class XVSMServiceRobotService extends AbstractXVSMService implements ISer
 	@Override
 	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
 		return write(currentOrder, counterContainer, tx);
+	}
+
+	@Override
+	public boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx) {
+		return write(prepackage,terminalContainer,tx);
+	}
+
+	@Override
+	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
+		//TODO: implement
+		return null;
+	}
+
+	@Override
+	public int readAllPrepackages() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -101,6 +102,7 @@ public class KneadRobot extends Robot {
 		sleepFor(1000, 3000);
 		// base dough is ready-> add contribution tag.
 		nextProduct.addContribution(getId(), ContributionType.DOUGH_BASE, getClass());
+		nextProduct.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
 		return addAddtionalIngredientsAndFinsish(tx);
 

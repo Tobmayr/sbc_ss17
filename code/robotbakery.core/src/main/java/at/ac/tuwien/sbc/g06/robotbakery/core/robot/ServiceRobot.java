@@ -13,6 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
@@ -32,6 +33,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	private boolean isStorageEmtpy = true;
 	private boolean isCounterEmpty = true;
 	private boolean isOrderAvailable = false;
+	private boolean isPrepackagesLimit = false;
 
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager, String id) {
 		super(transactionManager, id);
@@ -49,6 +51,10 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 			if (!isCounterEmpty && isOrderAvailable)
 				doTask(processNextOrder);
+
+			if (!isPrepackagesLimit && !isStorageEmtpy) {
+				doTask(prepackProducts);
+			}
 
 		}
 
@@ -150,6 +156,22 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		return true;
 	};
 
+	ITransactionalTask prepackProducts = tx -> {
+		if (service.readAllPrepackages() < SBCConstants.PREPACKAGE_MAX_AMOUNT) {
+			List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
+			if (products == null || products.isEmpty())
+				return false;
+
+			Prepackage prepackage = new Prepackage();
+			prepackage.addProducts(products);
+			prepackage.setServiceRobotId(this.getId());
+			return service.putPrepackeInTerminal(prepackage, tx);
+		} else {
+			isPrepackagesLimit = true;
+			return true;
+		}
+	};
+
 	@Override
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
 		if (added && object instanceof Product) {
@@ -162,6 +184,8 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
 				isOrderAvailable = true;
 			}
+
+			// TODO: Add Notifications for Prepackages
 		}
 
 	}
