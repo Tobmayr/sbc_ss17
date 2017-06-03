@@ -35,7 +35,6 @@ public class DashboardInitializer {
 		DashboardData dashboardData = new DashboardData();
 		bakery.registerChangeListener(dashboardData);
 		DashboardController controller = loader.getController();
-		dashboardData.setController(controller);
 		controller.initialize(dashboardData, primaryStage, uiService);
 
 	}

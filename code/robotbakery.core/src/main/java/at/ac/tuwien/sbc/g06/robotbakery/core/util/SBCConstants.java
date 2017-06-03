@@ -19,6 +19,11 @@ public final class SBCConstants {
 
 	public static final Long BAKE_WAIT = 10000L;
 
+	public static final String COORDINATION_ROOM_STORAGE = "Storage";
+	public static final String COORDINATION_ROOM_COUNTER = "Counter";
+	public static final String COORDINATION_ROOM_TERMINAL = "Terminal";
+	public static final String COORDINATION_ROOM_BAKEROOM = "Bakeroom";
+
 	public static final class Keys {
 		public static final String DOUGH = "dough";
 		public static final String EGGS = "eggs";

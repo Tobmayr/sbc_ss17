@@ -3,6 +3,8 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.Bakery;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
@@ -10,7 +12,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 /**
  * Abstract class for robots
  */
-public abstract class Robot implements Runnable {
+public abstract class Robot implements Runnable,IChangeListener {
 
 	private final UUID id;
 	private ITransactionManager transactionManager;
@@ -19,6 +21,9 @@ public abstract class Robot implements Runnable {
 		if(id != null) this.id = UUID.fromString(id);
 		else this.id = UUID.randomUUID();
 		this.transactionManager = transactionManager;
+		if (Bakery.getInstance()!=null){
+			Bakery.getInstance().registerChangeListener(this);
+		}
 	}
 
 	/**

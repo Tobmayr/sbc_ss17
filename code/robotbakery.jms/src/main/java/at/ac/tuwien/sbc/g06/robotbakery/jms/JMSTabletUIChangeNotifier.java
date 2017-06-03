@@ -15,8 +15,6 @@ import javax.jms.TopicSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
@@ -45,29 +43,15 @@ public class JMSTabletUIChangeNotifier extends TabletUIChangeNotifer implements 
 			if (message instanceof ObjectMessage) {
 				Serializable ser = ((ObjectMessage) message).getObject();
 				boolean removed = message.getBooleanProperty(JMSConstants.Property.REMOVED);
-				String priginalDest = message.getStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION);
-				if (ser instanceof Order) {
-					if (!removed)
-						registeredChangeListeners.forEach(ls -> ls.onOrderUpdated((Order) ser));
-				} else if (ser instanceof Product) {
-					if (priginalDest.equals(getQueueAdress(JMSConstants.Queue.COUNTER))) {
-						if (removed)
-							registeredChangeListeners.forEach(ls -> ls.onProductRemovedFromCounter((Product) ser));
-						else
-							registeredChangeListeners.forEach(ls -> ls.onProductsAddedToCounter((Product) ser));
-					}
-					;
-				}
+				String coordinationRoom = JMSUtil
+						.getCoordinationRoom(message.getStringProperty(JMSConstants.Property.ORIGINAL_DESTINATION));
+				registeredChangeListeners.forEach(ls -> ls.onObjectChanged(ser, coordinationRoom, !removed));
 			}
 
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}
 
-	}
-
-	private String getQueueAdress(String queueName) {
-		return "queue://" + queueName;
 	}
 
 }

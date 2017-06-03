@@ -1,21 +1,23 @@
 package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class DashboardData implements IBakeryUIChangeListener {
+public class DashboardData implements IChangeListener {
 
 	private final ObservableList<Order> orders = FXCollections.observableArrayList();
 	private final ObservableList<ItemCount> ingredients = FXCollections.observableArrayList();
@@ -26,7 +28,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 	private final Map<String, ItemCount> counterProductsCounterMap = new HashMap<>();
 	private final Map<String, ItemCount> storageProductsCounterMap = new HashMap<>();
 	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
-	private DashboardController controller;
+
 
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
@@ -64,8 +66,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		return stateToProductsMap;
 	}
 
-	@Override
-	public void onOrderAddedOrUpdated(Order order) {
+	private void onOrderAddedOrUpdated(Order order) {
 		int index = orders.indexOf(order);
 		if (index == -1)
 			orders.add(order);
@@ -74,7 +75,67 @@ public class DashboardData implements IBakeryUIChangeListener {
 	}
 
 	@Override
-	public void onProductAddedToStorage(Product product) {
+	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
+		if (object instanceof Product) {
+			Product product = (Product) object;
+			switch (coordinationRoom) {
+			case SBCConstants.COORDINATION_ROOM_BAKEROOM:
+				if (added)
+					onProductAddedToBakeroom(product);
+				else
+					onProductRemovedFromBakeroom(product);
+				break;
+			case SBCConstants.COORDINATION_ROOM_COUNTER:
+				if (added)
+					onProductAddedToCounter(product);
+				else
+					onProductRemovedFromCounter(product);
+				break;
+			case SBCConstants.COORDINATION_ROOM_STORAGE:
+				if (added)
+					onProductAddedToStorage(product);
+				else
+					onProductRemovedFromStorage(product);
+				break;
+			case SBCConstants.COORDINATION_ROOM_TERMINAL:
+				if (added)
+					onProductAddedToTerminal(product);
+				else
+					onProductRemovedFromTerminal(product);
+				break;
+			default:
+				break;
+			}
+
+		} else if (object instanceof Ingredient) {
+			Ingredient ingredient = (Ingredient) object;
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_STORAGE)) {
+				if (added)
+					onIngredientAddedToStorage(ingredient);
+				else
+					onIngredientRemovedFromStorage(ingredient);
+			}
+		} else if (object instanceof Order) {
+			Order order = (Order) object;
+			if (added) {
+				onOrderAddedOrUpdated(order);
+				if (order instanceof PackedOrder) {
+					((PackedOrder) order).getProducts().forEach(p -> {
+						if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_TERMINAL)) {
+							onProductRemovedFromCounter(p);
+							onProductAddedToTerminal(p);
+						} else if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
+							onProductRemovedFromTerminal(p);
+						}
+
+					});
+				}
+			}
+		}
+
+	}
+
+	private void onProductAddedToStorage(Product product) {
 
 		ItemCount count = storageProductsCounterMap.get(toFullProductName(product));
 		if (count == null) {
@@ -91,8 +152,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	}
 
-	@Override
-	public void onProductRemovedFromStorage(Product product) {
+	private void onProductRemovedFromStorage(Product product) {
 		ItemCount count = storageProductsCounterMap.get(product.getProductName());
 		if (count != null) {
 			if (count.amount > 0) {
@@ -109,8 +169,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	}
 
-	@Override
-	public void onProductAddedToCounter(Product product) {
+	private void onProductAddedToCounter(Product product) {
 		ItemCount count = counterProductsCounterMap.get(product.getProductName());
 		if (count == null) {
 			count = new ItemCount(product.getProductName());
@@ -124,8 +183,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 
 	}
 
-	@Override
-	public void onProductRemovedFromCounter(Product product) {
+	private void onProductRemovedFromCounter(Product product) {
 		ItemCount count = counterProductsCounterMap.get(product.getProductName());
 		if (count != null) {
 			if (count.amount > 0) {
@@ -140,33 +198,28 @@ public class DashboardData implements IBakeryUIChangeListener {
 		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).remove(product);
 	}
 
-	@Override
-	public void onProductAddedToBakeroom(Product product) {
+	private void onProductAddedToBakeroom(Product product) {
 		addOrUpdate(product, stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM));
 
 	}
 
-	@Override
-	public void onProductRemovedFromBakeroom(Product product) {
+	private void onProductRemovedFromBakeroom(Product product) {
 		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).remove(product);
 
 	}
 
-	@Override
-	public void onProductAddedToTerminal(Product product) {
+	private void onProductAddedToTerminal(Product product) {
 		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL));
 
 	}
 
-	@Override
-	public void onProductRemovedFromTerminal(Product product) {
+	private void onProductRemovedFromTerminal(Product product) {
 		stateToProductsMap.get(ProductState.PRODUCT_IN_TERMINAL).remove(product);
 		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_SOLD));
 
 	}
 
-	@Override
-	public void onIngredientAddedToStorage(Ingredient ingredient) {
+	private void onIngredientAddedToStorage(Ingredient ingredient) {
 		String ingredientName = getIngredientName(ingredient);
 		ItemCount count = ingredientsCounterMap.get(ingredientName);
 		if (count == null) {
@@ -184,8 +237,7 @@ public class DashboardData implements IBakeryUIChangeListener {
 		addOrUpdate(count, ingredients);
 	}
 
-	@Override
-	public void onIngredientRemovedFromStorage(Ingredient ingredient) {
+	private void onIngredientRemovedFromStorage(Ingredient ingredient) {
 		String ingredientName = getIngredientName(ingredient);
 		ItemCount count = ingredientsCounterMap.get(ingredientName);
 		if (count != null) {
@@ -272,20 +324,5 @@ public class DashboardData implements IBakeryUIChangeListener {
 		DOUGH_IN_STORAGE, DOUGH_IN_BAKEROOM, PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD;
 	}
 
-	@Override
-	public void onRobotStart(Class<? extends Robot> robot) {
-		controller.onRobotStart(robot);
-
-	}
-
-	@Override
-	public void onRobotShutdown(Class<? extends Robot> robot) {
-		controller.onRobotShutdown(robot);
-
-	}
-
-	public void setController(DashboardController controller) {
-		this.controller = controller;
-	}
 
 }

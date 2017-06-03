@@ -1,16 +1,18 @@
 package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.ITableUIChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class TabletData implements ITableUIChangeListener {
+public class TabletData implements IChangeListener {
 
 	private final ObservableList<CounterInformation> counterInformationData = FXCollections.observableArrayList();
 	private final Map<String, CounterInformation> counterProductsCounterMap = new HashMap<>();
@@ -44,7 +46,23 @@ public class TabletData implements ITableUIChangeListener {
 	}
 
 	@Override
-	public void onProductsAddedToCounter(Product product) {
+	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
+		if (object instanceof Product) {
+			Product product = (Product) object;
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
+				if (added)
+					onProductsAddedToCounter(product);
+				else
+					onProductRemovedFromCounter(product);
+			}
+		} else if (object instanceof Order) {
+			if (added)
+				onOrderUpdated((Order) object);
+		}
+
+	}
+
+	private void onProductsAddedToCounter(Product product) {
 		CounterInformation info = counterProductsCounterMap.get(product.getProductName());
 		if (info == null) {
 			info = new CounterInformation(product.getProductName(), 0, product.getRecipe().getPricePerUnit());
@@ -58,8 +76,7 @@ public class TabletData implements ITableUIChangeListener {
 
 	}
 
-	@Override
-	public void onProductRemovedFromCounter(Product product) {
+	private void onProductRemovedFromCounter(Product product) {
 		CounterInformation info = counterProductsCounterMap.get(product.getProductName());
 		if (info != null) {
 			if (info.stock > 0) {
@@ -76,8 +93,7 @@ public class TabletData implements ITableUIChangeListener {
 
 	}
 
-	@Override
-	public void onOrderUpdated(Order order) {
+	private void onOrderUpdated(Order order) {
 		delegateController.onOrderUpdated(order);
 
 	}

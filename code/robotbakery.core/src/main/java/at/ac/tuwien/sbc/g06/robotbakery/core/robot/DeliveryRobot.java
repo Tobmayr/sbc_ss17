@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import java.io.Serializable;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
@@ -49,4 +51,10 @@ public class DeliveryRobot extends Robot {
         }
         return true;
     };
+
+	@Override
+	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
+		// TODO DO NOT IMPLEMENT
+		
+	}
 }

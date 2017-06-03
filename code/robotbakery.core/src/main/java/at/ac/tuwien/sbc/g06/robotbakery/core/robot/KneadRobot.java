@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -11,11 +12,14 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
+import ch.qos.logback.core.CoreConstants;
 
 public class KneadRobot extends Robot {
 
 	private IKneadRobotService service;
 
+	private boolean isStorageEmpty = true;
 	private Product nextProduct;
 
 	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager, String id) {
@@ -116,17 +120,23 @@ public class KneadRobot extends Robot {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			ProductChooser productChooser = new ProductChooser(service, null);
-			if (productChooser.correctlyInitialized()) {
-				nextProduct = productChooser.getFinishableBaseDough();
-				if (nextProduct != null) {
-					doTask(tryToFinishExistingDough);
-				} else {
-					nextProduct = productChooser.getNextProduct();
-					if (nextProduct != null)
-						doTask(tryToMakeDough);
-				}
+			if (!isStorageEmpty) {
+				ProductChooser productChooser = new ProductChooser(service, null);
+				if (productChooser.correctlyInitialized()) {
+					nextProduct = productChooser.getFinishableBaseDough();
+					if (nextProduct != null) {
+						doTask(tryToFinishExistingDough);
+					} else {
+						nextProduct = productChooser.getNextProduct();
+						if (nextProduct != null) {
+							doTask(tryToMakeDough);
+						} else {
+							isStorageEmpty = true;
+						}
 
+					}
+
+				}
 			}
 
 		}
@@ -136,6 +146,13 @@ public class KneadRobot extends Robot {
 	private void debug(String message) {
 		System.out.println(String.format("%s %s", message,
 				nextProduct != null ? "(" + nextProduct.getId() + ", " + nextProduct.getProductName() + ")" : ""));
+	}
+
+	@Override
+	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
+		if (added && object instanceof Ingredient && coordinationRoom == SBCConstants.COORDINATION_ROOM_STORAGE)
+			isStorageEmpty = false;
+
 	}
 
 }

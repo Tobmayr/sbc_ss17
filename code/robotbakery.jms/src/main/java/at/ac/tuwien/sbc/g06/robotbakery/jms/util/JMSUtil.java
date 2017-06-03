@@ -18,6 +18,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
+
 public class JMSUtil {
 	private static Logger logger = LoggerFactory.getLogger(JMSUtil.class);
 
@@ -57,7 +59,7 @@ public class JMSUtil {
 	 * @throws JMSException
 	 */
 	public static int test(QueueBrowser browser, String[] properties, String[] values) {
-		List<?> list = toList(browser, properties, values,null);
+		List<?> list = toList(browser, properties, values, null);
 		return list == null ? -1 : list.size();
 	}
 
@@ -108,8 +110,6 @@ public class JMSUtil {
 
 	}
 
-
-
 	public static <T extends Serializable> List<T> toList(QueueBrowser browser, String property, String value,
 			Integer maxSize) {
 		return toList(browser, new String[] { property }, new String[] { value }, maxSize);
@@ -133,6 +133,26 @@ public class JMSUtil {
 		values.forEach(v -> map.put(v, test(browser, property, v.toString())));
 		return map;
 
+	}
+
+	public static String getQueueAdress(String queueName) {
+		return "queue://" + queueName;
+	}
+
+	public static String getCoordinationRoom(String string) {
+		switch (getQueueAdress(string)) {
+		case JMSConstants.Queue.BAKEROOM:
+			return SBCConstants.COORDINATION_ROOM_BAKEROOM;
+		case JMSConstants.Queue.TERMINAL:
+			return SBCConstants.COORDINATION_ROOM_TERMINAL;
+		case JMSConstants.Queue.COUNTER:
+		case JMSConstants.Queue.ORDER:
+			return SBCConstants.COORDINATION_ROOM_COUNTER;
+		case JMSConstants.Queue.STORAGE:
+			return SBCConstants.COORDINATION_ROOM_STORAGE;
+		default:
+			return null;
+		}
 	}
 
 	private JMSUtil() {

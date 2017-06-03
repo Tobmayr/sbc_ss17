@@ -1,9 +1,13 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.Templates;
+
+import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
@@ -16,14 +20,18 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 /**
  * Service robot implementation for both implementations
  */
-public class ServiceRobot extends Robot {
+public class ServiceRobot extends Robot implements IChangeListener {
 
 	private IServiceRobotService service;
 	private Order currentOrder;
+	private boolean isStorageEmtpy = true;
+	private boolean isCounterEmpty = true;
+	private boolean isOrderAvailable = false;
 
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager, String id) {
 		super(transactionManager, id);
@@ -36,9 +44,11 @@ public class ServiceRobot extends Robot {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
+			if (!isStorageEmtpy)
+				doTask(getProductFromStorage);
 
-			doTask(getProductFromStorage);
-			doTask(processNextOrder);
+			if (!isCounterEmpty && isOrderAvailable)
+				doTask(processNextOrder);
 
 		}
 
@@ -63,7 +73,7 @@ public class ServiceRobot extends Robot {
 			else
 				return false;
 		}
-
+		Map<String, Integer> missingProducts;
 		// simulate packing duration
 		sleepFor(1000, 3000);
 		// Update contribution
@@ -78,14 +88,17 @@ public class ServiceRobot extends Robot {
 	 */
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
-		if (currentOrder == null)
+		if (currentOrder == null) {
+			isOrderAvailable = false;
 			return false;
+		}
+
 		System.out.println("New order with id: " + currentOrder.getId() + " is now processed & prepared for packing");
 		if (!packOrderAndPutInTerminal(tx)) {
 			if (currentOrder instanceof DeliveryOrder) {
 				System.out.println("Not enough products in stock. Order has is returned to collection area!");
 				currentOrder.setState(OrderState.OPEN);
-				return service.returnDeliveryOrder((DeliveryOrder) currentOrder,tx);
+				return service.returnDeliveryOrder((DeliveryOrder) currentOrder, tx);
 			} else {
 				System.out.println("Not enough products in stock. Order has been declined!");
 				currentOrder.setState(OrderState.UNDELIVERABLE);
@@ -97,6 +110,7 @@ public class ServiceRobot extends Robot {
 
 	};
 
+	private int testInt;
 	/**
 	 * get products from storage to fill up counter, get only products that are
 	 * missing in counter
@@ -104,19 +118,29 @@ public class ServiceRobot extends Robot {
 	ITransactionalTask getProductFromStorage = tx -> {
 
 		Map<String, Integer> missingProducts = service.getCounterStock();
-		if (missingProducts == null || missingProducts.isEmpty())
+		if (missingProducts == null)
 			return false;
 		missingProducts = CollectionsUtil.sortMapByValues(missingProducts, false);
-		List<Product> productsForCounter = new ArrayList<>();
 
+		List<Product> productsForCounter = new ArrayList<>();
+		testInt = Integer.MAX_VALUE;
 		missingProducts.forEach((s, i) -> {
+			if (i < testInt)
+				testInt = i;
 			List<Product> temp = service.getProductsFromStorage(s, i, tx);
 			if (temp != null && !temp.isEmpty())
 				productsForCounter.addAll(temp);
 		});
 
-		if (productsForCounter.isEmpty())
+		if (testInt == 10) {
+			isCounterEmpty = true;
+		}
+
+		if (productsForCounter.isEmpty()) {
+			isStorageEmtpy = true;
 			return false;
+		}
+
 		System.out.println("Stocking up the counter");
 		for (Product product : productsForCounter) {
 			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
@@ -125,5 +149,21 @@ public class ServiceRobot extends Robot {
 		}
 		return true;
 	};
+
+	@Override
+	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
+		if (added && object instanceof Product) {
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_STORAGE)) {
+				isStorageEmtpy = false;
+			} else if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
+				isCounterEmpty = false;
+			}
+		} else if (added && object instanceof Order) {
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
+				isOrderAvailable = true;
+			}
+		}
+
+	}
 
 }

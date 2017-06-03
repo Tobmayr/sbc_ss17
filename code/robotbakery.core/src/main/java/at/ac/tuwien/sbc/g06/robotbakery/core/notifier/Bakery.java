@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IBakeryUIChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -28,7 +27,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public abstract class Bakery extends ChangeNotifer<IBakeryUIChangeListener> implements IBakeryService {
+public abstract class Bakery extends ChangeNotifer implements IBakeryService {
+
+	private static Bakery INSTANCE = null;
 	private Properties initProperties;
 
 	/**
@@ -36,7 +37,8 @@ public abstract class Bakery extends ChangeNotifer<IBakeryUIChangeListener> impl
 	 * JMS)
 	 */
 
-	public Bakery() {
+	protected Bakery() {
+		INSTANCE = this;
 	}
 
 	public Bakery(Properties initProperties) {
@@ -172,4 +174,7 @@ public abstract class Bakery extends ChangeNotifer<IBakeryUIChangeListener> impl
 		return Integer.parseInt(value);
 	}
 
+	public static Bakery getInstance() {
+		return INSTANCE;
+	}
 }

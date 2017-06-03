@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransaction;
 
 public class XVSMUtil {
@@ -87,7 +88,7 @@ public class XVSMUtil {
 		}
 	}
 
-	public static String getNameForContainer(ContainerReference cref) {
+	public static String getName(ContainerReference cref) {
 		String id = cref.getId();
 		if (id.equals(STORAGE_CONTAINER_ID))
 			return XVSMConstants.STORAGE_CONTAINER_NAME;
@@ -98,6 +99,21 @@ public class XVSMUtil {
 		if (id.equals(COUNTER_CONTAINER_ID))
 			return XVSMConstants.COUNTER_CONTAINER_NAME;
 		return null;
+	}
+
+	public static String getCoordinationRoom(ContainerReference cref) {
+		switch (getName(cref)) {
+		case XVSMConstants.STORAGE_CONTAINER_NAME:
+			return SBCConstants.COORDINATION_ROOM_STORAGE;
+		case XVSMConstants.COUNTER_CONTAINER_NAME:
+			return SBCConstants.COORDINATION_ROOM_COUNTER;
+		case XVSMConstants.TERMINAL_CONTAINER_NAME:
+			return SBCConstants.COORDINATION_ROOM_TERMINAL;
+		case XVSMConstants.BAKEROOM_CONTAINER_NAME:
+			return SBCConstants.COORDINATION_ROOM_BAKEROOM;
+		default:
+			return null;
+		}
 	}
 
 	public static TransactionReference unwrap(ITransaction tx) {
@@ -112,5 +128,4 @@ public class XVSMUtil {
 		return ser;
 	}
 
-	
 }
