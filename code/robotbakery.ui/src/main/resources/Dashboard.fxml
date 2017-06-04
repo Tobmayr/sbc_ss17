@@ -207,9 +207,9 @@
 								</Separator>
 								<TableView fx:id="ordersTable" prefHeight="225.0" prefWidth="580.0" scaleShape="false">
 									<columns>
-										<TableColumn fx:id="orderId" prefWidth="209.0" text="ID" />
-										<TableColumn fx:id="orderState" minWidth="0.0" prefWidth="255.0" text="State" />
-										<TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="120.0" text="Total (€)" />
+										<TableColumn fx:id="orderId" prefWidth="360.0" text="ID" />
+										<TableColumn fx:id="orderState" minWidth="0.0" prefWidth="100.0" text="State" />
+										<TableColumn fx:id="orderTotalSum" minWidth="0.0" prefWidth="119.0" resizable="false" text="Total (€)" />
 									</columns>
 								</TableView>
       						<VBox prefHeight="441.0" prefWidth="409.0">
@@ -269,9 +269,9 @@
                         </Separator>
                         <TableView fx:id="prepackagesTable" prefHeight="225.0" prefWidth="580.0" scaleShape="false">
                            <columns>
-                              <TableColumn fx:id="prepackageId" prefWidth="209.0" text="ID" />
-                              <TableColumn fx:id="prepackageState" minWidth="0.0" prefWidth="255.0" text="State" />
-                              <TableColumn fx:id="prepackageTotal" minWidth="0.0" prefWidth="120.0" text="Total (€)" />
+                              <TableColumn fx:id="prepackageId" prefWidth="360.0" text="ID" />
+                              <TableColumn fx:id="prepackageState" minWidth="0.0" prefWidth="100.0" text="State" />
+                              <TableColumn fx:id="prepackageTotal" minWidth="0.0" prefWidth="119.0" text="Total (€)" />
                            </columns>
                         </TableView>
                         <VBox prefHeight="441.0" prefWidth="409.0">

@@ -137,8 +137,8 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	@Override
 	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
 		Query query = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT)).cnt(amount);
-		return read(storageContainer, tx, QueryCoordinator.newSelector(query),
-				TypeCoordinator.newSelector(Product.class));
+		return take(storageContainer, tx, QueryCoordinator.newSelector(query,MzsConstants.Selecting.COUNT_MAX),
+				TypeCoordinator.newSelector(Product.class,MzsConstants.Selecting.COUNT_MAX));
 	}
 
 	@Override
