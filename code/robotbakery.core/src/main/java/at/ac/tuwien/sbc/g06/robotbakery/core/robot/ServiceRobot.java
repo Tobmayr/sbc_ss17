@@ -163,7 +163,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 				return false;
 
 			Prepackage prepackage = new Prepackage();
-			prepackage.addProducts(products);
+			prepackage.setProducts(products);
 			prepackage.setServiceRobotId(this.getId());
 			return service.putPrepackeInTerminal(prepackage, tx);
 		} else {

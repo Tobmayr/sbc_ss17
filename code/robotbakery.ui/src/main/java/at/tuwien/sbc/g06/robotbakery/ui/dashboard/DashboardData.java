@@ -10,6 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 public class DashboardData implements IChangeListener {
 
 	private final ObservableList<Order> orders = FXCollections.observableArrayList();
+	private final ObservableList<Prepackage> prepackages = FXCollections.observableArrayList();
 	private final ObservableList<ItemCount> ingredients = FXCollections.observableArrayList();
 	private final ObservableList<ItemCount> productsInStorage = FXCollections.observableArrayList();
 	private final ObservableList<ItemCount> productsInCounter = FXCollections.observableArrayList();
@@ -28,7 +30,6 @@ public class DashboardData implements IChangeListener {
 	private final Map<String, ItemCount> counterProductsCounterMap = new HashMap<>();
 	private final Map<String, ItemCount> storageProductsCounterMap = new HashMap<>();
 	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
-
 
 	public DashboardData() {
 		Arrays.asList(ProductState.values())
@@ -62,16 +63,12 @@ public class DashboardData implements IChangeListener {
 		return productsInCounter;
 	}
 
-	public Map<ProductState, ObservableList<Product>> getStateToProductsMap() {
-		return stateToProductsMap;
+	public ObservableList<Prepackage> getPrepackages() {
+		return prepackages;
 	}
 
-	private void onOrderAddedOrUpdated(Order order) {
-		int index = orders.indexOf(order);
-		if (index == -1)
-			orders.add(order);
-		else
-			orders.set(index, order);
+	public Map<ProductState, ObservableList<Product>> getStateToProductsMap() {
+		return stateToProductsMap;
 	}
 
 	@Override
@@ -131,8 +128,33 @@ public class DashboardData implements IChangeListener {
 					});
 				}
 			}
+		} else if (object instanceof Prepackage) {
+			Prepackage prepackage = (Prepackage) object;
+			if (!added) {
+				prepackage.setState(Prepackage.STATE_SOLD);
+
+			}
+			onPrepackageAdded(prepackage);
+			
 		}
 
+	}
+
+	private void onPrepackageAdded(Prepackage prepackage) {
+		int index = prepackages.indexOf(prepackage);
+		if (index == -1)
+			prepackages.add(prepackage);
+		else
+			prepackages.set(index, prepackage);
+
+	}
+
+	private void onOrderAddedOrUpdated(Order order) {
+		int index = orders.indexOf(order);
+		if (index == -1)
+			orders.add(order);
+		else
+			orders.set(index, order);
 	}
 
 	private void onProductAddedToStorage(Product product) {
@@ -323,6 +345,5 @@ public class DashboardData implements IChangeListener {
 	public enum ProductState {
 		DOUGH_IN_STORAGE, DOUGH_IN_BAKEROOM, PRODUCT_IN_STORAGE, PRODUCT_IN_COUNTER, PRODUCT_IN_TERMINAL, PRODUCT_SOLD;
 	}
-
 
 }

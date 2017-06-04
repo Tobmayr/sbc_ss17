@@ -13,6 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
@@ -45,6 +46,60 @@ import javafx.stage.Stage;
 
 public class DashboardController {
 
+	/*
+	 * BakeryOverview-Tab
+	 */
+	@FXML
+	private TableView<ItemCount> ingredientsTable;
+	@FXML
+	private TableColumn<ItemCount, String> ingredientsType;
+	@FXML
+	private TableColumn<ItemCount, String> ingredientsStock;
+
+	@FXML
+	private TableView<ItemCount> productsStorageTable;
+	@FXML
+	private TableColumn<ItemCount, String> productsStorageType;
+	@FXML
+	private TableColumn<ItemCount, String> productsStorageStock;
+
+	@FXML
+	private TableView<ItemCount> productsCounterTable;
+	@FXML
+	private TableColumn<ItemCount, String> productsCounterType;
+	@FXML
+	TableColumn<ItemCount, String> productsCounterStock;
+
+	@FXML
+	private TextField restockFlourAmount;
+	@FXML
+	private TextField restockEggAmount;
+	@FXML
+	private TextField restockBakeSweetAmount;
+	@FXML
+	private TextField restockBakeSpicyAmount;
+	@FXML
+	private Button clearButton;
+	@FXML
+	private Button restockButton;
+
+	private List<TextField> collectedRestockFields;
+	@FXML
+	private TextField serviceRobotCounter;
+	@FXML
+	private TextField kneadRobotCounter;
+	@FXML
+	private TextField bakeRobotCounter;
+
+	@FXML
+	private TextField fileChooserText;
+	@FXML
+	private Button fileChoserOpenButton;
+	@FXML
+	private Button loadPropButton;
+	/*
+	 * Order/Prepackage Tab
+	 */
 	@FXML
 	private TableView<Order> ordersTable;
 	@FXML
@@ -68,19 +123,29 @@ public class DashboardController {
 	private TextField orderServiceId;
 
 	@FXML
-	private TableView<ItemCount> ingredientsTable;
+	private TableView<Prepackage> prepackagesTable;
 	@FXML
-	private TableColumn<ItemCount, String> ingredientsType;
+	private TableColumn<Prepackage, String> prepackageId;
 	@FXML
-	private TableColumn<ItemCount, String> ingredientsStock;
+	private TableColumn<Prepackage, String> prepackageState;
+	@FXML
+	private TableColumn<Prepackage, String> prepackageTotal;
+	@FXML
+
+	private TextField prepackageCustomerId;
+	@FXML
+	private TextField prepackageServiceRobotId;
 
 	@FXML
-	private TableView<ItemCount> productsStorageTable;
+	private TableView<Product> prepackageItemsTable;
 	@FXML
-	private TableColumn<ItemCount, String> productsStorageType;
+	private TableColumn<Product, String> prepackageItemProduct;
 	@FXML
-	private TableColumn<ItemCount, String> productsStorageStock;
+	private TableColumn<Product, String> prepackageItemCost;
 
+	/*
+	 * Product Details Tab
+	 */
 	@FXML
 	private TableView<Product> productsTable;
 	@FXML
@@ -118,46 +183,16 @@ public class DashboardController {
 	@FXML
 	private TableColumn<Product, String> productsType5;
 
-	@FXML
-	TableView<ItemCount> productsCounterTable;
-	@FXML
-	TableColumn<ItemCount, String> productsCounterType;
-	@FXML
-	TableColumn<ItemCount, String> productsCounterStock;
-
-	@FXML
-	TextField restockFlourAmount;
-	@FXML
-	TextField restockEggAmount;
-	@FXML
-	TextField restockBakeSweetAmount;
-	@FXML
-	TextField restockBakeSpicyAmount;
-	@FXML
-	Button clearButton;
-	@FXML
-	Button restockButton;
-
-	@FXML
-	TextField serviceRobotCounter;
-	@FXML
-	TextField kneadRobotCounter;
-	@FXML
-	TextField bakeRobotCounter;
-
-	private List<TableView<Product>> collectedProducTables;
+	private List<TableView<Product>> collectedProductTables;
 	private List<TableColumn<Product, String>> collectedProductsIds;
 	private List<TableColumn<Product, String>> collectedProductsTypes;
-	private List<TextField> collectedRestockFields;
 
+	/*
+	 * Controller fields
+	 */
 	private Stage mainStage;
 	private IBakeryUIService uiService;
-	@FXML
-	TextField fileChooserText;
-	@FXML
-	Button fileChoserOpenButton;
-	@FXML
-	Button loadPropButton;
+
 	private TestDataInitializer testDataInitializer;
 
 	public DashboardController() {
@@ -167,12 +202,8 @@ public class DashboardController {
 		this.mainStage = mainStage;
 		this.uiService = uiService;
 		testDataInitializer = new TestDataInitializer(uiService);
-		initializeUIData(data);
-
-	}
-
-	private void initializeUIData(DashboardData data) {
 		ordersTable.setItems(data.getOrders());
+		prepackagesTable.setItems(data.getPrepackages());
 		ingredientsTable.setItems(data.getIngredients());
 		productsStorageTable.setItems(data.getProductsInStorage());
 		productsCounterTable.setItems(data.getProductsInCounter());
@@ -233,7 +264,7 @@ public class DashboardController {
 
 	@FXML
 	public void initialize() {
-		collectedProducTables = Arrays.asList(productsTable, productsTable1, productsTable2, productsTable3,
+		collectedProductTables = Arrays.asList(productsTable, productsTable1, productsTable2, productsTable3,
 				productsTable4, productsTable5);
 		collectedProductsIds = Arrays.asList(productsId, productsId1, productsId2, productsId3, productsId4,
 				productsId5);
@@ -247,10 +278,19 @@ public class DashboardController {
 		orderTotalSum.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getTotalSum())));
 
+		prepackageId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		prepackageState.setCellValueFactory(new PropertyValueFactory<>("state"));
+		prepackageTotal.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getTotalSum())));
+
 		itemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
 		itemAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 		itemCost.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getCost())));
+
+		prepackageItemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		prepackageItemProduct.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getPrice())));
 
 		ingredientsType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
 		ingredientsStock.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -277,7 +317,21 @@ public class DashboardController {
 
 		});
 
-		collectedProducTables.forEach(table -> {
+		prepackagesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldPackage, newPackage) -> {
+			Platform.runLater(() -> {
+				if (newPackage != null) {
+					prepackageItemsTable.setItems(FXCollections.observableArrayList(newPackage.getProducts()));
+					prepackageCustomerId.setText(newPackage.getCustomerId().toString());
+					if (newPackage.getServiceRobotId() != null) {
+						prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
+					}
+
+				}
+			});
+
+		});
+
+		collectedProductTables.forEach(table -> {
 			MenuItem detailsMenu = new MenuItem("Show contributions");
 
 			detailsMenu.setOnAction((e) -> {
@@ -388,9 +442,9 @@ public class DashboardController {
 
 	@FXML
 	public void loadTestData() {
-		if (fileChooserText.getText()!=null && !fileChooserText.getText().isEmpty()){
+		if (fileChooserText.getText() != null && !fileChooserText.getText().isEmpty()) {
 			testDataInitializer.initFromProperties();
 		}
-		
+
 	}
 }

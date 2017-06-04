@@ -12,6 +12,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**
  * product class
+ * 
  * @author Tobias Ortmayr (1026279)
  *
  */
@@ -29,6 +30,7 @@ public class Product implements Serializable {
 	private final UUID id;
 	private final String productName;
 	final Recipe recipe;
+	final double price;
 	private BakeState type = BakeState.DOUGH;
 	private List<Contribution> contributions = new ArrayList<>();
 	private Timestamp timestamp;
@@ -38,6 +40,7 @@ public class Product implements Serializable {
 		id = UUID.randomUUID();
 		this.productName = productName;
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
+		this.price = recipe.getPricePerUnit();
 
 	}
 
@@ -54,13 +57,18 @@ public class Product implements Serializable {
 		id = UUID.randomUUID();
 		this.productName = recipe.getProductName();
 		this.recipe = recipe;
+		this.price = recipe.getPricePerUnit();
 	}
 
 	/**
 	 * history: which robot worked on the product
-	 * @param contributerId id of the robot
-	 * @param type which type of contribution
-	 * @param contributor robot class
+	 * 
+	 * @param contributerId
+	 *            id of the robot
+	 * @param type
+	 *            which type of contribution
+	 * @param contributor
+	 *            robot class
 	 */
 	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
 		contributions.add(new Contribution(contributerId, type, contributor));
@@ -89,6 +97,12 @@ public class Product implements Serializable {
 	public UUID getId() {
 		return id;
 	}
+	
+	
+
+	public double getPrice() {
+		return price;
+	}
 
 	@Override
 	public int hashCode() {
@@ -100,7 +114,8 @@ public class Product implements Serializable {
 		if (obj instanceof Product) {
 			Product that = (Product) obj;
 			return this.getId().toString().equals(that.getId().toString())
-					&& this.getProductName().equals(that.getProductName()) && this.getType().toString().equals(that.getType().toString());
+					&& this.getProductName().equals(that.getProductName())
+					&& this.getType().toString().equals(that.getType().toString());
 		}
 		return super.equals(obj);
 	}
