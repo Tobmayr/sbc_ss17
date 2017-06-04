@@ -23,7 +23,7 @@
       <HBox alignment="CENTER" onDragDetected="#onDeliveryCustomerClicked" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Button fx:id="normalCustomerStartButton" mnemonicParsing="false" onAction="#onRegularCustomerClicked" text="Regular Customer" />
-            <Button fx:id="deliveryCustomerStartButton" mnemonicParsing="false" text="Delivery Customer" />
+            <Button fx:id="deliveryCustomerStartButton" mnemonicParsing="false" onAction="#onDeliveryCustomerClicked" text="Delivery Customer" />
          </children>
          <padding>
             <Insets bottom="25.0" />

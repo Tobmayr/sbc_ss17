@@ -33,8 +33,8 @@ public class XVSMDeliveryTabletUIChangeNotifier extends DeliveryTabletUIChangeNo
     public XVSMDeliveryTabletUIChangeNotifier() {
         super();
         Capi capi = new Capi(DefaultMzsCore.newInstance());
-        terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.DELIVERY_CONTAINER_NAME, null);
-        counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME, null);
+        terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.DELIVERY_CONTAINER_NAME);
+        counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
         createNotifications(capi);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

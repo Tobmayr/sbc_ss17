@@ -47,6 +47,7 @@ public class TabletInitializer {
 		String fxmlFile = normalTablet ? UIConstants.TABLET_FXML : UIConstants.DELIVERY_TABLET_FMXL;
 		loader.setLocation(TabletInitializer.class.getClassLoader().getResource(fxmlFile));
 		Parent root = loader.load();
+		String title= normalTablet? UIConstants.TABLET_TITLE:UIConstants.DELIVERY_TABLET_TITLE;
 		primaryStage.setTitle(UIConstants.TABLET_TITLE);
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(

@@ -34,24 +34,20 @@ public class XVSMUtil {
 	private XVSMUtil() {
 	};
 
-	public static ContainerReference getOrCreateContainer(Capi capi, String containerName, URI deliveryURI) {
+	public static ContainerReference getOrCreateContainer(Capi capi, String containerName) {
+		return getOrCreateContainer(capi, containerName, XVSMConstants.BASE_SPACE_URI);
+	}
+
+	public static ContainerReference getOrCreateContainer(Capi capi, String containerName, URI spaceURI) {
 		logger.debug("Lookup container:" + containerName);
 		ContainerReference cref = null;
 		try {
-			if(deliveryURI!=null) {
-				cref = capi.lookupContainer(containerName, deliveryURI, RequestTimeout.DEFAULT, null);
-			} else {
-				cref = capi.lookupContainer(containerName, XVSMConstants.BASE_SPACE_URI, RequestTimeout.DEFAULT, null);
-			}
+			cref = capi.lookupContainer(containerName, spaceURI, RequestTimeout.DEFAULT, null);
 			logger.debug("Existing container found for: " + containerName);
 		} catch (MzsCoreException e) {
 			try {
-				if(deliveryURI!=null) {
-
-				} else {
-					cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
-							MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
-				}
+				cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
+						MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
 				setId(containerName, cref.getId());
 				logger.debug("New container has been created for: " + containerName);
 			} catch (MzsCoreException e1) {

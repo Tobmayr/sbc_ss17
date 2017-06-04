@@ -81,13 +81,6 @@ public class TabletController {
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
 
-		// //TODO: Convenience Method for testing. REMOVE AFTER IMPLEMENTATION
-		// productCombo.getItems().forEach(s -> {
-		// CounterInformation c = data.new CounterInformation(s, 50, 500d);
-		// productsTable.getItems().add(c);
-		// counterMap.put(s, c);
-		// });
-
 		customerIdText.setText(customerID.toString());
 		order.setCustomerId(customerID);
 

@@ -27,9 +27,14 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 	private ContainerReference terminalContainer;
 
 	public XVSMTabletUIService() {
-		super(new Capi(DefaultMzsCore.newInstance()));
+		this(new Capi(DefaultMzsCore.newInstance()));
+	}
+
+	public XVSMTabletUIService(Capi capi) {
+		super(capi);
 		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
 		terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
+
 	}
 
 	@Override
