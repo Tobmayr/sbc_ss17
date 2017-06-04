@@ -20,7 +20,7 @@ public class KneadRobot extends Robot {
 
 	private IKneadRobotService service;
 
-	private boolean isStorageEmpty = true;
+	private boolean isStorageEmpty = false;
 	private Product nextProduct;
 
 	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager, String id) {

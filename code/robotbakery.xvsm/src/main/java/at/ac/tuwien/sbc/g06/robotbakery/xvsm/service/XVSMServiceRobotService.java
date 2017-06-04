@@ -13,6 +13,7 @@ import org.mozartspaces.capi3.Matchmakers;
 import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -129,20 +130,20 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	}
 
 	@Override
-	public boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx) {
-		return write(prepackage,terminalContainer,tx);
+	public boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx) {
+		return write(prepackage, terminalContainer, tx);
 	}
 
 	@Override
 	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
-		//TODO: implement
-		return null;
+		Query query = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT)).cnt(amount);
+		return read(storageContainer, tx, QueryCoordinator.newSelector(query),
+				TypeCoordinator.newSelector(Product.class));
 	}
 
 	@Override
 	public int readAllPrepackages() {
-		// TODO Auto-generated method stub
-		return 0;
+		return test(terminalContainer, null, TypeCoordinator.newSelector(Prepackage.class));
 	}
 
 }

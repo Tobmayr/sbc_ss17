@@ -146,7 +146,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	}
 
 	@Override
-	public boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx) {
+	public boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx) {
 		return send(terminalQueueProducer, prepackage);
 	}
 

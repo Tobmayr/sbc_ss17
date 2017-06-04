@@ -96,7 +96,7 @@ public class TestDataInitializer {
 					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
 					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
 					product.addContribution(bakeRobotID, ContributionType.BAKE, BakeRobot.class);
-					forCounter.add(product);
+					forStorage.add(product);
 				});
 
 			}
@@ -128,7 +128,7 @@ public class TestDataInitializer {
 					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
 					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
 					product.addContribution(serviceRobotID, ContributionType.TRANSFER_TO_COUNTER, ServiceRobot.class);
-					forStorage.add(product);
+					forCounter.add(product);
 				});
 
 			}

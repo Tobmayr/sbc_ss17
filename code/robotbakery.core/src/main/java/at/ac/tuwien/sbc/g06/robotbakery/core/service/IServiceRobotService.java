@@ -100,7 +100,7 @@ public interface IServiceRobotService extends IRobotService {
 	 */
 	boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx);
 	
-	boolean putPrepackeInTerminal(Prepackage prepackage, ITransaction tx);
+	boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx);
 
 	int readAllPrepackages();
 

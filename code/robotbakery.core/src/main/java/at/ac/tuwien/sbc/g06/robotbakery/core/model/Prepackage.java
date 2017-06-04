@@ -32,7 +32,7 @@ public class Prepackage implements Serializable {
 		this.products = new ArrayList<>(SBCConstants.PREPACKAGE_SIZE);
 		this.id = UUID.randomUUID();
 		this.sold = false;
-		this.state = STATE_SOLD;
+		this.state = STATE_IN_TERMINAL;
 	}
 
 	public List<Product> getProducts() {

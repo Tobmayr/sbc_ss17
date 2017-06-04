@@ -30,9 +30,9 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 	private IServiceRobotService service;
 	private Order currentOrder;
-	private boolean isStorageEmtpy = true;
-	private boolean isCounterEmpty = true;
-	private boolean isOrderAvailable = false;
+	private boolean isStorageEmtpy = false;
+	private boolean isCounterEmpty = false;
+	private boolean isOrderAvailable = true;
 	private boolean isPrepackagesLimit = false;
 
 	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager, String id) {
@@ -46,11 +46,11 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			if (!isStorageEmtpy)
-				doTask(getProductFromStorage);
-
-			if (!isCounterEmpty && isOrderAvailable)
-				doTask(processNextOrder);
+			// if (!isStorageEmtpy)
+			// doTask(getProductFromStorage);
+			//
+			// if (!isCounterEmpty && isOrderAvailable)
+			// doTask(processNextOrder);
 
 			if (!isPrepackagesLimit && !isStorageEmtpy) {
 				doTask(prepackProducts);
@@ -79,7 +79,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			else
 				return false;
 		}
-		Map<String, Integer> missingProducts;
+
 		// simulate packing duration
 		sleepFor(1000, 3000);
 		// Update contribution
@@ -165,7 +165,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			Prepackage prepackage = new Prepackage();
 			prepackage.setProducts(products);
 			prepackage.setServiceRobotId(this.getId());
-			return service.putPrepackeInTerminal(prepackage, tx);
+			return service.putPrepackageInTerminal(prepackage, tx);
 		} else {
 			isPrepackagesLimit = true;
 			return true;
@@ -184,8 +184,8 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
 				isOrderAvailable = true;
 			}
-
-			// TODO: Add Notifications for Prepackages
+		} else if (!added && object instanceof Prepackage) {
+			isPrepackagesLimit = false;
 		}
 
 	}

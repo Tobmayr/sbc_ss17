@@ -13,7 +13,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 public class BakeRobot extends Robot {
 
 	private IBakeRobotService service;
-	private boolean isBakeroomEmpty = true;
+	private boolean isBakeroomEmpty = false;
 
 	public BakeRobot(IBakeRobotService service, ITransactionManager transactionManager, String id) {
 		super(transactionManager, id);
