@@ -51,7 +51,7 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 		NotificationManager manager = new NotificationManager(server.getCore());
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
-			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE));
+			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE,Operation.TAKE));
 		} catch (MzsCoreException | InterruptedException e) {
 			logger.error(e.getMessage());
 			throw new RuntimeException(e);

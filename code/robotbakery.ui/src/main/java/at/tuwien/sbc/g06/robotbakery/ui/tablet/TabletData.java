@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.PeekingIterator;
-
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
@@ -20,7 +18,7 @@ public class TabletData implements IChangeListener {
 	private final ObservableList<CounterInformation> counterInformationData = FXCollections.observableArrayList();
 	private final ObservableList<Prepackage> prepackages = FXCollections.observableArrayList();
 	private final Map<String, CounterInformation> counterProductsCounterMap = new HashMap<>();
-	private TabletController delegateController;
+	private AbstractTabletController delegateController;
 
 	public ObservableList<CounterInformation> getCounterInformationData() {
 		return counterInformationData;
@@ -38,7 +36,7 @@ public class TabletData implements IChangeListener {
 
 	}
 
-	public void delegateController(TabletController controller) {
+	public void delegateController(AbstractTabletController controller) {
 		this.delegateController = controller;
 		// Get the initial state of the counter from the bakery. Every update
 		// after this will be invoked via observer

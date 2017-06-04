@@ -3,7 +3,6 @@ package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 import java.io.IOException;
 import java.util.UUID;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.DeliveryTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryTabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
@@ -19,9 +18,7 @@ public class TabletInitializer {
 	}
 
 	public static void initializeTabletStartUp(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
-											   ITabletUIService uiService,
-											   DeliveryTabletUIChangeNotifier deliveryChangeNotifier,
-											   IDeliveryTabletUIService deliveryUIService) throws IOException {
+			ITabletUIService uiService, IDeliveryTabletUIService deliveryUIService) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
 				TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLET_STARTUP_DIALOG_FMXL));
@@ -35,7 +32,7 @@ public class TabletInitializer {
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		primaryStage.setResizable(false);
 		TabletStartUpController controller = loader.getController();
-		controller.initialize(uiService, changeNotifer, deliveryUIService, deliveryChangeNotifier);
+		controller.initialize(uiService, changeNotifer, deliveryUIService);
 
 	}
 
@@ -47,8 +44,8 @@ public class TabletInitializer {
 		String fxmlFile = normalTablet ? UIConstants.TABLET_FXML : UIConstants.DELIVERY_TABLET_FMXL;
 		loader.setLocation(TabletInitializer.class.getClassLoader().getResource(fxmlFile));
 		Parent root = loader.load();
-		String title= normalTablet? UIConstants.TABLET_TITLE:UIConstants.DELIVERY_TABLET_TITLE;
-		primaryStage.setTitle(UIConstants.TABLET_TITLE);
+		String title = normalTablet ? UIConstants.TABLET_TITLE : UIConstants.DELIVERY_TABLET_TITLE;
+		primaryStage.setTitle(title);
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(
 				TabletInitializer.class.getClassLoader().getResource(UIConstants.MAIN_CSS_FILENAME).toExternalForm());
@@ -57,7 +54,7 @@ public class TabletInitializer {
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		primaryStage.setResizable(false);
 
-		TabletController controller = loader.getController();
+		AbstractTabletController controller = loader.getController();
 		TabletData tabletData = new TabletData();
 		changeNotifer.registerChangeListener(tabletData);
 		controller.initialize(tabletData, uiService, customerID);

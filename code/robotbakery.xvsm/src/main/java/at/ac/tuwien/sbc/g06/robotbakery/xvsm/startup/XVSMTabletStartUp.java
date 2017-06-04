@@ -1,6 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup;
 
-import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMDeliveryTabletUIChangeNotifier;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMDeliveryTabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMTabletUIService;
@@ -12,8 +12,9 @@ public class XVSMTabletStartUp extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		TabletInitializer.initializeTabletStartUp(primaryStage, new XVSMTabletUIChangeNotifier(),
-				new XVSMTabletUIService(), new XVSMDeliveryTabletUIChangeNotifier(), new XVSMDeliveryTabletUIService());
+		TabletUIChangeNotifer changeNotifier=  new XVSMTabletUIChangeNotifier();
+		TabletInitializer.initializeTabletStartUp(primaryStage,changeNotifier,
+				new XVSMTabletUIService(), new XVSMDeliveryTabletUIService());
 
 	}
 	
