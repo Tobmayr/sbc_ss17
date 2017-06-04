@@ -157,7 +157,7 @@ public class TestDataInitializer {
 	private IngredientType getType(String key) {
 		switch (key) {
 		case SBCConstants.Keys.EGGS:
-			return IngredientType.FLOUR;
+			return IngredientType.EGGS;
 		case SBCConstants.Keys.BAKEMIX_SPICY:
 			return IngredientType.BAKING_MIX_SPICY;
 		case SBCConstants.Keys.BAKEMIX_SWEET:
