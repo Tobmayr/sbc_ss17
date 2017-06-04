@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -78,6 +81,18 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	public Map<String, Integer> getInitialCounterProducts() {
 		return JMSUtil.getBrowserContentSizeByValues(counterQueueBrowser, SBCConstants.PRODUCTS_NAMES,
 				JMSConstants.Property.TYPE);
+	}
+
+	@Override
+	public Prepackage getPrepackage(UUID packageId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Prepackage> getInitialPrepackages() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

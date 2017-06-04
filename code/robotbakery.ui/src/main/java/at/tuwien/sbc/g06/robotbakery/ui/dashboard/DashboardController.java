@@ -289,7 +289,7 @@ public class DashboardController {
 				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getCost())));
 
 		prepackageItemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		prepackageItemProduct.setCellValueFactory(
+		prepackageItemCost.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getPrice())));
 
 		ingredientsType.setCellValueFactory(new PropertyValueFactory<>("itemName"));
@@ -321,10 +321,10 @@ public class DashboardController {
 			Platform.runLater(() -> {
 				if (newPackage != null) {
 					prepackageItemsTable.setItems(FXCollections.observableArrayList(newPackage.getProducts()));
-					prepackageCustomerId.setText(newPackage.getCustomerId().toString());
-					if (newPackage.getServiceRobotId() != null) {
-						prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
+					if (newPackage.getCustomerId() != null) {
+						prepackageCustomerId.setText(newPackage.getCustomerId().toString());
 					}
+					prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
 
 				}
 			});

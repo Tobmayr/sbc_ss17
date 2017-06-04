@@ -1,9 +1,12 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 
 /**
  * Interface for Customer UI
@@ -35,6 +38,10 @@ public interface ITabletUIService  {
 	 * @return map with product names as key and the amount that is available in the counter as value
 	 */
 	Map<String, Integer> getInitialCounterProducts();
+	
+	List<Prepackage> getInitialPrepackages();
+
+	Prepackage getPrepackage(UUID packageId);
 
 
 

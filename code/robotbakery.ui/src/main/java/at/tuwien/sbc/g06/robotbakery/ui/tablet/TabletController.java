@@ -9,6 +9,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletData.CounterInformation;
@@ -67,6 +69,27 @@ public class TabletController {
 	@FXML
 	TextField totalSum;
 
+	@FXML
+	private TableView<Prepackage> prepackagesTable;
+	@FXML
+	private TableColumn<Prepackage, String> prepackageId;
+	@FXML
+	private TableColumn<Prepackage, String> prepackageState;
+	@FXML
+	private TableColumn<Prepackage, String> prepackageTotal;
+	@FXML
+
+	private TextField prepackageCustomerId;
+	@FXML
+	private TextField prepackageServiceRobotId;
+
+	@FXML
+	private TableView<Product> prepackageItemsTable;
+	@FXML
+	private TableColumn<Product, String> prepackageItemProduct;
+	@FXML
+	private TableColumn<Product, String> prepackageItemCost;
+
 	private Order order;
 	private Alert invalidOrderAlert;
 	private Map<String, CounterInformation> counterMap;
@@ -78,6 +101,7 @@ public class TabletController {
 
 		itemsData = itemsTable.getItems();
 		productsTable.setItems(data.getCounterInformationData());
+		prepackagesTable.setItems(data.getPrepackagesList());
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
 
@@ -160,6 +184,29 @@ public class TabletController {
 
 		totalSum.setText("0");
 
+		prepackageId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		prepackageState.setCellValueFactory(new PropertyValueFactory<>("state"));
+		prepackageTotal.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getTotalSum())));
+
+		prepackageItemProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
+		prepackageItemCost.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getPrice())));
+
+		prepackagesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldPackage, newPackage) -> {
+			Platform.runLater(() -> {
+				if (newPackage != null) {
+					prepackageItemsTable.setItems(FXCollections.observableArrayList(newPackage.getProducts()));
+					if (newPackage.getCustomerId() != null) {
+						prepackageCustomerId.setText(newPackage.getCustomerId().toString());
+					}
+					prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
+
+				}
+			});
+
+		});
+
 	}
 
 	private String getText(OrderState state) {
@@ -190,7 +237,7 @@ public class TabletController {
 				invalidOrderAlert.showAndWait();
 		} else if (order.getState() == OrderState.DELIVERED) {
 			packedOrder = service.getOrderPackage(order);
-			if (service.payOrder(packedOrder)){
+			if (service.payOrder(packedOrder)) {
 				statusButton.setText(getText(OrderState.PAID));
 			}
 		}
@@ -277,6 +324,18 @@ public class TabletController {
 
 	public ITabletUIService getService() {
 		return service;
+	}
+
+	@FXML
+	public void onTakeButtonClicked() {
+		UUID packageId = prepackagesTable.getSelectionModel().getSelectedItem().getId();
+		Prepackage prepackage=service.getPrepackage(packageId);
+		if (prepackage!=null){
+			prepackagesTable.getItems().remove(prepackage);
+			prepackageItemsTable.getItems().clear();
+		}
+			
+		
 	}
 
 }

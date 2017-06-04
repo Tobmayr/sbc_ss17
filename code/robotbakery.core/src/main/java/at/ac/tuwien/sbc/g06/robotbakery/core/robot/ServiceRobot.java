@@ -46,11 +46,11 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			// if (!isStorageEmtpy)
-			// doTask(getProductFromStorage);
-			//
-			// if (!isCounterEmpty && isOrderAvailable)
-			// doTask(processNextOrder);
+			 if (!isStorageEmtpy)
+			 doTask(getProductFromStorage);
+			
+			 if (!isCounterEmpty && isOrderAvailable)
+			 doTask(processNextOrder);
 
 			if (!isPrepackagesLimit && !isStorageEmtpy) {
 				doTask(prepackProducts);

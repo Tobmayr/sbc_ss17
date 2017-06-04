@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.PeekingIterator;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -15,6 +18,7 @@ import javafx.collections.ObservableList;
 public class TabletData implements IChangeListener {
 
 	private final ObservableList<CounterInformation> counterInformationData = FXCollections.observableArrayList();
+	private final ObservableList<Prepackage> prepackages = FXCollections.observableArrayList();
 	private final Map<String, CounterInformation> counterProductsCounterMap = new HashMap<>();
 	private TabletController delegateController;
 
@@ -24,6 +28,10 @@ public class TabletData implements IChangeListener {
 
 	public Map<String, CounterInformation> getCounterProductsCounterMap() {
 		return counterProductsCounterMap;
+	}
+
+	public ObservableList<Prepackage> getPrepackagesList() {
+		return prepackages;
 	}
 
 	public TabletData() {
@@ -43,6 +51,8 @@ public class TabletData implements IChangeListener {
 			FXCollections.sort(counterInformationData);
 
 		});
+		prepackages.addAll(delegateController.getService().getInitialPrepackages());
+		
 	}
 
 	@Override
@@ -58,7 +68,26 @@ public class TabletData implements IChangeListener {
 		} else if (object instanceof Order) {
 			if (added)
 				onOrderUpdated((Order) object);
+		} else if (object instanceof Prepackage) {
+			Prepackage prepackage = (Prepackage) object;
+			if (added)
+				onPrepackageAdded(prepackage);
+			else
+				onPrepackageRemoved(prepackage);
 		}
+
+	}
+
+	private void onPrepackageRemoved(Prepackage prepackage) {
+		prepackages.remove(prepackage);
+	}
+
+	private void onPrepackageAdded(Prepackage prepackage) {
+		int index = prepackages.indexOf(prepackage);
+		if (index == -1)
+			prepackages.add(prepackage);
+		else
+			prepackages.set(index, prepackage);
 
 	}
 

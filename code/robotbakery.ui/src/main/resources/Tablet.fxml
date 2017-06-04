@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -14,94 +16,184 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="342.0" prefWidth="851.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-         <children>
-            <HBox prefHeight="43.0" prefWidth="416.0" spacing="5.0">
+<TabPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletController">
+   <tabs>
+      <Tab text="Order">
+         <content>
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="342.0" prefWidth="851.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Label prefHeight="24.0" prefWidth="83.0" text="Customer-ID:" />
-                  <TextField fx:id="customerIdText" editable="false" prefHeight="25.0" prefWidth="340.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                     <children>
+                        <HBox prefHeight="43.0" prefWidth="416.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="24.0" prefWidth="83.0" text="Customer-ID:" />
+                              <TextField fx:id="customerIdText" editable="false" prefHeight="25.0" prefWidth="340.0" />
+                           </children>
+                        </HBox>
+                        <Label text="Products in  counter:" />
+                        <TableView fx:id="productsTable" prefHeight="172.0" prefWidth="405.0" scaleShape="false">
+                           <columns>
+                              <TableColumn fx:id="productsType" prefWidth="182.0" text="Type" />
+                              <TableColumn fx:id="productsStock" prefWidth="95.0" text="Stock" />
+                              <TableColumn fx:id="productsPrice" prefWidth="126.0" text="Price " />
+                           </columns>
+                        </TableView>
+                        <Separator prefWidth="200.0" />
+                        <Label text="Status Information:" />
+                        <TextField fx:id="statusField" editable="false" />
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="415.0">
+                           <children>
+                              <Button fx:id="statusButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStatusButtonClicked" prefHeight="25.0" prefWidth="110.0" text="Send order" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="43.0" prefWidth="416.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="24.0" prefWidth="50.0" text="Order-ID:" />
+                              <TextField fx:id="orderIdText" editable="false" prefHeight="25.0" prefWidth="340.0" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <HBox prefHeight="31.0" prefWidth="416.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="25.0" prefWidth="44.0" text="Product:" />
+                              <ComboBox fx:id="productCombo" prefWidth="150.0" />
+                              <Label prefHeight="24.0" prefWidth="46.0" text="Amount:" />
+                              <TextField fx:id="amountText" prefHeight="25.0" prefWidth="57.0" />
+                              <Button fx:id="addButton" mnemonicParsing="false" onAction="#onAddButtonClicked" prefHeight="25.0" prefWidth="89.0" text="Add" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <Label text="Items:" />
+                        <TableView fx:id="itemsTable" prefHeight="170.0" prefWidth="406.0" scaleShape="false">
+                           <columns>
+                              <TableColumn fx:id="itemProduct" prefWidth="210.0" text="Product" />
+                              <TableColumn fx:id="itemAmount" prefWidth="86.0" text="Amount" />
+                              <TableColumn fx:id="itemCost" prefWidth="109.0" text="Cost (€)" />
+                           </columns>
+                        </TableView>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="43.0" prefWidth="416.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="24.0" prefWidth="50.0" text="Total (€):" />
+                              <TextField fx:id="totalSum" editable="false" prefHeight="25.0" prefWidth="100.0">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </VBox>
                </children>
-            </HBox>
-            <Label text="Products in  counter::" />
-            <TableView fx:id="productsTable" prefHeight="172.0" prefWidth="405.0" scaleShape="false">
-               <columns>
-                  <TableColumn fx:id="productsType" prefWidth="182.0" text="Type" />
-                  <TableColumn fx:id="productsStock" prefWidth="95.0" text="Stock" />
-                  <TableColumn fx:id="productsPrice" prefWidth="126.0" text="Price " />
-               </columns>
-            </TableView>
-            <Separator prefWidth="200.0" />
-            <Label text="Status Information:" />
-            <TextField fx:id="statusField" editable="false" />
-            <HBox alignment="CENTER" prefHeight="51.0" prefWidth="415.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
+               </padding>
+            </GridPane>
+         </content>
+      </Tab>
+      <Tab text="Prepackages">
+         <content>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Button fx:id="statusButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStatusButtonClicked" prefHeight="25.0" prefWidth="110.0" text="Send order" />
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="461.0" text="Prepackages Overview:" textAlignment="CENTER" />
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
+                        </Separator>
+                        <TableView fx:id="prepackagesTable" prefHeight="225.0" prefWidth="580.0" scaleShape="false">
+                           <columns>
+                              <TableColumn fx:id="prepackageId" prefWidth="291.0" text="ID" />
+                              <TableColumn fx:id="prepackageState" minWidth="0.0" prefWidth="169.0" text="State" />
+                              <TableColumn fx:id="prepackageTotal" minWidth="0.0" prefWidth="119.0" text="Total (€)" />
+                           </columns>
+                        </TableView>
+                        <Button fx:id="takeButton" mnemonicParsing="false" onAction="#onTakeButtonClicked" text="Take &amp; Pay">
+                           <VBox.margin>
+                              <Insets top="25.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox prefHeight="441.0" prefWidth="409.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="537.0" text="Prepackage Details:" />
+                        <Separator prefHeight="15.0" prefWidth="379.0" />
+                        <GridPane prefHeight="79.0" prefWidth="379.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.0" minWidth="10.0" prefWidth="114.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="358.0" minWidth="10.0" prefWidth="277.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="94.0" text="Customer-ID:" />
+                              <Label text="ServiceRobot-ID:" GridPane.rowIndex="1" />
+                              <TextField fx:id="prepackageCustomerId" editable="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="prepackageServiceRobotId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </TextField>
+                           </children>
+                        </GridPane>
+                        <Separator prefHeight="15.0" prefWidth="379.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <Label text="Items:" />
+                        <TableView fx:id="prepackageItemsTable" prefHeight="198.0" prefWidth="575.0" scaleShape="false">
+                           <columns>
+                              <TableColumn fx:id="prepackageItemProduct" prefWidth="249.0" text="Product" />
+                              <TableColumn fx:id="prepackageItemCost" prefWidth="163.0" text="Cost (€)" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
                </children>
-            </HBox>
-         </children>
-         <GridPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </GridPane.margin>
-      </VBox>
-      <VBox prefHeight="200.0" prefWidth="100.0">
-         <children>
-            <HBox prefHeight="43.0" prefWidth="416.0" spacing="5.0">
-               <children>
-                  <Label prefHeight="24.0" prefWidth="50.0" text="Order-ID:" />
-                  <TextField fx:id="orderIdText" editable="false" prefHeight="25.0" prefWidth="340.0" />
-               </children>
-            </HBox>
-            <Separator prefWidth="200.0">
-               <VBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
-               </VBox.margin></Separator>
-            <HBox prefHeight="31.0" prefWidth="416.0" spacing="5.0">
-               <children>
-                  <Label prefHeight="25.0" prefWidth="44.0" text="Product:" />
-                  <ComboBox fx:id="productCombo" prefWidth="150.0" />
-                  <Label prefHeight="24.0" prefWidth="46.0" text="Amount:" />
-                  <TextField fx:id="amountText" prefHeight="25.0" prefWidth="57.0" />
-                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#onAddButtonClicked" prefHeight="25.0" prefWidth="89.0" text="Add" />
-               </children>
-            </HBox>
-            <Separator prefWidth="200.0">
-               <VBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
-               </VBox.margin></Separator>
-            <Label text="Items:" />
-            <TableView fx:id="itemsTable" prefHeight="170.0" prefWidth="406.0" scaleShape="false">
-               <columns>
-                  <TableColumn fx:id="itemProduct" prefWidth="210.0" text="Product" />
-                  <TableColumn fx:id="itemAmount" prefWidth="86.0" text="Amount" />
-                  <TableColumn fx:id="itemCost" prefWidth="109.0" text="Cost (€)" />
-               </columns>
-            </TableView>
-            <HBox alignment="CENTER_RIGHT" prefHeight="43.0" prefWidth="416.0" spacing="5.0">
-               <children>
-                  <Label prefHeight="24.0" prefWidth="50.0" text="Total (€):" />
-                  <TextField fx:id="totalSum" editable="false" prefHeight="25.0" prefWidth="100.0">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </TextField>
-               </children>
-            </HBox>
-         </children>
-         <GridPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </GridPane.margin>
-      </VBox>
-   </children>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
-   </padding>
-</GridPane>
+            </GridPane>
+         </content></Tab>
+   </tabs>
+</TabPane>

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.common.base.Objects;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 
 /**

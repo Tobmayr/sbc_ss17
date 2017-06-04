@@ -84,5 +84,19 @@ public class Prepackage implements Serializable {
 	public void setState(String state) {
 		this.state = state;
 	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Prepackage) {
+			Prepackage that = (Prepackage) obj;
+			return this.getId().equals(that.getId());
+		}
+		return super.equals(obj);
+	}
 
 }

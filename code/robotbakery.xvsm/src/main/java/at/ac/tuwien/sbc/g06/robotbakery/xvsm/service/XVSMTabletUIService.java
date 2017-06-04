@@ -1,7 +1,9 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.mozartspaces.capi3.Matchmakers;
 import org.mozartspaces.capi3.Property;
@@ -16,6 +18,7 @@ import org.mozartspaces.core.MzsConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -71,6 +74,18 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 		}
 		return map;
 
+	}
+
+	@Override
+	public Prepackage getPrepackage(UUID packageId) {
+		Query query = new Query().filter(Property.forName("*", "id").equalTo(packageId));
+		return takeFirst(terminalContainer, null, QueryCoordinator.newSelector(query));
+	}
+
+	@Override
+	public List<Prepackage> getInitialPrepackages() {
+		return read(terminalContainer, null,
+				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
 	}
 
 }

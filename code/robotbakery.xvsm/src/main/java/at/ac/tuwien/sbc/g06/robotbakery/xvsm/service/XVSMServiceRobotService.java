@@ -143,7 +143,7 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 
 	@Override
 	public int readAllPrepackages() {
-		return test(terminalContainer, null, TypeCoordinator.newSelector(Prepackage.class));
+		return test(terminalContainer, null, TypeCoordinator.newSelector(Prepackage.class,MzsConstants.Selecting.COUNT_MAX));
 	}
 
 }
