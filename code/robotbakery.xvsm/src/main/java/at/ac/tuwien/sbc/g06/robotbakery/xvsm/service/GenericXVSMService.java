@@ -37,7 +37,7 @@ public class GenericXVSMService {
 	public ContainerReference getContainer(String containerName) {
 		ContainerReference cref = containers.get(containerName);
 		if (cref == null)
-			cref = XVSMUtil.getOrCreateContainer(capi, containerName);
+			cref = XVSMUtil.getOrCreateContainer(capi, containerName, null);
 		return cref;
 	}
 

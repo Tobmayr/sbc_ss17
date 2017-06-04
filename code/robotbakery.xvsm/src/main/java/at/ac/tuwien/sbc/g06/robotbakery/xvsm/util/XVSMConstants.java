@@ -15,6 +15,7 @@ public class XVSMConstants {
 	public static final String TERMINAL_CONTAINER_NAME = "Bakery/Terminal";
 	public static final String STORAGE_CONTAINER_NAME = "Bakery/Storage";
 	public static final String BAKEROOM_CONTAINER_NAME = "Bakery/Bakeroom";
+	public static final String DELIVERY_CONTAINER_NAME = "Delivery";
 
 	// XVSM Configuration
 

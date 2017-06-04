@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,9 +13,9 @@ public class DeliveryOrder extends Order {
 
     private final List<Product> products;
 
-    private final String destination;
+    private final URI destination;
 
-    public DeliveryOrder(Order order, String destination) {
+    public DeliveryOrder(Order order, URI destination) {
         super(order.getId());
         setCustomerId(order.getCustomerId());
         order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
@@ -42,7 +43,7 @@ public class DeliveryOrder extends Order {
         return products;
     }
 
-    public String getDestination() {
+    public URI getDestination() {
         return destination;
     }
 }

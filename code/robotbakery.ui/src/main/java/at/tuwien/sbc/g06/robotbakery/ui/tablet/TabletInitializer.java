@@ -3,7 +3,9 @@ package at.tuwien.sbc.g06.robotbakery.ui.tablet;
 import java.io.IOException;
 import java.util.UUID;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.DeliveryTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryTabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.tuwien.sbc.g06.robotbakery.ui.util.UIConstants;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +19,9 @@ public class TabletInitializer {
 	}
 
 	public static void initializeTabletStartUp(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
-			ITabletUIService uiService) throws IOException {
+											   ITabletUIService uiService,
+											   DeliveryTabletUIChangeNotifier deliveryChangeNotifier,
+											   IDeliveryTabletUIService deliveryUIService) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
 				TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLET_STARTUP_DIALOG_FMXL));
@@ -31,7 +35,7 @@ public class TabletInitializer {
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		primaryStage.setResizable(false);
 		TabletStartUpController controller = loader.getController();
-		controller.initialize(uiService, changeNotifer);
+		controller.initialize(uiService, changeNotifer, deliveryUIService, deliveryChangeNotifier);
 
 	}
 

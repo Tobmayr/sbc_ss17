@@ -31,8 +31,8 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 	public XVSMTabletUIChangeNotifier() {
 		super();
 		Capi capi = new Capi(DefaultMzsCore.newInstance());
-		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
-		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
+		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME, null);
+		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME, null);
 		createNotifications(capi);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

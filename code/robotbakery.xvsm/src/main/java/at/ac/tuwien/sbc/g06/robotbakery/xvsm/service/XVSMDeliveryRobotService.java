@@ -18,6 +18,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
+import java.net.URI;
+
 /**
  * Created by Matthias Höllthaler on 20.05.2017.
  */
@@ -59,9 +61,9 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
     }
 
     @Override
-    public boolean checkDestination(String destination) {
+    public boolean checkDestination(URI deliveryURI) {
         try {
-            this.destination = capi.lookupContainer(destination, XVSMConstants.BASE_SPACE_URI, MzsConstants.RequestTimeout.DEFAULT, null);
+            this.destination = capi.lookupContainer(XVSMConstants.DELIVERY_CONTAINER_NAME, deliveryURI, MzsConstants.RequestTimeout.DEFAULT, null);
             return true;
         } catch (MzsCoreException e) {
             return false;
@@ -70,9 +72,14 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 
     @Override
     public boolean deliverOrder(DeliveryOrder order) {
-        boolean delivered = write(order, destination, null);
+        boolean delivered = false;
+        if(destination!=null) {
+            delivered = write(order, destination, null);
+        }
         if(delivered) {
             order.setState(Order.OrderState.PAID);
+        } else {
+            order.setState(OrderState.UNDELIVERABLE);
         }
         return delivered;
     }

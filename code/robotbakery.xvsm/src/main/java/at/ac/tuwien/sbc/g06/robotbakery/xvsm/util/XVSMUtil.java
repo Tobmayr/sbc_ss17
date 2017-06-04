@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.util;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,16 +34,24 @@ public class XVSMUtil {
 	private XVSMUtil() {
 	};
 
-	public static ContainerReference getOrCreateContainer(Capi capi, String containerName) {
+	public static ContainerReference getOrCreateContainer(Capi capi, String containerName, URI deliveryURI) {
 		logger.debug("Lookup container:" + containerName);
 		ContainerReference cref = null;
 		try {
-			cref = capi.lookupContainer(containerName, XVSMConstants.BASE_SPACE_URI, RequestTimeout.DEFAULT, null);
+			if(deliveryURI!=null) {
+				cref = capi.lookupContainer(containerName, deliveryURI, RequestTimeout.DEFAULT, null);
+			} else {
+				cref = capi.lookupContainer(containerName, XVSMConstants.BASE_SPACE_URI, RequestTimeout.DEFAULT, null);
+			}
 			logger.debug("Existing container found for: " + containerName);
 		} catch (MzsCoreException e) {
 			try {
-				cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
-						MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
+				if(deliveryURI!=null) {
+
+				} else {
+					cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
+							MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
+				}
 				setId(containerName, cref.getId());
 				logger.debug("New container has been created for: " + containerName);
 			} catch (MzsCoreException e1) {
