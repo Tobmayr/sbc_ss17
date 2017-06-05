@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.GenericXVSMService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
@@ -28,11 +29,11 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 
 	private ArrayList<Notification> notifications;
 
-	public XVSMTabletUIChangeNotifier() {
+	public XVSMTabletUIChangeNotifier(Capi capi) {
 		super();
-		Capi capi = new Capi(DefaultMzsCore.newInstance());
-		terminalContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.TERMINAL_CONTAINER_NAME);
-		counterContainer = XVSMUtil.getOrCreateContainer(capi, XVSMConstants.COUNTER_CONTAINER_NAME);
+		GenericXVSMService service = new GenericXVSMService(capi);
+		terminalContainer = service.getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
+		counterContainer = service.getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
 		createNotifications(capi);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -51,7 +52,7 @@ public class XVSMTabletUIChangeNotifier extends TabletUIChangeNotifer implements
 		NotificationManager manager = new NotificationManager(server.getCore());
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
-			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE,Operation.TAKE));
+			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE, Operation.TAKE));
 		} catch (MzsCoreException | InterruptedException e) {
 			logger.error(e.getMessage());
 			throw new RuntimeException(e);

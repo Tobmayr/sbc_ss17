@@ -36,12 +36,12 @@ public class DeliveryRobot extends Robot {
     }
 
     ITransactionalTask processNextDelivery = tx -> {
-        delivery = service.getDelivery();
+        delivery = service.getDeliveryOrder();
         if(delivery == null) {
             return false;
         }
         System.out.println("New delivery order with id: " + delivery.getId() + " is now processed & delivered");
-        if(service.checkDestination(delivery.getDestination())) {
+        if(service.checkDestination(delivery)) {
             sleepFor(5000);
             service.deliverOrder(delivery);
             sleepFor(5000);

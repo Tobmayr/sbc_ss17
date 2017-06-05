@@ -9,9 +9,9 @@ import java.net.URI;
  */
 public interface IDeliveryRobotService extends IRobotService {
 
-    DeliveryOrder getDelivery();
+    DeliveryOrder getDeliveryOrder();
 
-    boolean checkDestination(URI deliveryURI);
+    boolean checkDestination(DeliveryOrder order);
 
     boolean deliverOrder(DeliveryOrder order);
 }

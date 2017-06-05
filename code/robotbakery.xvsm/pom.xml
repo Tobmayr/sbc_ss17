@@ -75,7 +75,7 @@
 							<systemProperties>
 								<systemProperty>
 									<key>mozartspaces.configurationFile</key>
-									<value>mozartspaces-client.xml</value>
+									<value>mozartspaces-server.xml</value>
 								</systemProperty>
 							</systemProperties>
 							<classpathScope>runtime</classpathScope>

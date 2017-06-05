@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMUtil;
 
 /**
@@ -34,11 +36,14 @@ public class GenericXVSMService {
 		this.capi = capi;
 	}
 
-	public ContainerReference getContainer(String containerName) {
+	public ContainerReference getContainer(String containerName, URI spaceURI){
 		ContainerReference cref = containers.get(containerName);
 		if (cref == null)
-			cref = XVSMUtil.getOrCreateContainer(capi, containerName);
+			cref = XVSMUtil.getOrCreateContainer(capi, containerName,spaceURI);
 		return cref;
+	}
+	public ContainerReference getContainer(String containerName) {
+		return getContainer(containerName, XVSMConstants.BAKERY_SPACE_URI);
 	}
 
 	/**

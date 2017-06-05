@@ -7,8 +7,9 @@ import org.mozartspaces.core.MzsConstants;
 public class XVSMConstants {
 	// Connection information
 	public static final String HOST = "localhost";
-	public static final int PORT = 9876;
-	public static final URI BASE_SPACE_URI = URI.create("xvsm://" + HOST + ":" + PORT);
+	public static final int SERVER_PORT = 9876;
+	public static final URI BAKERY_SPACE_URI = URI.create("xvsm://" + HOST + ":" + SERVER_PORT);
+	public static final int RANDOM_FREE_PORT=0;
 
 	// Container names
 	public static final String COUNTER_CONTAINER_NAME = "Bakery/Counter";

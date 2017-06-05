@@ -34,9 +34,6 @@ public class XVSMUtil {
 	private XVSMUtil() {
 	};
 
-	public static ContainerReference getOrCreateContainer(Capi capi, String containerName) {
-		return getOrCreateContainer(capi, containerName, XVSMConstants.BASE_SPACE_URI);
-	}
 
 	public static ContainerReference getOrCreateContainer(Capi capi, String containerName, URI spaceURI) {
 		logger.debug("Lookup container:" + containerName);
@@ -46,7 +43,7 @@ public class XVSMUtil {
 			logger.debug("Existing container found for: " + containerName);
 		} catch (MzsCoreException e) {
 			try {
-				cref = capi.createContainer(containerName, XVSMConstants.BASE_SPACE_URI,
+				cref = capi.createContainer(containerName, XVSMConstants.BAKERY_SPACE_URI,
 						MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
 				logger.debug("New container has been created for: " + containerName);
 			} catch (MzsCoreException e1) {

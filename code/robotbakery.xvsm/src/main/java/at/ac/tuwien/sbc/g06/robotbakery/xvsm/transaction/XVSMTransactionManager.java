@@ -25,7 +25,7 @@ public class XVSMTransactionManager implements ITransactionManager {
 	public ITransaction createTransaction() {
 		try {
 			TransactionReference ref = capi.createTransaction(XVSMConstants.MAX_TRANSACTION_TIMEOUT,
-					XVSMConstants.BASE_SPACE_URI);
+					XVSMConstants.BAKERY_SPACE_URI);
 			return new XVSMTransaction(ref);
 		} catch (MzsCoreException e) {
 			logger.error(e.getMessage());

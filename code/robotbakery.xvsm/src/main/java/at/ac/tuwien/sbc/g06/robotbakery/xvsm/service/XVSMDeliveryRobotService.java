@@ -25,62 +25,69 @@ import java.net.URI;
  */
 public class XVSMDeliveryRobotService extends GenericXVSMService implements IDeliveryRobotService {
 
-    private XVSMRobotService robotService;
-    private ContainerReference terminalContainer;
-    private ContainerReference destination;
+	private XVSMRobotService robotService;
+	private ContainerReference terminalContainer;
+	private ContainerReference destinationContainer;
+	private ContainerReference counterContainer;
 
-    public XVSMDeliveryRobotService(Capi capi) {
-        super(new Capi(DefaultMzsCore.newInstance()));
-        this.terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
-        this.robotService = new XVSMRobotService(capi, DeliveryRobot.class.getSimpleName());
+	public XVSMDeliveryRobotService(Capi capi) {
+		super(new Capi(DefaultMzsCore.newInstance()));
+		this.terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
+		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
+		this.robotService = new XVSMRobotService(capi, DeliveryRobot.class.getSimpleName());
 
-    }
+	}
 
-    @Override
-    public void startRobot() {
-        robotService.startRobot();
-    }
+	@Override
+	public void startRobot() {
+		robotService.startRobot();
+	}
 
-    @Override
-    public void shutdownRobot() {
-        robotService.shutdownRobot();
-    }
+	@Override
+	public void shutdownRobot() {
+		robotService.shutdownRobot();
+	}
 
-    @Override
-    public DeliveryOrder getDelivery() {
-        Query query = new Query()
-                .filter(Matchmakers.and(Property.forClass(DeliveryOrder.class, "*").exists(), Property.forName("*", "OrderState").equalTo(OrderState.OPEN)))
-                .sortup(ComparableProperty.forName("*", "timestamp"));
-        Integer available = test(terminalContainer, null,
-                QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
-        if(available>0) {
-            return takeFirst(terminalContainer, null, QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
-        }
+	@Override
+	public DeliveryOrder getDeliveryOrder() {
+		Query query = new Query()
+				.filter(Matchmakers.and(Property.forClass(DeliveryOrder.class, "*").exists(),
+						Property.forName("*", "OrderState").equalTo(OrderState.OPEN)))
+				.sortup(ComparableProperty.forName("*", "timestamp"));
+		Integer available = test(terminalContainer, null,
+				QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
+		if (available > 0) {
+			return takeFirst(terminalContainer, null,
+					QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    @Override
-    public boolean checkDestination(URI deliveryURI) {
-        try {
-            this.destination = capi.lookupContainer(XVSMConstants.DELIVERY_CONTAINER_NAME, deliveryURI, MzsConstants.RequestTimeout.DEFAULT, null);
-            return true;
-        } catch (MzsCoreException e) {
-            return false;
-        }
-    }
+	@Override
+	public boolean checkDestination(DeliveryOrder deliveryOrder) {
+		try {
+			this.destinationContainer = capi.lookupContainer(XVSMConstants.DELIVERY_CONTAINER_NAME,
+					deliveryOrder.getDestination(), MzsConstants.RequestTimeout.DEFAULT, null);
+			return true;
+		} catch (MzsCoreException e) {
+			return false;
+		}
+	}
 
-    @Override
-    public boolean deliverOrder(DeliveryOrder order) {
-        boolean delivered = false;
-        if(destination!=null) {
-            delivered = write(order, destination, null);
-        }
-        if(delivered) {
-            order.setState(Order.OrderState.PAID);
-        } else {
-            order.setState(OrderState.UNDELIVERABLE);
-        }
-        return delivered;
-    }
+	@Override
+	public boolean deliverOrder(DeliveryOrder order) {
+		boolean delivered = false;
+		if (destinationContainer != null) {
+			delivered = write(order, destinationContainer, null);
+		}
+		if (delivered) {
+			order.setState(Order.OrderState.PAID);
+		} else {
+			order.setState(OrderState.UNDELIVERABLE);
+
+		}
+		write(order, counterContainer, null);
+		return delivered;
+	}
 }
