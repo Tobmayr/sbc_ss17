@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -34,14 +36,21 @@ public class BakeRobot extends Robot {
 
 				System.out.println(
 						String.format("New charge of size: %s received. Init baking process", products.size()));
+				Collections.sort(products, (a, b) -> a.getRecipe().getBakeTime() < b.getRecipe().getBakeTime() ? -1 : a.getRecipe().getBakeTime() == b.getRecipe().getBakeTime() ? 0: 1);
+
 				// Baking
-				sleepFor(5000);
-				for (Product product : products) {
+				int currentBakeTime = 0;
+				for(Product product: products) {
+					int bakeTime = product.getRecipe().getBakeTime();
+					if(bakeTime>currentBakeTime) {
+						sleepFor(bakeTime);
+						currentBakeTime = bakeTime;
+					}
 					product.addContribution(getId(), ContributionType.BAKE, getClass());
 					product.setType(BakeState.FINALPRODUCT);
 					if (!service.putBakedProductsInStorage(product, null)) {
 						System.out.println(String.format(
-								"Error! Couldn't put product wiht id \"%s\" in storage. Product might be lost",
+								"Error! Couldn't put product with id \"%s\" in storage. Product might be lost",
 								product.getId()));
 					}
 				}
