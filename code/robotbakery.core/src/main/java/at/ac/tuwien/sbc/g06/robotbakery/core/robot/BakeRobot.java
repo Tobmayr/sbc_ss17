@@ -41,10 +41,11 @@ public class BakeRobot extends Robot {
 				// Baking
 				int currentBakeTime = 0;
 				for(Product product: products) {
-					int bakeTime = product.getRecipe().getBakeTime();
+					int bakeTime = product.getRecipe().getBakeTime()*1000;
 					if(bakeTime>currentBakeTime) {
 						sleepFor(bakeTime);
 						currentBakeTime = bakeTime;
+						System.out.println(String.format("Baked for: %s", bakeTime));
 					}
 					product.addContribution(getId(), ContributionType.BAKE, getClass());
 					product.setType(BakeState.FINALPRODUCT);
