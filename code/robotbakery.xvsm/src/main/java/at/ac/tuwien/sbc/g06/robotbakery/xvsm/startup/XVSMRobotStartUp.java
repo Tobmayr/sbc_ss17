@@ -3,10 +3,12 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup;
 import java.io.IOException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.transaction.XVSMTransactionManager;
@@ -15,10 +17,11 @@ public class XVSMRobotStartUp {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1 || args.length > 2) {
-			throw new IllegalArgumentException("Usage: RobotStartUp TYPE (service|knead|bake) (ID)");
+			throw new IllegalArgumentException("Usage: RobotStartUp TYPE (service|knead|bake|deliver) (ID)");
 		}
 		String id = null;
-		if(args.length==2) id = args[1];
+		if (args.length == 2)
+			id = args[1];
 		switch (args[0]) {
 		case "service":
 			startRobot(new ServiceRobot(new XVSMServiceRobotService(), new XVSMTransactionManager(), id));
@@ -29,7 +32,9 @@ public class XVSMRobotStartUp {
 		case "bake":
 			startRobot(new BakeRobot(new XVSMBakeRobotService(), new XVSMTransactionManager(), id));
 			break;
-
+		case "deliver":
+			startRobot(new DeliveryRobot(new XVSMDeliveryRobotService(), new XVSMTransactionManager(), id));
+			break;
 		default:
 			break;
 		}

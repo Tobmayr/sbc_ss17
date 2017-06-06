@@ -17,8 +17,8 @@ public class TabletInitializer {
 
 	}
 
-	public static void initializeTabletStartUp(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
-			ITabletUIService uiService, IDeliveryTabletUIService deliveryUIService) throws IOException {
+	public static  void initializeTabletStartUp(Stage primaryStage, TabletUIChangeNotifer changeNotifer,
+			TabletUIChangeNotifer deliveryChangeNotifier, ITabletUIService uiService, IDeliveryTabletUIService deliveryUIService) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(
 				TabletInitializer.class.getClassLoader().getResource(UIConstants.TABLET_STARTUP_DIALOG_FMXL));
@@ -32,7 +32,7 @@ public class TabletInitializer {
 		primaryStage.setOnCloseRequest(we -> System.exit(0));
 		primaryStage.setResizable(false);
 		TabletStartUpController controller = loader.getController();
-		controller.initialize(uiService, changeNotifer, deliveryUIService);
+		controller.initialize(uiService, changeNotifer, deliveryUIService,deliveryChangeNotifier);
 
 	}
 

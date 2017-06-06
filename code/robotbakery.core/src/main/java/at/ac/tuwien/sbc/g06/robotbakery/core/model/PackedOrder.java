@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class PackedOrder extends Order implements Serializable {
 
 	private final List<Product> products;
-	private boolean delivery = false;
+
 
 	public PackedOrder(Order order) {
 		super(order.getId());
@@ -22,8 +23,9 @@ public class PackedOrder extends Order implements Serializable {
 		setServiceRobotId(order.getServiceRobotId());
 		setTimestamp(order.getTimestamp());
 		order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
-		this.delivery = order instanceof DeliveryOrder;
-
+		setDelivery(order.isDelivery());
+		setDeliveryAddress(order.getDeliveryAddress());
+		
 	}
 
 	public void addAll(List<Product> products) {
@@ -46,14 +48,5 @@ public class PackedOrder extends Order implements Serializable {
 		return products;
 	}
 
-	public boolean isDelivery() {
-		return delivery;
-	}
-
-	public void setDelivery(boolean delivery) {
-		this.delivery = delivery;
-	}
 	
-	
-
 }

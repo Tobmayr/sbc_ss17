@@ -19,7 +19,6 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsConstants;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -50,7 +49,9 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 
 	@Override
 	public Order getNextOrder(ITransaction tx) {
-		Query query = new Query().filter(Property.forName("*", "state").equalTo(OrderState.OPEN))
+		Query query = new Query()
+				.filter(Matchmakers.or(Property.forName("*", "state").equalTo(OrderState.ORDERED),
+						Property.forName("*", "state").equalTo(OrderState.WAITING)))
 				.sortup(ComparableProperty.forName("*", "timestamp")).cnt(1);
 		return takeFirst(counterContainer, null,
 				QueryCoordinator.newSelector(query, MzsConstants.Selecting.DEFAULT_COUNT));
@@ -125,7 +126,7 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	}
 
 	@Override
-	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
+	public boolean returnOrder(Order currentOrder, ITransaction tx) {
 		return write(currentOrder, counterContainer, tx);
 	}
 
@@ -137,13 +138,14 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	@Override
 	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
 		Query query = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT)).cnt(amount);
-		return take(storageContainer, tx, QueryCoordinator.newSelector(query,MzsConstants.Selecting.COUNT_MAX),
-				TypeCoordinator.newSelector(Product.class,MzsConstants.Selecting.COUNT_MAX));
+		return take(storageContainer, tx, QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
+				TypeCoordinator.newSelector(Product.class, MzsConstants.Selecting.COUNT_MAX));
 	}
 
 	@Override
 	public int readAllPrepackages() {
-		return test(terminalContainer, null, TypeCoordinator.newSelector(Prepackage.class,MzsConstants.Selecting.COUNT_MAX));
+		return test(terminalContainer, null,
+				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
 	}
 
 }

@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.Templates;
-
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
@@ -46,11 +43,11 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			 if (!isStorageEmtpy)
-			 doTask(getProductFromStorage);
-			
-			 if (!isCounterEmpty && isOrderAvailable)
-			 doTask(processNextOrder);
+			if (!isStorageEmtpy)
+				doTask(getProductFromStorage);
+
+			if (!isCounterEmpty && isOrderAvailable)
+				doTask(processNextOrder);
 
 			if (!isPrepackagesLimit && !isStorageEmtpy) {
 				doTask(prepackProducts);
@@ -70,7 +67,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	 */
 	private boolean packOrderAndPutInTerminal(ITransaction tx) {
 		PackedOrder packedOrder = new PackedOrder(currentOrder);
-		packedOrder.setState(OrderState.DELIVERED);
+		packedOrder.setState(OrderState.PACKED);
 		packedOrder.setServiceRobotId(getId());
 		for (Item item : currentOrder.getItemsMap().values()) {
 			List<Product> temp = service.getProductsFromCounter(item.getProductName(), item.getAmount(), tx);
@@ -101,13 +98,13 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 		System.out.println("New order with id: " + currentOrder.getId() + " is now processed & prepared for packing");
 		if (!packOrderAndPutInTerminal(tx)) {
-			if (currentOrder instanceof DeliveryOrder) {
+			if (currentOrder.isDelivery()) {
 				System.out.println("Not enough products in stock. Order has is returned to collection area!");
-				currentOrder.setState(OrderState.OPEN);
-				return service.returnDeliveryOrder((DeliveryOrder) currentOrder, tx);
+				currentOrder.setState(OrderState.WAITING);
+				return service.returnOrder(currentOrder, tx);
 			} else {
 				System.out.println("Not enough products in stock. Order has been declined!");
-				currentOrder.setState(OrderState.UNDELIVERABLE);
+				currentOrder.setState(OrderState.UNGRANTABLE);
 				return service.updateOrder(currentOrder, tx);
 			}
 

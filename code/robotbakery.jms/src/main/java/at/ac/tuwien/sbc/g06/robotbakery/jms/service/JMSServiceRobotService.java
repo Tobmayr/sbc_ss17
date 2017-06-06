@@ -15,7 +15,6 @@ import javax.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
@@ -51,7 +50,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			counterProducer = session.createProducer(counterQueue);
 			orderConsumer = session.createConsumer(orderQueue,
-					String.format("%s='%s'", JMSConstants.Property.STATE, OrderState.OPEN));
+					String.format("%s='%s'", JMSConstants.Property.STATE, OrderState.ORDERED));
 			terminalQueueProducer = session.createProducer(terminalQueue);
 			productCounterQueueBrowser = session.createBrowser(counterQueue,
 					String.format("%s='%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
@@ -141,7 +140,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	}
 
 	@Override
-	public boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx) {
+	public boolean returnOrder(Order currentOrder, ITransaction tx) {
 		return send(counterProducer, currentOrder);
 	}
 

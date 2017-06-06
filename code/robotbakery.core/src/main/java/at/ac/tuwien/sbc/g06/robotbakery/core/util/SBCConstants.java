@@ -18,6 +18,7 @@ public final class SBCConstants {
 	public static final Integer BAKE_SIZE = 5;
 
 	public static final Long BAKE_WAIT = 10000L;
+	public static final long DELIVER_DURATION =5000L;
 	public static final Integer PREPACKAGE_SIZE = 3;
 	public static final Integer PREPACKAGE_MAX_AMOUNT = 5;
 
@@ -25,6 +26,7 @@ public final class SBCConstants {
 	public static final String COORDINATION_ROOM_COUNTER = "Counter";
 	public static final String COORDINATION_ROOM_TERMINAL = "Terminal";
 	public static final String COORDINATION_ROOM_BAKEROOM = "Bakeroom";
+
 
 	public static final class Keys {
 		public static final String FLOUR = "flour";

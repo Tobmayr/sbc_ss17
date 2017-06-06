@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public interface ITabletUIService  {
 	 * get packed order from terminal
 	 * @return packed order with products in it
 	 */
-	PackedOrder getOrderPackage(Order order);
+	PackedOrder getPackedOrder(Order order);
 
 	/**
 	 * pay order at terminal
@@ -42,6 +43,8 @@ public interface ITabletUIService  {
 	List<Prepackage> getInitialPrepackages();
 
 	Prepackage getPrepackage(UUID packageId);
+	
+	URI getDeliveryURI();
 
 
 

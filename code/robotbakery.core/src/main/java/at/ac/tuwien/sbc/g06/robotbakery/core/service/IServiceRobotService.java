@@ -3,7 +3,6 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 import java.util.List;
 import java.util.Map;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
@@ -98,7 +97,7 @@ public interface IServiceRobotService extends IRobotService {
 	 * @param tx 
 	 * @return
 	 */
-	boolean returnDeliveryOrder(DeliveryOrder currentOrder, ITransaction tx);
+	boolean returnOrder(Order currentOrder, ITransaction tx);
 	
 	boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx);
 

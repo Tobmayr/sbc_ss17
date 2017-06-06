@@ -18,7 +18,7 @@ public class XVSMDeliveryTabletUIService extends XVSMTabletUIService implements 
     public XVSMDeliveryTabletUIService(Capi capi) {
         super(capi);
         counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
-        deliveryContainer= getContainer(XVSMConstants.DELIVERY_CONTAINER_NAME);
+        deliveryContainer= getContainer(XVSMConstants.DELIVERY_CONTAINER_NAME,capi.getCore().getConfig().getSpaceUri());
     }
     
    

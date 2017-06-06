@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,15 +20,17 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 @SuppressWarnings("serial")
 public class Order implements Serializable {
 	public enum OrderState {
-		OPEN, DELIVERED, PAID, UNDELIVERABLE;
+		ORDERED,WAITING, PACKED, PAID, DELIVERED, UNDELIVERALBE, UNGRANTABLE;
 	}
 
 	private final UUID orderID;
 	private UUID customerID;
 	private UUID serviceRobotId;
-	private OrderState state = OrderState.OPEN;
+	private OrderState state = OrderState.ORDERED;
 	private Timestamp timestamp;
 
+	private boolean delivery = false;
+	private URI deliveryAddress;
 	private double totalSum;
 	private final Map<String, Item> itemsMap;
 
@@ -115,6 +118,24 @@ public class Order implements Serializable {
 
 	public UUID getId() {
 		return orderID;
+	}
+	
+	
+
+	public boolean isDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(boolean delivery) {
+		this.delivery = delivery;
+	}
+
+	public URI getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(URI deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
 	}
 
 	@Override

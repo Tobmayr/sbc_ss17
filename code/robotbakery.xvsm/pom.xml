@@ -156,5 +156,29 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>deliver</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup.XVSMRobotStartUp</mainClass>
+							<arguments>
+								<argument>deliver</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+							<systemProperties>
+								<systemProperty>
+									<key>mozartspaces.configurationFile</key>
+									<value>mozartspaces-client.xml</value>
+								</systemProperty>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

@@ -5,6 +5,7 @@ import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsCore;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.TabletUIChangeNotifer;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMDeliveryTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMTabletUIChangeNotifier;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMDeliveryTabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMTabletUIService;
@@ -19,7 +20,7 @@ public class XVSMTabletStartUp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		MzsCore core= DefaultMzsCore.newInstance(XVSMConstants.RANDOM_FREE_PORT);
 		Capi capi= new Capi(core);
-		TabletInitializer.initializeTabletStartUp(primaryStage, new XVSMTabletUIChangeNotifier(capi),
+		TabletInitializer.initializeTabletStartUp(primaryStage, new XVSMTabletUIChangeNotifier(capi), new XVSMDeliveryTabletUIChangeNotifier(capi),
 				new XVSMTabletUIService(capi), new XVSMDeliveryTabletUIService(capi));
 
 	}

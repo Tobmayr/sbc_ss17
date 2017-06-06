@@ -43,7 +43,7 @@ public class XVSMUtil {
 			logger.debug("Existing container found for: " + containerName);
 		} catch (MzsCoreException e) {
 			try {
-				cref = capi.createContainer(containerName, XVSMConstants.BAKERY_SPACE_URI,
+				cref = capi.createContainer(containerName, spaceURI,
 						MzsConstants.Container.UNBOUNDED, getObligatoryCoordsForContainer(containerName), null, null);
 				logger.debug("New container has been created for: " + containerName);
 			} catch (MzsCoreException e1) {
@@ -73,7 +73,8 @@ public class XVSMUtil {
 			return Arrays.asList(new FifoCoordinator(), new QueryCoordinator());
 		case XVSMConstants.TERMINAL_CONTAINER_NAME:
 			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
-
+		case XVSMConstants.DELIVERY_CONTAINER_NAME:
+			return Arrays.asList(new QueryCoordinator(), new TypeCoordinator());
 		default:
 			return null;
 		}

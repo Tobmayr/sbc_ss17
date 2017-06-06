@@ -163,42 +163,36 @@ public abstract class AbstractTabletController {
 		totalSum.setText("0");
 	}
 
-	protected  String getText(OrderState state) {
+	protected String getText(OrderState state) {
 		if (state == null)
 			return "";
 		switch (state) {
-		case OPEN:
+		case ORDERED:
 			return "Ordered- Order will be processed by our service robots";
 		case PAID:
 			return "Paid- Your order has been paid.";
-		case UNDELIVERABLE:
+		case UNGRANTABLE:
 			return "Undeliverable- Your order can not be delivered. Not enough products in stock";
-		case DELIVERED:
+		case PACKED:
 			return "Packed- Your order is packed and ready in the terminal";
 		}
 		return "";
 
 	}
-	
+
 	@FXML
 	public void onStatusButtonClicked() {
-		if (order.getState() == OrderState.OPEN || order.getState() == OrderState.UNDELIVERABLE) {
+		if (order.getState() == OrderState.ORDERED) {
 			if (orderValid()) {
-				order.setState(OrderState.OPEN);
 				order.setTimestamp(new Timestamp(System.currentTimeMillis()));
 				service.addOrderToCounter(order);
 			} else
 				invalidOrderAlert.showAndWait();
-		} else if (order.getState() == OrderState.DELIVERED) {
-			packedOrder = service.getOrderPackage(order);
-			if (service.payOrder(packedOrder)) {
-				statusButton.setText(getText(OrderState.PAID));
-			}
 		}
 
 	}
 
-	private boolean orderValid() {
+	boolean orderValid() {
 		return itemsTable.getItems().stream()
 				.allMatch(i -> i.getAmount() <= counterMap.get(i.getProductName()).getStock());
 	}
@@ -207,7 +201,7 @@ public abstract class AbstractTabletController {
 	public void onAddButtonClicked() {
 		int amount = Integer.parseInt(amountText.getText());
 		String selectedString = productCombo.getSelectionModel().getSelectedItem();
-		if (amount == 0 || selectedString == null || counterMap.get(selectedString).getStock() < amount)
+		if (amountIsInValid(amount, selectedString))
 			return;
 		Item item = order.addItem(selectedString, amount);
 
@@ -223,13 +217,17 @@ public abstract class AbstractTabletController {
 
 	}
 
+	protected boolean amountIsInValid(int amount, String selectedString) {
+		return amount == 0 || selectedString == null || counterMap.get(selectedString).getStock() < amount;
+	}
+
 	public void onOrderUpdated(Order updated) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
 				if (updated.getId().equals(order.getId())) {
-					order.setState(OrderState.DELIVERED);
+					order.setState(OrderState.PACKED);
 					changeState(updated.getState());
 					statusField.setText(getText(updated.getState()));
 				}
@@ -239,20 +237,20 @@ public abstract class AbstractTabletController {
 
 	}
 
-	private void changeState(OrderState state) {
+	protected void changeState(OrderState state) {
 		switch (state) {
-		case DELIVERED:
+		case PACKED:
 			statusButton.setDisable(false);
 			statusButton.setText("Pay order");
 			break;
-		case OPEN:
+		case ORDERED:
 			disableOrderEdit(true);
 			break;
 		case PAID:
 			disableOrderEdit(true);
 			break;
-		case UNDELIVERABLE:
-			order.setState(OrderState.OPEN);
+		case UNGRANTABLE:
+			order.setState(OrderState.ORDERED);
 			disableOrderEdit(false);
 			statusButton.setText("Resend order");
 			break;
@@ -261,7 +259,7 @@ public abstract class AbstractTabletController {
 
 	}
 
-	private void disableOrderEdit(boolean value) {
+	protected void disableOrderEdit(boolean value) {
 		addButton.setDisable(value);
 		productCombo.setDisable(value);
 		amountText.setDisable(value);

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 	private ContainerReference counterContainer;
 	private ContainerReference terminalContainer;
 
-
 	public XVSMTabletUIService(Capi capi) {
 		super(capi);
 		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
@@ -43,7 +43,7 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 	}
 
 	@Override
-	public PackedOrder getOrderPackage(Order order) {
+	public PackedOrder getPackedOrder(Order order) {
 		Query query = new Query()
 				.filter(Matchmakers.and(Property.forName("*", "customerID").equalTo(order.getCustomerId()),
 						Property.forName("*", "orderID").equalTo(order.getId())))
@@ -83,6 +83,11 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 	public List<Prepackage> getInitialPrepackages() {
 		return read(terminalContainer, null,
 				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
+	}
+
+	@Override
+	public URI getDeliveryURI() {
+		return capi.getCore().getConfig().getSpaceUri();
 	}
 
 }

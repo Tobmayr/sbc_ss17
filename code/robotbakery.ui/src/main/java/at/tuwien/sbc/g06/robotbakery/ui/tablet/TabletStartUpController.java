@@ -23,6 +23,8 @@ public class TabletStartUpController {
 
 	private IDeliveryTabletUIService deliveryUIService;
 
+	private TabletUIChangeNotifer deliveryChangeNotifer;
+
 	@FXML
 	public void onRegularCustomerClicked() throws IOException {
 		Stage stage = (Stage) normalCustomerStartButton.getScene().getWindow();
@@ -33,15 +35,16 @@ public class TabletStartUpController {
 	@FXML
 	public void onDeliveryCustomerClicked() throws IOException {
 		Stage stage = (Stage) deliveryCustomerStartButton.getScene().getWindow();
-		TabletInitializer.intitalizeTablet(stage, changeNotifer, deliveryUIService, false);
+		TabletInitializer.intitalizeTablet(stage, deliveryChangeNotifer, deliveryUIService, false);
 
 	}
 
 	public void initialize(ITabletUIService uiService, TabletUIChangeNotifer changeNotifer,
-			IDeliveryTabletUIService deliveryUIService) {
+			IDeliveryTabletUIService deliveryUIService, TabletUIChangeNotifer deliveryChangeNotifer) {
 		this.uiService = uiService;
 		this.changeNotifer = changeNotifer;
 		this.deliveryUIService = deliveryUIService;
+		this.deliveryChangeNotifer = deliveryChangeNotifer;
 
 	}
 

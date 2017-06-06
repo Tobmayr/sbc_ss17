@@ -1,24 +1,21 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import org.mozartspaces.capi3.ComparableProperty;
-import org.mozartspaces.capi3.Matchmakers;
-import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCoreException;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.DeliveryOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
-
-import java.net.URI;
 
 /**
  * Created by Matthias Höllthaler on 20.05.2017.
@@ -30,10 +27,10 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 	private ContainerReference destinationContainer;
 	private ContainerReference counterContainer;
 
-	public XVSMDeliveryRobotService(Capi capi) {
+	public XVSMDeliveryRobotService() {
 		super(new Capi(DefaultMzsCore.newInstance()));
 		this.terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
-		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
+		this.counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
 		this.robotService = new XVSMRobotService(capi, DeliveryRobot.class.getSimpleName());
 
 	}
@@ -49,26 +46,18 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 	}
 
 	@Override
-	public DeliveryOrder getDeliveryOrder() {
-		Query query = new Query()
-				.filter(Matchmakers.and(Property.forClass(DeliveryOrder.class, "*").exists(),
-						Property.forName("*", "OrderState").equalTo(OrderState.OPEN)))
-				.sortup(ComparableProperty.forName("*", "timestamp"));
-		Integer available = test(terminalContainer, null,
-				QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
-		if (available > 0) {
-			return takeFirst(terminalContainer, null,
-					QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX));
-		}
+	public PackedOrder getPackedDeliveryOrder() {
+		Query query = new Query().sortup(ComparableProperty.forName("*", "timestamp"));
+		return takeFirst(terminalContainer, null, QueryCoordinator.newSelector(query),
+				TypeCoordinator.newSelector(PackedOrder.class));
 
-		return null;
 	}
 
 	@Override
-	public boolean checkDestination(DeliveryOrder deliveryOrder) {
+	public boolean checkDestination(PackedOrder deliveryOrder) {
 		try {
 			this.destinationContainer = capi.lookupContainer(XVSMConstants.DELIVERY_CONTAINER_NAME,
-					deliveryOrder.getDestination(), MzsConstants.RequestTimeout.DEFAULT, null);
+					deliveryOrder.getDeliveryAddress(), MzsConstants.RequestTimeout.DEFAULT, null);
 			return true;
 		} catch (MzsCoreException e) {
 			return false;
@@ -76,7 +65,7 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 	}
 
 	@Override
-	public boolean deliverOrder(DeliveryOrder order) {
+	public boolean deliverOrder(PackedOrder order) {
 		boolean delivered = false;
 		if (destinationContainer != null) {
 			delivered = write(order, destinationContainer, null);
@@ -84,10 +73,15 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 		if (delivered) {
 			order.setState(Order.OrderState.PAID);
 		} else {
-			order.setState(OrderState.UNDELIVERABLE);
+			order.setState(OrderState.UNGRANTABLE);
 
 		}
 		write(order, counterContainer, null);
 		return delivered;
+	}
+
+	@Override
+	public boolean updateOrder(Order delivery) {
+		return write(delivery, counterContainer, null);
 	}
 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,7 +57,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	}
 
 	@Override
-	public PackedOrder getOrderPackage(Order order) {
+	public PackedOrder getPackedOrder(Order order) {
 		try {
 			terminalConsumer = session.createConsumer(terminalQueue,
 					String.format("%s= '%s' AND %s='%s'", JMSConstants.Property.CUSTOMER_ID,
@@ -91,6 +92,12 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public List<Prepackage> getInitialPrepackages() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public URI getDeliveryURI() {
 		// TODO Auto-generated method stub
 		return null;
 	}
