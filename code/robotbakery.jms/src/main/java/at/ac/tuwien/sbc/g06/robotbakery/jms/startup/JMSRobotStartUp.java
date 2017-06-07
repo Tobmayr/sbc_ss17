@@ -2,11 +2,9 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.startup;
 
 import java.io.IOException;
 
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.core.robot.*;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSBakeRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.transaction.JMSTransactionManager;
@@ -32,6 +30,10 @@ public class JMSRobotStartUp {
 			JMSBakeRobotService service2 = new JMSBakeRobotService();
 			startRobot(new BakeRobot(service2, new JMSTransactionManager(service2.getSession()), id));
 			break;
+			case "deliver":
+				JMSDeliveryRobotService service3 = new JMSDeliveryRobotService();
+				startRobot(new DeliveryRobot(service3, new JMSTransactionManager(service3.getSession()), id));
+				break;
 
 		default:
 			break;

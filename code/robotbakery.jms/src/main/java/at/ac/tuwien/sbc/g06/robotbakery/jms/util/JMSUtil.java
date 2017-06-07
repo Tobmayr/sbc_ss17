@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.util;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -32,7 +34,31 @@ public class JMSUtil {
 
 	}
 
-	public static TopicConnection createAndTopicConnection() throws JMSException {
+	public static boolean available(int port) {
+		System.out.println("--------------Testing port " + port);
+		Socket s = null;
+		try {
+			s = new Socket("localhost", port);
+
+			// If the code makes it this far without an exception it means
+			// something is using the port and has responded.
+			System.out.println("--------------Port " + port + " is not available");
+			return false;
+		} catch (IOException e) {
+			System.out.println("--------------Port " + port + " is available");
+			return true;
+		} finally {
+			if( s != null){
+				try {
+					s.close();
+				} catch (IOException e) {
+					throw new RuntimeException("You should handle this error." , e);
+				}
+			}
+		}
+	}
+
+	public static TopicConnection createAndTopicConnection(String address) throws JMSException {
 		TopicConnection connection;
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(JMSConstants.SERVER_ADDRESS);
 		connection = connectionFactory.createTopicConnection();
@@ -54,7 +80,7 @@ public class JMSUtil {
 	 * @param browser
 	 *            Browser for the queue which should be tested
 	 * @param properties
-	 * @param valueues
+	 * @param values
 	 * @return
 	 * @throws JMSException
 	 */
@@ -73,7 +99,7 @@ public class JMSUtil {
 	 *            Browser for the queue which should be tested
 	 * @param properties
 	 * @param maxSize
-	 * @param valueues
+	 * @param values
 	 * @return
 	 * @throws JMSException
 	 */

@@ -34,7 +34,7 @@ public class JMSBakery extends Bakery implements MessageListener {
 
 	public JMSBakery() {
 		try {
-			connection = JMSUtil.createAndTopicConnection();
+			connection = JMSUtil.createAndTopicConnection(JMSConstants.SERVER_ADDRESS);
 			queueSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			Topic notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);

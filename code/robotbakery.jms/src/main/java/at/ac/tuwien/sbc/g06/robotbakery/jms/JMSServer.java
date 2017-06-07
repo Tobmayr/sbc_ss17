@@ -20,10 +20,10 @@ public class JMSServer  {
 		}));
 	}
 
-	public boolean startUp() {
+	public boolean startUp(String address) {
 		try {
 			broker = new BrokerService();
-			broker.addConnector(JMSConstants.SERVER_ADDRESS);
+			broker.addConnector(address);
 			broker.setPersistent(false);
 			// Clear potential old messages
 			broker.deleteAllMessages();
