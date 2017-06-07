@@ -1,6 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,8 +29,9 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	private MessageProducer orderProducer;
 	private Queue terminalQueue;
 	private Queue counterQueue;
-	private MessageConsumer terminalConsumer;
 	private QueueBrowser counterQueueBrowser;
+
+	private QueueBrowser terminalQueueBrowser;
 
 	public JMSTabletUIService() {
 		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
@@ -40,11 +40,11 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
 			terminalQueue = session.createQueue(JMSConstants.Queue.TERMINAL);
 			orderProducer = session.createProducer(orderQueue);
-			// We keep the order in the counter as an history after payment, so
 
+			// We keep the order in the counter as an history after payment, so
 			counterQueueBrowser = session.createBrowser(counterQueue,
 					String.format("%s = '%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
-
+			terminalQueueBrowser = session.createBrowser(terminalQueue);
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}
@@ -59,11 +59,12 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	@Override
 	public PackedOrder getPackedOrder(Order order) {
 		try {
-			terminalConsumer = session.createConsumer(terminalQueue,
-					String.format("%s= '%s' AND %s='%s'", JMSConstants.Property.CUSTOMER_ID,
+			MessageConsumer terminalOrderConsumer = session.createConsumer(terminalQueue,
+					String.format("%s= '%s' AND %s='%s' AND %s='%s'", JMSConstants.Property.CLASS,
+							PackedOrder.class.toString(), JMSConstants.Property.CUSTOMER_ID,
 							order.getCustomerId().toString(), JMSConstants.Property.ORDER_ID,
 							order.getId().toString()));
-			return receive(terminalConsumer);
+			return receive(terminalOrderConsumer);
 		} catch (JMSException e) {
 			e.printStackTrace();
 			return null;
@@ -86,26 +87,24 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public Prepackage getPrepackage(UUID packageId) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+		MessageConsumer terminalPrepackageConsumer=session.createConsumer(terminalQueue, String.format("%s= '%s'",JMSConstants.Property.CLASS,Prepackage.class.getSimpleName()));
+		return receive(terminalPrepackageConsumer);
+		} catch (JMSException e) {
+			e.printStackTrace();
+			return null;
+
+		}
 	}
 
 	@Override
 	public List<Prepackage> getInitialPrepackages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public URI getDeliveryURI() {
-		// TODO Auto-generated method stub
-		return null;
+		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.toString(), null);
 	}
 
 	@Override
 	public boolean updatePrepackage(Prepackage prepackage) {
-		// TODO Auto-generated method stub
-		return false;
+		return notify(prepackage, false, counterQueue);
 	}
 
 }

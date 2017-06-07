@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryTabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.fxml.FXML;
@@ -22,7 +23,8 @@ public class DeliveryTabletController extends AbstractTabletController {
 		// TODO Auto-generated method stub
 		super.initialize(data, uiService, customerID);
 		order.setDelivery(true);
-		URI deliveryAddress = service.getDeliveryURI();
+
+		URI deliveryAddress = ((IDeliveryTabletUIService) service).getDeliveryURI();
 		order.setDeliveryAddress(deliveryAddress);
 		deliveryAddressText.setText(deliveryAddress.toString());
 	}
@@ -40,8 +42,6 @@ public class DeliveryTabletController extends AbstractTabletController {
 		}
 
 	}
-	
-	
 
 	@Override
 	public void onAddButtonClicked() {

@@ -1,5 +1,11 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +45,12 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private QueueBrowser productCounterQueueBrowser;
 	private Map<String, MessageConsumer> counterProductTypeConsumers = new HashMap<>();
 	private Map<String, MessageConsumer> storageProductTypeConsumers = new HashMap<>();
+	private QueueBrowser storageQueueBrowser;
+	private QueueBrowser orderQueueBrowser;
+	private QueueBrowser terminalQueueBrowser;
 
 	public JMSServiceRobotService() {
-		super(true, Session.SESSION_TRANSACTED,JMSConstants.SERVER_ADDRESS);
+		super(true, Session.SESSION_TRANSACTED, JMSConstants.SERVER_ADDRESS);
 
 		try {
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -49,9 +58,14 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			counterProducer = session.createProducer(counterQueue);
-			orderConsumer = session.createConsumer(orderQueue,
-					String.format("%s='%s'", JMSConstants.Property.STATE, OrderState.ORDERED));
+			orderConsumer = session.createConsumer(orderQueue, String.format("%s='%s' OR %s='%s' ",
+					JMSConstants.Property.STATE, OrderState.ORDERED, JMSConstants.Property.STATE, OrderState.WAITING));
 			terminalQueueProducer = session.createProducer(terminalQueue);
+			storageQueueBrowser = session.createBrowser(storageQueue);
+			orderQueueBrowser = session.createBrowser(orderQueue,
+					String.format("%s='%s'", JMSConstants.Property.CLASS, Order.class.getSimpleName()));
+
+			terminalQueueBrowser = session.createBrowser(terminalQueue);
 			productCounterQueueBrowser = session.createBrowser(counterQueue,
 					String.format("%s='%s'", JMSConstants.Property.CLASS, Product.class.getSimpleName()));
 
@@ -116,7 +130,6 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 		return receive(counterProductTypeConsumers.get(productName), amount);
 	}
 
-
 	public Session getSession() {
 		return session;
 
@@ -140,21 +153,41 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 
 	@Override
 	public List<Product> getProductsFromStorage(int amount, ITransaction tx) {
-		//TODO: implement;
-		return null;
+		List<Product> readProducts = JMSUtil.toList(storageQueueBrowser, JMSConstants.Property.CLASS,
+				Product.class.getSimpleName(), amount);
+		List<Product> finalList = new ArrayList<>();
+		for (Product product : readProducts) {
+			Product received = receive(storageProductTypeConsumers.get(product.getProductName()));
+			if (received != null) {
+				finalList.add(received);
+			} else {
+				return null;
+			}
+
+		}
+
+		return finalList;
 	}
 
-	
 	@Override
 	public Map<String, Boolean> getInitialState() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Boolean> notificationState = new HashMap<>();
+		notificationState.put(IS_COUNTER_EMPTY, JMSUtil.test(productCounterQueueBrowser, JMSConstants.Property.CLASS,
+				Product.class.getSimpleName()) == 0);
+		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, JMSUtil.test(productCounterQueueBrowser,
+				JMSConstants.Property.CLASS, Product.class.getSimpleName()) == 0);
+		notificationState.put(IS_ORDER_AVAILABLE,
+				JMSUtil.test(orderQueueBrowser, JMSConstants.Property.CLASS, Order.class.getSimpleName()) > 0);
+		notificationState.put(IS_PREPACKAGE_LIMIT, JMSUtil.test(terminalQueueBrowser, JMSConstants.Property.CLASS,
+				Prepackage.class.getSimpleName()) >= SBCConstants.PREPACKAGE_MAX_AMOUNT);
+		notificationState.put(IS_ORDER_PROCESSING_LOCKED,
+				JMSUtil.test(orderQueueBrowser, JMSConstants.Property.HIGH_PRIORITY, "true") > 0);
+		return notificationState;
 	}
 
 	@Override
 	public boolean sendNotification(NotificationMessage notification, ITransaction tx) {
-		// TODO Auto-generated method stub
-		return false;
+		return notify(notification, false, counterQueue);
 	}
 
 }

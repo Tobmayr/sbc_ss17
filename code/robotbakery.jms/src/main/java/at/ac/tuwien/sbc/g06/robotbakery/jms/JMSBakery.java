@@ -24,7 +24,7 @@ public class JMSBakery extends Bakery {
 	public JMSBakery() {
 		super(new JMSBakeryChangeNotifer());
 		try {
-			connection = JMSUtil.createAndTopicConnection(JMSConstants.SERVER_ADDRESS);
+			connection = JMSUtil.createTopicConnection(JMSConstants.SERVER_ADDRESS);
 			queueSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Queue counterQueue = queueSession.createQueue(JMSConstants.Queue.COUNTER);
 			counterQueueMessageProducer = queueSession.createProducer(counterQueue);

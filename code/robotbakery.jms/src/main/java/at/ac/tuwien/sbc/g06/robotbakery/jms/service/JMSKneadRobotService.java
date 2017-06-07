@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_INGREDIENTS_IN_STORAGE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,7 +55,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private MessageConsumer waterConsumer;
 
 	public JMSKneadRobotService() {
-		super(true, Session.SESSION_TRANSACTED,JMSConstants.SERVER_ADDRESS);
+		super(true, Session.SESSION_TRANSACTED, JMSConstants.SERVER_ADDRESS);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);
@@ -143,7 +145,8 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	public Product getProductFromStorage(UUID id, ITransaction tx) {
 		List<Product> products = JMSUtil.toList(productStorageBrowser, JMSConstants.Property.STATE,
 				BakeState.DOUGH.toString(), null);
-		Product returnVal = products.stream().filter(p -> p.getId().toString().equals(id.toString())).findFirst().orElse(null);
+		Product returnVal = products.stream().filter(p -> p.getId().toString().equals(id.toString())).findFirst()
+				.orElse(null);
 		if (returnVal == null)
 			return null;
 
@@ -229,12 +232,11 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	@Override
 	public Map<String, Boolean> getInitialState() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Boolean> notificationState = new HashMap<>();
+		notificationState.put(NO_MORE_INGREDIENTS_IN_STORAGE,
+				JMSUtil.test(ingredientBrowser, JMSConstants.Property.CLASS, Ingredient.class.getSimpleName()) == 0);
+		return notificationState;
+
 	}
-
-	
-
-	
 
 }

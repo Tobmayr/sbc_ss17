@@ -11,7 +11,8 @@ public class JMSConstants {
 		public static final String STATE = "orderState";
 		public static final String ORIGINAL_DESTINATION = "originalDestination";
 		public static final String ID = "uuid";
-		public static final String DELIVERY = "WAITING";
+		public static final String DELIVERY = "delivery";
+		public static final String HIGH_PRIORITY = "isHighPriority";
 
 		private Property() {
 		};
@@ -37,8 +38,10 @@ public class JMSConstants {
 		};
 	}
 
-	public static final String DELIVERY_ADDRESS = "tcp://localhost:";
+	public static final String LOCALHOST_ADDRESS = "tcp://localhost:";
 	public static final String SERVER_ADDRESS = "tcp://localhost:5557";
+	public static final int PORT_RANGE_START = 45555;
+	public static final int PORT_RANGE_END = 45575;
 	public static final long MAX_TIMEOUT = 2000;
 
 	private JMSConstants() {

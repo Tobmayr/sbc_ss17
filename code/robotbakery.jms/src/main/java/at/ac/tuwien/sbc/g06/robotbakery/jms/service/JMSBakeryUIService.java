@@ -21,12 +21,21 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 	private static Logger logger = LoggerFactory.getLogger(JMSTabletUIService.class);
 	private Queue storageQueue;
 	private MessageProducer storageProducer;
+	private Queue counteQueue;
+	private Queue bakeroomQueue;
+	private MessageProducer bakeroomProducer;
+	private MessageProducer counterProducer;
 
 	public JMSBakeryUIService() {
-		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
+		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
+			counteQueue = session.createQueue(JMSConstants.Queue.COUNTER);
+			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
+			bakeroomProducer = session.createProducer(bakeroomQueue);
+			counterProducer = session.createProducer(counteQueue);
 			storageProducer = session.createProducer(storageQueue);
+
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
 		}
@@ -38,26 +47,26 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 			if (!send(storageProducer, ingredient))
 				return false;
 		}
-		
+
 		return true;
 
 	}
-	
+
 	@Override
 	public void addItemsToStorage(List<Serializable> items) {
-		// TODO Auto-generated method stub
+		send(storageProducer, items);
 
 	}
 
 	@Override
 	public void addProductsToCounter(List<Product> products) {
-		// TODO Auto-generated method stub
+		send(counterProducer, products);
 
 	}
 
 	@Override
-	public void addProductsToBakeroom(List<Product> forBakeroom) {
-		// TODO Auto-generated method stub
+	public void addProductsToBakeroom(List<Product> products) {
+		send(bakeroomProducer, products);
 
 	}
 

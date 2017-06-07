@@ -26,7 +26,7 @@ public class JMSTabletUIChangeNotifier extends TabletUIChangeNotifer implements 
 
 	public JMSTabletUIChangeNotifier() {
 		try {
-			connection = JMSUtil.createAndTopicConnection(JMSConstants.SERVER_ADDRESS);
+			connection = JMSUtil.createTopicConnection(JMSConstants.SERVER_ADDRESS);
 			session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			Topic notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			TopicSubscriber subscriber = session.createSubscriber(notificationTopic);

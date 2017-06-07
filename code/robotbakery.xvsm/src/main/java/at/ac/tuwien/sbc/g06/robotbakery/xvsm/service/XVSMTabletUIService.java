@@ -85,10 +85,7 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
 	}
 
-	@Override
-	public URI getDeliveryURI() {
-		return capi.getCore().getConfig().getSpaceUri();
-	}
+
 
 	@Override
 	public boolean updatePrepackage(Prepackage prepackage) {

@@ -46,7 +46,7 @@ public interface ITabletUIService  {
 	
 	boolean updatePrepackage(Prepackage prepackage);
 	
-	URI getDeliveryURI();
+
 
 
 

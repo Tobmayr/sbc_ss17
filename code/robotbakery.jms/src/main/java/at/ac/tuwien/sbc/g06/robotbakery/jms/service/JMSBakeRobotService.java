@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.QueueBrowser;
 import javax.jms.Session;
 
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
 public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobotService {
 
@@ -26,6 +29,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	private Queue storageQueue;
 	private MessageProducer storageQueueProducer;
 	private MessageConsumer bakeroomQueueConsumer;
+	private QueueBrowser bakeroomQueueBrowser;
 
 	public JMSBakeRobotService() {
 		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
@@ -34,6 +38,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageQueueProducer = session.createProducer(storageQueue);
+			bakeroomQueueBrowser = session.createBrowser(bakeroomQueue);
 			bakeroomQueueConsumer = session.createConsumer(bakeroomQueue);
 		} catch (JMSException e) {
 			logger.error(e.getMessage());
@@ -70,12 +75,12 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 		return true;
 	}
 
-	
-
 	@Override
 	public Map<String, Boolean> getInitialState() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Boolean> map = new HashMap<>();
+		map.put(SBCConstants.NotificationKeys.IS_BAKEROOM_EMPTY,
+				JMSUtil.test(bakeroomQueueBrowser, JMSConstants.Property.CLASS, Product.class.getSimpleName()) == 0);
+		return map;
 	}
 
 }

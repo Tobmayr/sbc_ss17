@@ -58,7 +58,7 @@ public class JMSUtil {
 		}
 	}
 
-	public static TopicConnection createAndTopicConnection(String address) throws JMSException {
+	public static TopicConnection createTopicConnection(String address) throws JMSException {
 		TopicConnection connection;
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(address);
 		connection = connectionFactory.createTopicConnection();
@@ -162,11 +162,15 @@ public class JMSUtil {
 	}
 
 	public static String getQueueAdress(String queueName) {
-		return "queue://" + queueName;
+		if (queueName.startsWith("queue://")){
+			return "queue://" + queueName;
+		}
+		return queueName;
+		
 	}
 
 	public static String getCoordinationRoom(String string) {
-		switch (getQueueAdress(string)) {
+		switch (string.replace("queue://", "")) {
 		case JMSConstants.Queue.BAKEROOM:
 			return SBCConstants.COORDINATION_ROOM_BAKEROOM;
 		case JMSConstants.Queue.TERMINAL:
