@@ -25,9 +25,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 public class JMSUtil {
 	private static Logger logger = LoggerFactory.getLogger(JMSUtil.class);
 
-	public static Connection createAndConnection() throws JMSException {
+	public static Connection createAndConnection(String address) throws JMSException {
 		Connection connection;
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(JMSConstants.SERVER_ADDRESS);
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(address);
 		connection = connectionFactory.createConnection();
 		connection.start();
 		return connection;
@@ -60,7 +60,7 @@ public class JMSUtil {
 
 	public static TopicConnection createAndTopicConnection(String address) throws JMSException {
 		TopicConnection connection;
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(JMSConstants.SERVER_ADDRESS);
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(address);
 		connection = connectionFactory.createTopicConnection();
 		connection.start();
 		return connection;

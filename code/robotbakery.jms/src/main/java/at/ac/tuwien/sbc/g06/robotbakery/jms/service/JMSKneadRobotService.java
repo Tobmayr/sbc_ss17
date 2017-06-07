@@ -54,7 +54,7 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	private MessageConsumer waterConsumer;
 
 	public JMSKneadRobotService() {
-		super(true, Session.SESSION_TRANSACTED);
+		super(true, Session.SESSION_TRANSACTED,JMSConstants.SERVER_ADDRESS);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);

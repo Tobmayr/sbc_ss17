@@ -23,7 +23,7 @@ public class JMSBakeryUIService extends AbstractJMSService implements IBakeryUIS
 	private MessageProducer storageProducer;
 
 	public JMSBakeryUIService() {
-		super(false, Session.AUTO_ACKNOWLEDGE);
+		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
 		try {
 			storageQueue = session.createQueue(JMSConstants.Queue.STORAGE);
 			storageProducer = session.createProducer(storageQueue);

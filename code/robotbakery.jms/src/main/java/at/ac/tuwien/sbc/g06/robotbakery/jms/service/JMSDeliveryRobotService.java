@@ -9,6 +9,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 import javax.jms.*;
 
 /**
@@ -24,7 +26,7 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
     private Connection connection;
 
     public JMSDeliveryRobotService() {
-        super(false, Session.AUTO_ACKNOWLEDGE);
+        super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
 
         try {
             orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -88,4 +90,10 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
     public boolean updateOrder(Order order) {
         return notify(order, false, orderQueue);
     }
+
+	@Override
+	public Map<String, Boolean> getInitialState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

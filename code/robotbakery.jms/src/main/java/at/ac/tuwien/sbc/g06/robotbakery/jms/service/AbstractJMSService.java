@@ -34,9 +34,9 @@ public class AbstractJMSService {
 	protected MessageProducer notifier;
 	protected Session session;
 
-	public AbstractJMSService(boolean transacted, int ackMode) {
+	public AbstractJMSService(boolean transacted, int ackMode, String address) {
 		try {
-			connection = JMSUtil.createAndConnection();
+			connection = JMSUtil.createAndConnection(address);
 			session = connection.createSession(transacted, ackMode);
 			this.notificationTopic = session.createTopic(JMSConstants.Topic.NOTIFICATION);
 			notifier = session.createProducer(notificationTopic);

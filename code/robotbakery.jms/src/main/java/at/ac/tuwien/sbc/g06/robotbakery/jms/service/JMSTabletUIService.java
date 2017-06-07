@@ -34,7 +34,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	private QueueBrowser counterQueueBrowser;
 
 	public JMSTabletUIService() {
-		super(false, Session.AUTO_ACKNOWLEDGE);
+		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
 		try {
 			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);

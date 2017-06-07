@@ -3,6 +3,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.startup;
 import java.io.IOException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.*;
+import at.ac.tuwien.sbc.g06.robotbakery.jms.JMSBakeryChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.service.JMSKneadRobotService;

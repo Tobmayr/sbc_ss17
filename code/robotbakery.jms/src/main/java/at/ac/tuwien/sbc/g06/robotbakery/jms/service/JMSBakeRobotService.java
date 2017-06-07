@@ -29,7 +29,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	private MessageConsumer bakeroomQueueConsumer;
 
 	public JMSBakeRobotService() {
-		super(false, Session.AUTO_ACKNOWLEDGE);
+		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
 
 		try {
 			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
