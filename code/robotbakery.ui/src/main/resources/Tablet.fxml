@@ -162,13 +162,10 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label prefHeight="17.0" prefWidth="94.0" text="Customer-ID:" />
-                              <Label text="ServiceRobot-ID:" GridPane.rowIndex="1" />
-                              <TextField fx:id="prepackageCustomerId" editable="false" GridPane.columnIndex="1" />
-                              <TextField fx:id="prepackageServiceRobotId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label text="ServiceRobot-ID:" />
+                              <TextField fx:id="prepackageServiceRobotId" editable="false" prefHeight="25.0" prefWidth="341.0" GridPane.columnIndex="1">
                                  <padding>
                                     <Insets bottom="5.0" top="5.0" />
                                  </padding>

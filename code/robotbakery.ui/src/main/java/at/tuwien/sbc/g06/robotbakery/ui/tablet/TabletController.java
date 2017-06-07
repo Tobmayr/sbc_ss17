@@ -24,9 +24,7 @@ public class TabletController extends AbstractTabletController {
 	private TableColumn<Prepackage, String> prepackageState;
 	@FXML
 	private TableColumn<Prepackage, String> prepackageTotal;
-	@FXML
 
-	private TextField prepackageCustomerId;
 	@FXML
 	private TextField prepackageServiceRobotId;
 
@@ -59,9 +57,6 @@ public class TabletController extends AbstractTabletController {
 			Platform.runLater(() -> {
 				if (newPackage != null) {
 					prepackageItemsTable.setItems(FXCollections.observableArrayList(newPackage.getProducts()));
-					if (newPackage.getCustomerId() != null) {
-						prepackageCustomerId.setText(newPackage.getCustomerId().toString());
-					}
 					prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
 
 				}
