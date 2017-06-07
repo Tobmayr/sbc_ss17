@@ -18,7 +18,7 @@ public final class SBCConstants {
 	public static final Integer BAKE_SIZE = 5;
 
 	public static final Long BAKE_WAIT = 10000L;
-	public static final long DELIVER_DURATION =5000L;
+	public static final long DELIVER_DURATION = 5000L;
 	public static final Integer PREPACKAGE_SIZE = 3;
 	public static final Integer PREPACKAGE_MAX_AMOUNT = 5;
 
@@ -27,8 +27,16 @@ public final class SBCConstants {
 	public static final String COORDINATION_ROOM_TERMINAL = "Terminal";
 	public static final String COORDINATION_ROOM_BAKEROOM = "Bakeroom";
 
+	public static final class NotificationKeys {
+		public static final String IS_ORDER_AVAILABLE = "isOrderAvailable";
+		public static final String IS_COUNTER_EMPTY = "isCounterEmpty";
+		public static final String IS_STORAGE_EMPTY = "isStorageEmtpy";
+		public static final String IS_PREPACKAGE_LIMIT = "isPrepackageLimit";
+		public static final String IS_BAKEROOM_EMPTY = "isBakeroomEmpty";
+		public static final String IS_DELIVERY_ORDER_AVAILABLE = "isDeliveryOrderAvailable";
+	}
 
-	public static final class Keys {
+	public static final class TestDataKeys {
 		public static final String FLOUR = "flour";
 		public static final String EGGS = "eggs";
 		public static final String BAKEMIX_SWEET = "bakemix.sweet";

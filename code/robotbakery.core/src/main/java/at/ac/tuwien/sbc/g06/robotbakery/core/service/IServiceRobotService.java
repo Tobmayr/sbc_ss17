@@ -14,6 +14,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
  */
 public interface IServiceRobotService extends IRobotService {
 
+	
+	Map<String,Boolean> getInitalState();
 	/**
 	 * get an open order
 	 * 

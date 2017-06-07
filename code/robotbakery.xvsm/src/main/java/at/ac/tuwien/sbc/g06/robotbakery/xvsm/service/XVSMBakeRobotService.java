@@ -1,9 +1,14 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
 import org.mozartspaces.capi3.FifoCoordinator;
+import org.mozartspaces.capi3.Query;
+import org.mozartspaces.capi3.QueryCoordinator;
+import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -80,6 +85,15 @@ public class XVSMBakeRobotService extends GenericXVSMService implements IBakeRob
 	@Override
 	public void shutdownRobot() {
 		robotService.shutdownRobot();
+
+	}
+
+	@Override
+	public Map<String, Boolean> getIntialState() {
+		boolean noMoreProducts = test(bakeroomContainer, null, QueryCoordinator.newSelector(new Query())) <= 0;
+		Map<String, Boolean> map = new HashMap<>();
+		map.put(IS_BAKEROOM_EMPTY, noMoreProducts);
+		return map;
 
 	}
 }

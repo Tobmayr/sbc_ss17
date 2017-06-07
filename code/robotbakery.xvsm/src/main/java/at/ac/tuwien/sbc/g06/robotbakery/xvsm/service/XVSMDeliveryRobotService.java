@@ -1,6 +1,10 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mozartspaces.capi3.ComparableProperty;
+import org.mozartspaces.capi3.Property;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
@@ -12,9 +16,11 @@ import org.mozartspaces.core.MzsCoreException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
+import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
 
 /**
@@ -47,7 +53,8 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 
 	@Override
 	public PackedOrder getPackedDeliveryOrder() {
-		Query query = new Query().sortup(ComparableProperty.forName("*", "timestamp"));
+		Query query = new Query().filter(Property.forName("*", "delivery").equalTo(true))
+				.sortup(ComparableProperty.forName("*", "timestamp"));
 		return takeFirst(terminalContainer, null, QueryCoordinator.newSelector(query),
 				TypeCoordinator.newSelector(PackedOrder.class));
 
@@ -71,9 +78,9 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 			delivered = write(order, destinationContainer, null);
 		}
 		if (delivered) {
-			order.setState(Order.OrderState.PAID);
+			order.setState(Order.OrderState.DELIVERED);
 		} else {
-			order.setState(OrderState.UNGRANTABLE);
+			order.setState(OrderState.UNDELIVERALBE);
 
 		}
 		write(order, counterContainer, null);
@@ -83,5 +90,14 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 	@Override
 	public boolean updateOrder(Order delivery) {
 		return write(delivery, counterContainer, null);
+	}
+
+	@Override
+	public Map<String, Boolean> getInitialState() {
+		Query query = new Query().filter(Property.forName("*", "delivery").equalTo(true));
+		boolean avaible = test(terminalContainer, null, QueryCoordinator.newSelector(query)) > 0;
+		Map<String, Boolean> map = new HashMap<>();
+		map.put(SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE, avaible);
+		return map;
 	}
 }

@@ -89,6 +89,8 @@ public interface IKneadRobotService extends IRobotService{
 	 */
 	boolean takeFlourFromStorage(int amount, ITransaction tx);
 
+	Map<String, Boolean> getInitialState();
+
 	
 
 

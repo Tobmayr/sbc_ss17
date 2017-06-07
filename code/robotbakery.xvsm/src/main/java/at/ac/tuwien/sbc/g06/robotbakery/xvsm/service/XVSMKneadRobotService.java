@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,5 +174,16 @@ public class XVSMKneadRobotService extends GenericXVSMService implements IKneadR
 
 	private boolean putPackInStorage(FlourPack pack, ITransaction tx) {
 		return write(pack, storageContainer, tx);
+	}
+
+	@Override
+	public Map<String, Boolean> getInitialState() {
+		Query productQuery = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT));
+		boolean storageEmpty = test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
+				TypeCoordinator.newSelector(Product.class)) == 0;
+		
+		Map<String, Boolean> notificationState = new HashMap<>();
+		notificationState.put(IS_STORAGE_EMPTY, storageEmpty);
+		return notificationState;
 	}
 }

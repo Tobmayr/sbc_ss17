@@ -14,23 +14,18 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeryService;
  * @author Tobias Ortmayr (1026279)
  *
  */
-public abstract class Bakery extends ChangeNotifer implements IBakeryService {
+public abstract class Bakery implements IBakeryService {
 	private static Logger logger = LoggerFactory.getLogger(Bakery.class);
-	private static Bakery INSTANCE = null;
-	private Properties initProperties;
-
-	/**
-	 * Needs to be extendend by each framework-specific implementation (XVSM &
-	 * JMS)
-	 */
-
-	protected Bakery() {
-		INSTANCE = this;
+	protected ChangeNotifer changeNotifer;
+	
+	public Bakery(ChangeNotifer changeNotifer){
+		this.changeNotifer=changeNotifer;
 	}
 
-
-	public static Bakery getInstance() {
-		return INSTANCE;
+	public ChangeNotifer getChangeNotifer() {
+		return changeNotifer;
 	}
+	
+	
 
 }

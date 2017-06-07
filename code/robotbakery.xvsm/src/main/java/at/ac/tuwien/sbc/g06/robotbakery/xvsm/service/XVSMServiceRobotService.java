@@ -2,6 +2,10 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_NAMES;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
 
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +150,23 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	public int readAllPrepackages() {
 		return test(terminalContainer, null,
 				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
+	}
+
+	@Override
+	public Map<String, Boolean> getInitalState() {
+		Query productQuery = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT));
+		boolean storageEmpty = test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
+				TypeCoordinator.newSelector(Product.class)) == 0;
+		boolean counterEmpty = test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0;
+		boolean orderAvailable = test(counterContainer, null, TypeCoordinator.newSelector(Order.class)) > 0;
+		boolean prepackageLimit = test(terminalContainer, null,
+				TypeCoordinator.newSelector(Prepackage.class)) >= SBCConstants.PREPACKAGE_MAX_AMOUNT;
+		Map<String, Boolean> notificationState = new HashMap<>();
+		notificationState.put(IS_COUNTER_EMPTY, counterEmpty);
+		notificationState.put(IS_STORAGE_EMPTY, storageEmpty);
+		notificationState.put(IS_ORDER_AVAILABLE, orderAvailable);
+		notificationState.put(IS_PREPACKAGE_LIMIT, prepackageLimit);
+		return notificationState;
 	}
 
 }

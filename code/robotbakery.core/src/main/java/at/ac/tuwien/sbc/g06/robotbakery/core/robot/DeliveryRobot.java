@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE;
 
 /**
  * Created by Matthias Höllthaler on 20.05.2017.
@@ -16,9 +18,11 @@ public class DeliveryRobot extends Robot {
 
 	private IDeliveryRobotService service;
 
-	public DeliveryRobot(IDeliveryRobotService service, ITransactionManager transactionManager, String id) {
-		super(transactionManager, id);
+	public DeliveryRobot(IDeliveryRobotService service, ChangeNotifer changeNotifer,
+			ITransactionManager transactionManager, String id) {
+		super(transactionManager, changeNotifer, id);
 		this.service = service;
+		notificationState=service.getInitialState();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 
 	};
@@ -27,7 +31,10 @@ public class DeliveryRobot extends Robot {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			doTask(processNextDelivery);
+			if (notificationState.get(IS_DELIVERY_ORDER_AVAILABLE)) {
+				doTask(processNextDelivery);
+				notificationState.put(IS_DELIVERY_ORDER_AVAILABLE, false);
+			}
 
 		}
 
@@ -54,7 +61,10 @@ public class DeliveryRobot extends Robot {
 
 	@Override
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
-		// TODO DO NOT IMPLEMENT
+		if (added && coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_TERMINAL) && object instanceof PackedOrder
+				&& ((PackedOrder) object).isDelivery()) {
+			notificationState.put(IS_DELIVERY_ORDER_AVAILABLE, true);
+		}
 
 	}
 }

@@ -72,7 +72,7 @@ public class TestDataInitializer {
 		List<Serializable> forStorage = new ArrayList<>();
 		List<Product> forCounter = new ArrayList<>();
 		List<Product> forBakeroom = new ArrayList<>();
-		SBCConstants.Keys.ALL_STORAGE_BASE.forEach(key -> {
+		SBCConstants.TestDataKeys.ALL_STORAGE_BASE.forEach(key -> {
 			int amount = getAmount(key);
 			if (amount > 0) {
 				IntStream.range(0, amount).forEach(i -> {
@@ -86,7 +86,7 @@ public class TestDataInitializer {
 			}
 		});
 
-		SBCConstants.Keys.ALL_STORAGE_FINAL.forEach(key -> {
+		SBCConstants.TestDataKeys.ALL_STORAGE_FINAL.forEach(key -> {
 			int amount = getAmount(key);
 			if (amount > 0) {
 				IntStream.range(0, amount).forEach(i -> {
@@ -102,12 +102,12 @@ public class TestDataInitializer {
 			}
 		});
 
-		SBCConstants.Keys.ALL_INGREDIENTS.forEach(key -> {
+		SBCConstants.TestDataKeys.ALL_INGREDIENTS.forEach(key -> {
 			int amount = getAmount(key);
 			if (amount > 0) {
 				IntStream.range(0, amount).forEach(i -> {
 					Ingredient ingredient;
-					if (key.equals(SBCConstants.Keys.FLOUR)) {
+					if (key.equals(SBCConstants.TestDataKeys.FLOUR)) {
 						ingredient = new FlourPack();
 					} else {
 						ingredient = new Ingredient(getType(key));
@@ -118,7 +118,7 @@ public class TestDataInitializer {
 			}
 		});
 
-		SBCConstants.Keys.ALL_COUNTER.forEach(key -> {
+		SBCConstants.TestDataKeys.ALL_COUNTER.forEach(key -> {
 			int amount = getAmount(key);
 			if (amount > 0) {
 				IntStream.range(0, amount).forEach(i -> {
@@ -134,7 +134,7 @@ public class TestDataInitializer {
 			}
 		});
 
-		SBCConstants.Keys.ALL_BAKEROOM.forEach(key -> {
+		SBCConstants.TestDataKeys.ALL_BAKEROOM.forEach(key -> {
 			int amount = getAmount(key);
 			if (amount > 0) {
 				IntStream.range(0, amount).forEach(i -> {
@@ -156,11 +156,11 @@ public class TestDataInitializer {
 
 	private IngredientType getType(String key) {
 		switch (key) {
-		case SBCConstants.Keys.EGGS:
+		case SBCConstants.TestDataKeys.EGGS:
 			return IngredientType.EGGS;
-		case SBCConstants.Keys.BAKEMIX_SPICY:
+		case SBCConstants.TestDataKeys.BAKEMIX_SPICY:
 			return IngredientType.BAKING_MIX_SPICY;
-		case SBCConstants.Keys.BAKEMIX_SWEET:
+		case SBCConstants.TestDataKeys.BAKEMIX_SWEET:
 			return IngredientType.BAKING_MIX_SWEET;
 		default:
 			return null;

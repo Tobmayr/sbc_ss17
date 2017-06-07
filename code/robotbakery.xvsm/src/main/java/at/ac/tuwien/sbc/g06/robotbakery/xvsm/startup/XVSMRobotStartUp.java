@@ -2,11 +2,15 @@ package at.ac.tuwien.sbc.g06.robotbakery.xvsm.startup;
 
 import java.io.IOException;
 
+import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.DefaultMzsCore;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.Robot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
+import at.ac.tuwien.sbc.g06.robotbakery.xvsm.notifier.XVSMBakeryChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.service.XVSMKneadRobotService;
@@ -24,16 +28,24 @@ public class XVSMRobotStartUp {
 			id = args[1];
 		switch (args[0]) {
 		case "service":
-			startRobot(new ServiceRobot(new XVSMServiceRobotService(), new XVSMTransactionManager(), id));
+			startRobot(new ServiceRobot(new XVSMServiceRobotService(),
+					new XVSMBakeryChangeNotifer(new Capi(DefaultMzsCore.newInstance())), new XVSMTransactionManager(),
+					id));
 			break;
 		case "knead":
-			startRobot(new KneadRobot(new XVSMKneadRobotService(), new XVSMTransactionManager(), id));
+			startRobot(new KneadRobot(new XVSMKneadRobotService(),
+					new XVSMBakeryChangeNotifer(new Capi(DefaultMzsCore.newInstance())), new XVSMTransactionManager(),
+					id));
 			break;
 		case "bake":
-			startRobot(new BakeRobot(new XVSMBakeRobotService(), new XVSMTransactionManager(), id));
+			startRobot(new BakeRobot(new XVSMBakeRobotService(),
+					new XVSMBakeryChangeNotifer(new Capi(DefaultMzsCore.newInstance())), new XVSMTransactionManager(),
+					id));
 			break;
 		case "deliver":
-			startRobot(new DeliveryRobot(new XVSMDeliveryRobotService(), new XVSMTransactionManager(), id));
+			startRobot(new DeliveryRobot(new XVSMDeliveryRobotService(),
+					new XVSMBakeryChangeNotifer(new Capi(DefaultMzsCore.newInstance())), new XVSMTransactionManager(),
+					id));
 			break;
 		default:
 			break;

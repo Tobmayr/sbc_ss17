@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.service;
 
+import java.util.Map;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 
@@ -15,4 +17,6 @@ public interface IDeliveryRobotService extends IRobotService {
 	boolean deliverOrder(PackedOrder order);
 
 	boolean updateOrder(Order order);
+
+	Map<String, Boolean> getInitialState();
 }

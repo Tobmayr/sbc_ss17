@@ -161,4 +161,10 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 				return -1;
 	}
 
+	@Override
+	public Map<String, Boolean> getInitalState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -18,7 +18,7 @@ public class JMSBakeryStartUp extends Application {
 		server.startUp(JMSConstants.SERVER_ADDRESS);
 		Bakery bakery = new JMSBakery();
 
-		DashboardInitializer.initializeDashboard(primaryStage, bakery, new JMSBakeryUIService());
+		DashboardInitializer.initializeDashboard(primaryStage, bakery, new JMSBakeryUIService(), new JMSNotificationService());
 
 	}
 

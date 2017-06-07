@@ -2,10 +2,12 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
@@ -13,6 +15,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
@@ -27,14 +30,14 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 	private IServiceRobotService service;
 	private Order currentOrder;
-	private boolean isStorageEmtpy = false;
-	private boolean isCounterEmpty = false;
-	private boolean isOrderAvailable = true;
+
 	private boolean isPrepackagesLimit = false;
 
-	public ServiceRobot(IServiceRobotService service, ITransactionManager transactionManager, String id) {
-		super(transactionManager, id);
+	public ServiceRobot(IServiceRobotService service, ChangeNotifer changeNotifer,
+			ITransactionManager transactionManager, String id) {
+		super(transactionManager, changeNotifer, id);
 		this.service = service;
+		notificationState = service.getInitalState();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 
 	};
@@ -43,13 +46,13 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			if (!isStorageEmtpy)
+			if (!notificationState.get(IS_STORAGE_EMPTY))
 				doTask(getProductFromStorage);
 
-			if (!isCounterEmpty && isOrderAvailable)
+			if (!notificationState.get(IS_COUNTER_EMPTY) && notificationState.get(IS_ORDER_AVAILABLE))
 				doTask(processNextOrder);
 
-			if (!isPrepackagesLimit && !isStorageEmtpy) {
+			if (!isPrepackagesLimit && !notificationState.get(IS_STORAGE_EMPTY)) {
 				doTask(prepackProducts);
 			}
 
@@ -92,7 +95,6 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
 		if (currentOrder == null) {
-			isOrderAvailable = false;
 			return false;
 		}
 
@@ -109,11 +111,12 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			}
 
 		}
+
+		notificationState.put(IS_ORDER_AVAILABLE, false);
 		return true;
 
 	};
 
-	private int testInt;
 	/**
 	 * get products from storage to fill up counter, get only products that are
 	 * missing in counter
@@ -126,21 +129,14 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		missingProducts = CollectionsUtil.sortMapByValues(missingProducts, false);
 
 		List<Product> productsForCounter = new ArrayList<>();
-		testInt = Integer.MAX_VALUE;
+
 		missingProducts.forEach((s, i) -> {
-			if (i < testInt)
-				testInt = i;
 			List<Product> temp = service.getProductsFromStorage(s, i, tx);
 			if (temp != null && !temp.isEmpty())
 				productsForCounter.addAll(temp);
 		});
 
-		if (testInt == 10) {
-			isCounterEmpty = true;
-		}
-
 		if (productsForCounter.isEmpty()) {
-			isStorageEmtpy = true;
 			return false;
 		}
 
@@ -164,7 +160,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			prepackage.setServiceRobotId(this.getId());
 			return service.putPrepackageInTerminal(prepackage, tx);
 		} else {
-			isPrepackagesLimit = true;
+			notificationState.put(IS_PREPACKAGE_LIMIT, true);
 			return true;
 		}
 	};
@@ -173,16 +169,24 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
 		if (added && object instanceof Product) {
 			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_STORAGE)) {
-				isStorageEmtpy = false;
+				notificationState.put(IS_STORAGE_EMPTY, false);
 			} else if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
-				isCounterEmpty = false;
+				notificationState.put(IS_COUNTER_EMPTY, false);
 			}
 		} else if (added && object instanceof Order) {
-			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
-				isOrderAvailable = true;
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)
+					&& ((Order) object).getState() == OrderState.ORDERED) {
+				notificationState.put(IS_ORDER_AVAILABLE, true);
 			}
 		} else if (!added && object instanceof Prepackage) {
-			isPrepackagesLimit = false;
+			notificationState.put(IS_PREPACKAGE_LIMIT, false);
+		} else if (added && object instanceof NotificationMessage) {
+			NotificationMessage message = (NotificationMessage) object;
+			if (message.getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER) {
+				notificationState.put(IS_COUNTER_EMPTY, true);
+			} else if (message.getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE) {
+				notificationState.put(IS_STORAGE_EMPTY, true);
+			}
 		}
 
 	}

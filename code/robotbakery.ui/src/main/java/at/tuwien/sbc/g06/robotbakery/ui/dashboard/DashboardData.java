@@ -8,12 +8,14 @@ import java.util.Map;
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.service.INotificationService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,8 +32,10 @@ public class DashboardData implements IChangeListener {
 	private final Map<String, ItemCount> counterProductsCounterMap = new HashMap<>();
 	private final Map<String, ItemCount> storageProductsCounterMap = new HashMap<>();
 	private final Map<ProductState, ObservableList<Product>> stateToProductsMap = new HashMap<ProductState, ObservableList<Product>>();
+	private INotificationService notificationSerivce;
 
-	public DashboardData() {
+	public DashboardData(INotificationService notificationService) {
+		this.notificationSerivce = notificationService;
 		Arrays.asList(ProductState.values())
 				.forEach(state -> stateToProductsMap.put(state, FXCollections.observableArrayList()));
 
@@ -135,7 +139,7 @@ public class DashboardData implements IChangeListener {
 
 			}
 			onPrepackageAdded(prepackage);
-			
+
 		}
 
 	}
@@ -185,6 +189,11 @@ public class DashboardData implements IChangeListener {
 				storageProductsCounterMap.remove(count.itemName);
 			}
 		}
+
+		if (stateToProductsMap.get(ProductState.PRODUCT_IN_STORAGE).isEmpty()) {
+			notificationSerivce
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE));
+		}
 		ProductState state = product.getType() == BakeState.DOUGH ? ProductState.DOUGH_IN_STORAGE
 				: ProductState.PRODUCT_IN_STORAGE;
 		stateToProductsMap.get(state).remove(product);
@@ -217,6 +226,11 @@ public class DashboardData implements IChangeListener {
 			}
 		}
 
+		if (stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).isEmpty()) {
+			notificationSerivce
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER));
+		}
+
 		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).remove(product);
 	}
 
@@ -227,6 +241,10 @@ public class DashboardData implements IChangeListener {
 
 	private void onProductRemovedFromBakeroom(Product product) {
 		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).remove(product);
+		if (stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).isEmpty()) {
+			notificationSerivce
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_BAKEROOM));
+		}
 
 	}
 

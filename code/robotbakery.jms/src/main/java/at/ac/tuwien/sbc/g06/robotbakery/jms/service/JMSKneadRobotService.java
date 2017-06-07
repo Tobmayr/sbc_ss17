@@ -240,4 +240,10 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 
 	}
 
+	@Override
+	public Map<String, Boolean> getInitialState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -2,6 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
@@ -76,6 +77,12 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	public void shutdownRobot() {
 		notify(BakeRobot.class.getSimpleName(), true, storageQueue);
 
+	}
+
+	@Override
+	public Map<String, Boolean> getIntialState() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

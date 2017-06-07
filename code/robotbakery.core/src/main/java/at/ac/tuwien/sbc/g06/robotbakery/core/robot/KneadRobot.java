@@ -1,31 +1,35 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map.Entry;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
+import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
-import ch.qos.logback.core.CoreConstants;
 
 public class KneadRobot extends Robot {
 
 	private IKneadRobotService service;
 
-	private boolean isStorageEmpty = false;
 	private Product nextProduct;
 
-	public KneadRobot(IKneadRobotService service, ITransactionManager transactionManager, String id) {
-		super(transactionManager, id);
+	public KneadRobot(IKneadRobotService service, ChangeNotifer changeNotifer, ITransactionManager transactionManager,
+			String id) {
+		super(transactionManager, changeNotifer, id);
 		this.service = service;
+		notificationState = service.getInitialState();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 	}
 
@@ -122,7 +126,7 @@ public class KneadRobot extends Robot {
 	public void run() {
 		service.startRobot();
 		while (!Thread.interrupted()) {
-			if (!isStorageEmpty) {
+			if (!notificationState.get(IS_STORAGE_EMPTY)) {
 				ProductChooser productChooser = new ProductChooser(service, null);
 				if (productChooser.correctlyInitialized()) {
 					nextProduct = productChooser.getFinishableBaseDough();
@@ -132,8 +136,6 @@ public class KneadRobot extends Robot {
 						nextProduct = productChooser.getNextProduct();
 						if (nextProduct != null) {
 							doTask(tryToMakeDough);
-						} else {
-							isStorageEmpty = true;
 						}
 
 					}
@@ -152,9 +154,12 @@ public class KneadRobot extends Robot {
 
 	@Override
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
-		if (added && object instanceof Ingredient && coordinationRoom == SBCConstants.COORDINATION_ROOM_STORAGE)
-			isStorageEmpty = false;
-
+		if (added && object instanceof Ingredient && coordinationRoom == SBCConstants.COORDINATION_ROOM_STORAGE) {
+			notificationState.put(IS_STORAGE_EMPTY, false);
+		} else if (object instanceof NotificationMessage
+				&& ((NotificationMessage) object).getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE) {
+			notificationState.put(IS_STORAGE_EMPTY, true);
+		}
 	}
 
 }
