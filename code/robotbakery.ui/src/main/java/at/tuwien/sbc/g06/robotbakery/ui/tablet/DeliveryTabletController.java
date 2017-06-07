@@ -4,6 +4,7 @@ import java.net.URI;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -39,6 +40,14 @@ public class DeliveryTabletController extends AbstractTabletController {
 		}
 
 	}
+	
+	
+
+	@Override
+	public void onAddButtonClicked() {
+		// TODO Auto-generated method stub
+		super.onAddButtonClicked();
+	}
 
 	@Override
 	protected boolean orderValid() {
@@ -53,7 +62,15 @@ public class DeliveryTabletController extends AbstractTabletController {
 
 	@Override
 	protected boolean amountIsInValid(int amount, String selectedString) {
-		return amount == 0 || selectedString == null || amount >= SBCConstants.COUNTER_MAX_CAPACITY;
+		return amount == 0 || selectedString == null || amount > SBCConstants.COUNTER_MAX_CAPACITY;
+	}
+
+	@Override
+	public void onOrderUpdated(Order updated) {
+		super.onOrderUpdated(updated);
+		if (updated.getDeliveryRobotId() != null) {
+			deliveryRobotText.setText(updated.getDeliveryRobotId().toString());
+		}
 	}
 
 }

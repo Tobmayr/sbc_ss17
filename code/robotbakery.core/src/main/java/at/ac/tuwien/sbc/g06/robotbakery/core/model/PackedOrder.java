@@ -25,6 +25,7 @@ public class PackedOrder extends Order implements Serializable {
 		order.getItemsMap().values().forEach(i -> addItem(i.getProductName(), i.getAmount()));
 		setDelivery(order.isDelivery());
 		setDeliveryAddress(order.getDeliveryAddress());
+		setDeliveryRobotId(order.getDeliveryRobotId());
 		
 	}
 

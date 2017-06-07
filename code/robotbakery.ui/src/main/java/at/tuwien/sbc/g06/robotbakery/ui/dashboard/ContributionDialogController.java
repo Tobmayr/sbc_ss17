@@ -2,7 +2,6 @@ package at.tuwien.sbc.g06.robotbakery.ui.dashboard;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.Contribution;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -15,7 +14,7 @@ public class ContributionDialogController {
 	@FXML
 	TableView<Contribution> contributionsTable;
 	@FXML
-	TableColumn<Contribution, ContributionType> contribution;
+	TableColumn<Contribution, String> contribution;
 	@FXML
 	TableColumn<Contribution, String> contributorId;
 	@FXML

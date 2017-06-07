@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
@@ -68,7 +67,7 @@ public class KneadRobot extends Robot {
 		sleepFor(1000, 3000);
 
 		// Final dough finished, Add contribution tag and put in bakeroom
-		nextProduct.addContribution(getId(), ContributionType.DOUGH_FINAL, getClass());
+		nextProduct.addContribution(getId(), Product.DOUGH_FINAL, getClass());
 		debug("Dough finished -> prepare for baking");
 		return service.putDoughInBakeroom(nextProduct, tx);
 	}
@@ -105,7 +104,7 @@ public class KneadRobot extends Robot {
 		// Stir dough
 		sleepFor(1000, 3000);
 		// base dough is ready-> add contribution tag.
-		nextProduct.addContribution(getId(), ContributionType.DOUGH_BASE, getClass());
+		nextProduct.addContribution(getId(), Product.DOUGH_BASE, getClass());
 		nextProduct.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
 		return addAddtionalIngredientsAndFinsish(tx);

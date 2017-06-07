@@ -19,6 +19,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
  */
 @SuppressWarnings("serial")
 public class Order implements Serializable {
+	
 	public enum OrderState {
 		ORDERED,WAITING, PACKED, PAID, DELIVERED, UNDELIVERALBE, UNGRANTABLE;
 	}
@@ -31,6 +32,8 @@ public class Order implements Serializable {
 
 	private boolean delivery = false;
 	private URI deliveryAddress;
+	private UUID deliveryRobotId;
+	
 	private double totalSum;
 	private final Map<String, Item> itemsMap;
 
@@ -70,6 +73,16 @@ public class Order implements Serializable {
 
 	public void setTotalSum(double totalSum) {
 		this.totalSum = totalSum;
+	}
+
+	
+	
+	public UUID getDeliveryRobotId() {
+		return deliveryRobotId;
+	}
+
+	public void setDeliveryRobotId(UUID deliveryRobotId) {
+		this.deliveryRobotId = deliveryRobotId;
 	}
 
 	public Item removeItem(String productName) {

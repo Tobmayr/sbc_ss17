@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
@@ -22,7 +23,7 @@ public class DeliveryRobot extends Robot {
 			ITransactionManager transactionManager, String id) {
 		super(transactionManager, changeNotifer, id);
 		this.service = service;
-		notificationState=service.getInitialState();
+		notificationState = service.getInitialState();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 
 	};
@@ -52,6 +53,8 @@ public class DeliveryRobot extends Robot {
 				return false;
 			sleepFor(SBCConstants.DELIVER_DURATION);
 			delivery.setState(Order.OrderState.DELIVERED);
+			delivery.setDeliveryRobotId(this.getId());
+			delivery.getProducts().forEach(p -> p.addContribution(getId(), Product.DELIVERD, DeliveryRobot.class));
 		} else {
 			delivery.setState(Order.OrderState.UNDELIVERALBE);
 

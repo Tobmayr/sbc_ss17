@@ -3,17 +3,13 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_BAKEROOM_EMPTY;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
@@ -59,7 +55,7 @@ public class BakeRobot extends Robot {
 							String.format("Baked %s products for: %s ms", mappedProducts.size(), currentBakeTime));
 
 					mappedProducts.forEach(p -> {
-						p.addContribution(getId(), ContributionType.BAKE, getClass());
+						p.addContribution(getId(), Product.BAKE, getClass());
 						p.setType(BakeState.FINALPRODUCT);
 					});
 

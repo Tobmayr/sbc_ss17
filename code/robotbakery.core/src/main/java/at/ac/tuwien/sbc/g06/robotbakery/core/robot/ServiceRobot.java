@@ -1,11 +1,15 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
+
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
@@ -14,7 +18,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.notifier.ChangeNotifer;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
@@ -83,7 +86,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		// simulate packing duration
 		sleepFor(1000, 3000);
 		// Update contribution
-		packedOrder.getProducts().forEach(p -> p.addContribution(getId(), ContributionType.PACK_UP, getClass()));
+		packedOrder.getProducts().forEach(p -> p.addContribution(getId(), Product.PACK_UP, getClass()));
 
 		return service.putPackedOrderInTerminal(packedOrder, tx);
 
@@ -94,6 +97,9 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	 */
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
+		if (currentOrder.isDelivery())
+			currentOrder.setState(OrderState.WAITING);
+			service.updateOrder(currentOrder, tx);
 		if (currentOrder == null) {
 			return false;
 		}
@@ -101,8 +107,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		System.out.println("New order with id: " + currentOrder.getId() + " is now processed & prepared for packing");
 		if (!packOrderAndPutInTerminal(tx)) {
 			if (currentOrder.isDelivery()) {
-				System.out.println("Not enough products in stock. Order has is returned to collection area!");
-				currentOrder.setState(OrderState.WAITING);
+				System.out.println("Not enough products in stock. Delviery Order  is returned to the collection area!");
 				return service.returnOrder(currentOrder, tx);
 			} else {
 				System.out.println("Not enough products in stock. Order has been declined!");
@@ -142,7 +147,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 		System.out.println("Stocking up the counter");
 		for (Product product : productsForCounter) {
-			product.addContribution(getId(), ContributionType.TRANSFER_TO_COUNTER, getClass());
+			product.addContribution(getId(), Product.TRANSFER_TO_COUNTER, getClass());
 			if (!service.addToCounter(product, tx))
 				return false;
 		}

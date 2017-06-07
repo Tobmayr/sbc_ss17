@@ -25,8 +25,11 @@ public class XVSMDeliveryTabletUIChangeNotifier extends TabletUIChangeNotifer im
 
 	private final ContainerReference counterContainer;
 	private final ContainerReference deliveryContainer;
-
+	private ContainerReference terminalContainer;
+	
 	private ArrayList<Notification> notifications;
+
+
 
 	public XVSMDeliveryTabletUIChangeNotifier(Capi capi) {
 		super();
@@ -34,6 +37,7 @@ public class XVSMDeliveryTabletUIChangeNotifier extends TabletUIChangeNotifer im
 		deliveryContainer = service.getContainer(XVSMConstants.DELIVERY_CONTAINER_NAME,
 				capi.getCore().getConfig().getSpaceUri());
 		counterContainer = service.getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
+		terminalContainer= service.getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
 		createNotifications(capi);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -53,6 +57,7 @@ public class XVSMDeliveryTabletUIChangeNotifier extends TabletUIChangeNotifer im
 		try {
 			notifications.add(manager.createNotification(counterContainer, this, Operation.WRITE, Operation.TAKE));
 			notifications.add(manager.createNotification(deliveryContainer, this, Operation.WRITE, Operation.TAKE));
+			notifications.add(manager.createNotification(terminalContainer, this, Operation.WRITE, Operation.TAKE));
 		} catch (MzsCoreException | InterruptedException e) {
 			logger.error(e.getMessage());
 			throw new RuntimeException(e);

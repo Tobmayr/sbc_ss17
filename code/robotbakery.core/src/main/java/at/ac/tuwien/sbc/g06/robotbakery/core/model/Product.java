@@ -19,12 +19,15 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
 @SuppressWarnings("serial")
 public class Product implements Serializable {
 
+	public static final String DOUGH_BASE = "Creation base dough";
+	public static final String DOUGH_FINAL = "Creation final dough";
+	public static final String BAKE = "Baking";
+	public static final String TRANSFER_TO_COUNTER = "Counter transfer";
+	public static final String PACK_UP = "Packing";
+	public static final String DELIVERD = "Delivery";
+
 	public enum BakeState {
 		DOUGH, FINALPRODUCT;
-	}
-
-	public enum ContributionType {
-		DOUGH_BASE, DOUGH_FINAL, BAKE, TRANSFER_TO_COUNTER, PACK_UP;
 	}
 
 	private final UUID id;
@@ -78,7 +81,7 @@ public class Product implements Serializable {
 	 * @param contributor
 	 *            robot class
 	 */
-	public void addContribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
+	public void addContribution(UUID contributerId, String type, Class<? extends Robot> contributor) {
 		contributions.add(new Contribution(contributerId, type, contributor));
 	}
 
@@ -132,10 +135,10 @@ public class Product implements Serializable {
 	public class Contribution implements Serializable {
 
 		final UUID contributerId;
-		final ContributionType type;
+		final String type;
 		final String contributor;
 
-		private Contribution(UUID contributerId, ContributionType type, Class<? extends Robot> contributor) {
+		private Contribution(UUID contributerId, String type, Class<? extends Robot> contributor) {
 			super();
 			this.contributerId = contributerId;
 			this.type = type;
@@ -146,7 +149,7 @@ public class Product implements Serializable {
 			return contributerId;
 		}
 
-		public ContributionType getType() {
+		public String getType() {
 			return type;
 		}
 

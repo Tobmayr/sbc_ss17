@@ -16,7 +16,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.ContributionType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
@@ -79,7 +78,7 @@ public class TestDataInitializer {
 					Product product = new Product(getName(key));
 					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
 					product.setType(BakeState.DOUGH);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_BASE, KneadRobot.class);
 					forStorage.add(product);
 				});
 
@@ -93,9 +92,9 @@ public class TestDataInitializer {
 					Product product = new Product(getName(key));
 					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
 					product.setType(BakeState.FINALPRODUCT);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
-					product.addContribution(bakeRobotID, ContributionType.BAKE, BakeRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_FINAL, KneadRobot.class);
+					product.addContribution(bakeRobotID, Product.BAKE, BakeRobot.class);
 					forStorage.add(product);
 				});
 
@@ -125,9 +124,9 @@ public class TestDataInitializer {
 					Product product = new Product(getName(key));
 					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
 					product.setType(BakeState.FINALPRODUCT);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
-					product.addContribution(serviceRobotID, ContributionType.TRANSFER_TO_COUNTER, ServiceRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_FINAL, KneadRobot.class);
+					product.addContribution(serviceRobotID, Product.TRANSFER_TO_COUNTER, ServiceRobot.class);
 					forCounter.add(product);
 				});
 
@@ -141,8 +140,8 @@ public class TestDataInitializer {
 					Product product = new Product(getName(key));
 					product.setTimestamp(new Timestamp(System.currentTimeMillis()));
 					product.setType(BakeState.DOUGH);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_BASE, KneadRobot.class);
-					product.addContribution(kneadRobotID, ContributionType.DOUGH_FINAL, KneadRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_BASE, KneadRobot.class);
+					product.addContribution(kneadRobotID, Product.DOUGH_FINAL, KneadRobot.class);
 					forBakeroom.add(product);
 				});
 

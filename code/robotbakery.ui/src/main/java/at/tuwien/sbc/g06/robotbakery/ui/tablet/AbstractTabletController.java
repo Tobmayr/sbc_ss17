@@ -175,6 +175,12 @@ public abstract class AbstractTabletController {
 			return "Undeliverable- Your order can not be delivered. Not enough products in stock";
 		case PACKED:
 			return "Packed- Your order is packed and ready in the terminal";
+		case DELIVERED:
+			return "Delivered- Your order has arrived!";
+		case UNDELIVERALBE:
+			return "Undeliverable- Your order could not be delivered successfully";
+		case WAITING:
+			return " Waiting- A service robot is waiting for enough products to complete the order";
 		}
 		return "";
 
@@ -227,7 +233,7 @@ public abstract class AbstractTabletController {
 			@Override
 			public void run() {
 				if (updated.getId().equals(order.getId())) {
-					order.setState(OrderState.PACKED);
+					order.setState(updated.getState());
 					changeState(updated.getState());
 					statusField.setText(getText(updated.getState()));
 				}
