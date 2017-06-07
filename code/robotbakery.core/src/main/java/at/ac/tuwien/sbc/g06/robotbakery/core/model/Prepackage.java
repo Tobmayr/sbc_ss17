@@ -8,7 +8,7 @@ import java.util.UUID;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
 /**
- * class represents are prepacked product package
+ * class represents prepacked product package
  * 
  * @author Tobias Ortmayr (1026279)
  *

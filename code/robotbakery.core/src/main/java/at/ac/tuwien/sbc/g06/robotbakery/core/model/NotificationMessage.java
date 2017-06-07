@@ -2,6 +2,9 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.model;
 
 import java.io.Serializable;
 
+/**
+ * NotificationMessages for robots
+ */
 @SuppressWarnings("serial")
 public class NotificationMessage implements Serializable {
 	public static final int NO_MORE_PRODUCTS_IN_STORAGE = 100;
@@ -13,6 +16,7 @@ public class NotificationMessage implements Serializable {
 	public static final int PREPACKAGE_LIMIT_REACHED = 160;
 	public static final int NO_MORE_INGREDIENTS_IN_STORAGE = 170;
 	public static final int COUNTER_STOCK_FULL = 180;
+	public static final int NO_MORE_DELIVERY_ORDERS = 190;
 	private int messageTyp;
 
 	public NotificationMessage(int messageTyp) {

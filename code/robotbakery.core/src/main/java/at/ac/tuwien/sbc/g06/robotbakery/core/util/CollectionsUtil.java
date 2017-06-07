@@ -33,6 +33,14 @@ public class CollectionsUtil {
 
 	}
 
+	/**
+	 * sorts a generic map by its key either ascending or descending
+	 * @param map
+	 * @param ascending
+	 * @param <K>
+	 * @param <V>
+	 * @return
+	 */
 	public static <K extends Comparable<K>, V> LinkedHashMap<K, V> sortMayByKeys(Map<K, V> map, boolean ascending) {
 		if (map == null)
 			return null;

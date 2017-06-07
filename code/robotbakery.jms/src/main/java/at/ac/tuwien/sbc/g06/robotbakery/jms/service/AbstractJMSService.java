@@ -106,6 +106,13 @@ public class AbstractJMSService {
 		return msg;
 	}
 
+	/**
+	 * sends message to producer
+	 * @param producer producer which should consume message
+	 * @param messageObject object that should be a message
+	 * @param <T> serializable class
+	 * @return true if success, else false
+	 */
 	public <T extends Serializable> boolean send(MessageProducer producer, T messageObject) {
 		try {
 			Message msg = createMessage(messageObject);
@@ -118,6 +125,13 @@ public class AbstractJMSService {
 
 	}
 
+	/**
+	 * sends multiple messages to producer
+	 * @param producer producer which should consume message
+	 * @param messageObjects list of objects that should be a message
+	 * @param <T> serializable class
+	 * @return true if success, else false
+	 */
 	public <T extends Serializable> boolean send(MessageProducer producer, List<T> messageObjects) {
 		for (Serializable ser : messageObjects) {
 			if (!send(producer, ser))
@@ -162,6 +176,13 @@ public class AbstractJMSService {
 
 	}
 
+	/**
+	 * receive multiple elements
+	 * @param consumer consumer which receives messages
+	 * @param amount amount of messages
+	 * @param <T> serializable class
+	 * @return list with objects
+	 */
 	public <T extends Serializable> List<T> receive(MessageConsumer consumer, int amount) {
 		List<T> list = new ArrayList<>();
 		for (int i = 0; i < amount; i++) {

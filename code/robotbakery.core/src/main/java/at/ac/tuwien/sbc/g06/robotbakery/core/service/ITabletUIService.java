@@ -39,11 +39,25 @@ public interface ITabletUIService  {
 	 * @return map with product names as key and the amount that is available in the counter as value
 	 */
 	Map<String, Integer> getInitialCounterProducts();
-	
+
+	/**
+	 * looks up the current state of prepackages at the terminal
+	 * @return list with prepackages
+	 */
 	List<Prepackage> getInitialPrepackages();
 
+	/**
+	 * get certain prepackage
+	 * @param packageId uuid of prepackage
+	 * @return prepackage with given uuid
+	 */
 	Prepackage getPrepackage(UUID packageId);
-	
+
+	/**
+	 * writes status in prepackage
+	 * @param prepackage prepackage that should be updated
+	 * @return true if success, else false
+	 */
 	boolean updatePrepackage(Prepackage prepackage);
 	
 

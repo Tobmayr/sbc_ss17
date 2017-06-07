@@ -23,6 +23,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.jms.util.JMSUtil;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
+
 /**
  * 
  * @author Matthias Höllthaler

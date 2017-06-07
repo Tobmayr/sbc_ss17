@@ -20,10 +20,22 @@ public interface IBakeryUIService {
 	 */
 	boolean addIngredientsToStorage(List<Ingredient> ingredients);
 
+	/**
+	 * add items to storage
+	 * @param items list of items
+	 */
 	void addItemsToStorage(List<Serializable> items);
 
+	/**
+	 * add products to counter
+	 * @param products list of products
+	 */
 	void addProductsToCounter(List<Product> products);
 
+	/**
+	 * add products to bakeroom
+	 * @param forBakeroom list of products
+	 */
 	void addProductsToBakeroom(List<Product> forBakeroom);
 	
 	

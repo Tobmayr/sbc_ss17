@@ -33,8 +33,6 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	private IServiceRobotService service;
 	private Order currentOrder;
 
-	private boolean isPrepackagesLimit = false;
-
 	public ServiceRobot(IServiceRobotService service, ChangeNotifer changeNotifer,
 			ITransactionManager transactionManager, String id) {
 		super(transactionManager, changeNotifer, id);
@@ -52,7 +50,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			if (!notificationState.get(IS_COUNTER_EMPTY) && notificationState.get(IS_ORDER_AVAILABLE))
 				doTask(processNextOrder);
 
-			if (!isPrepackagesLimit && !notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE)) {
+			if (!notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE) && !notificationState.get(IS_PREPACKAGE_LIMIT)) {
 				doTask(prepackProducts);
 			}
 
@@ -91,6 +89,10 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 	};
 
+	/**
+	 * service robot should wait for more products in counter
+	 * @return true if there enough products in stock
+	 */
 	private boolean waitForEnoughProducts() {
 		Map<String, Integer> counterStock = service.getCounterStock();
 		while (!enoughProducts(counterStock)) {
@@ -99,6 +101,11 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		return true;
 	}
 
+	/**
+	 * checks if there are enough products for order in counter
+	 * @param counterStock
+	 * @return true if enough products are available
+	 */
 	private boolean enoughProducts(Map<String, Integer> counterStock) {
 		return currentOrder.getItemsMap().keySet().stream().allMatch((s) -> currentOrder.getItemsMap().get(s)
 				.getAmount() <= SBCConstants.COUNTER_MAX_CAPACITY - counterStock.get(s));
@@ -175,19 +182,18 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		return true;
 	};
 
+	/**
+	 * prepack products from storage and put them in the terminal as prepackages
+	 */
 	ITransactionalTask prepackProducts = tx -> {
-		if (!notificationState.get(IS_PREPACKAGE_LIMIT)) {
-			List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
-			if (products == null || products.isEmpty())
-				return false;
+		List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
+		if (products == null || products.isEmpty())
+			return false;
 
-			Prepackage prepackage = new Prepackage();
-			prepackage.setProducts(products);
-			prepackage.setServiceRobotId(this.getId());
-			return service.putPrepackageInTerminal(prepackage, tx);
-		}
-		return true;
-
+		Prepackage prepackage = new Prepackage();
+		prepackage.setProducts(products);
+		prepackage.setServiceRobotId(this.getId());
+		return service.putPrepackageInTerminal(prepackage, tx);
 	};
 
 	@Override
@@ -197,6 +203,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 				notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, false);
 			} else if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
 				notificationState.put(IS_COUNTER_EMPTY, false);
+				notificationState.put(IS_COUNTER_FULL, false);
 			}
 		} else if (added && object instanceof Order) {
 			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)

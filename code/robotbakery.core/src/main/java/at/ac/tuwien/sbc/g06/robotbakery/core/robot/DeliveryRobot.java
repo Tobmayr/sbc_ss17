@@ -2,6 +2,7 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
 import java.io.Serializable;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -13,6 +14,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE;
 
 /**
+ * DeliveryRobot to deliver orders to customers
  * Created by Matthias Höllthaler on 20.05.2017.
  */
 public class DeliveryRobot extends Robot {
@@ -39,6 +41,9 @@ public class DeliveryRobot extends Robot {
 
 	}
 
+	/**
+	 * gets next delivery from counter, checks for destination and puts order in destination space
+	 */
 	ITransactionalTask processNextDelivery = tx -> {
 		PackedOrder delivery = service.getPackedDeliveryOrder();
 		if (delivery == null) {
@@ -65,6 +70,12 @@ public class DeliveryRobot extends Robot {
 		if (added && coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_TERMINAL) && object instanceof PackedOrder
 				&& ((PackedOrder) object).isDelivery()) {
 			notificationState.put(IS_DELIVERY_ORDER_AVAILABLE, true);
+		} else if(added && object instanceof NotificationMessage) {
+			NotificationMessage message = (NotificationMessage) object;
+
+			if(message.getMessageTyp()==NotificationMessage.NO_MORE_DELIVERY_ORDERS) {
+				notificationState.put(IS_DELIVERY_ORDER_AVAILABLE, false);
+			}
 		}
 
 	}

@@ -85,6 +85,7 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 		boolean avaible = test(terminalContainer, null, QueryCoordinator.newSelector(query)) > 0;
 		Map<String, Boolean> map = new HashMap<>();
 		map.put(SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE, avaible);
+		map.put(SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE, avaible);
 		return map;
 	}
 }

@@ -165,6 +165,12 @@ public class DashboardData implements IChangeListener {
 				.anyMatch((o) -> o.getState() == OrderState.ORDERED || o.getState() == OrderState.WAITING)) {
 			notificationSerivce.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_ORDERS), null);
 		}
+
+		if (!orders.stream()
+				.anyMatch((o) -> (o.getState() == OrderState.ORDERED || o.getState() == OrderState.WAITING
+						|| o.getState() == OrderState.PACKED) && o.isDelivery())) {
+			notificationSerivce.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_DELIVERY_ORDERS), null);
+		}
 	}
 
 	private void onProductAddedToStorage(Product product) {
