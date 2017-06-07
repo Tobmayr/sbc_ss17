@@ -31,6 +31,7 @@ public final class SBCConstants {
 	public static final class NotificationKeys {
 		public static final String IS_ORDER_AVAILABLE = "isOrderAvailable";
 		public static final String IS_COUNTER_EMPTY = "isCounterEmpty";
+		public static final String IS_COUNTER_FULL = "isCounterFull";
 		public static final String NO_MORE_PRODUCTS_IN_STORAGE = "noMoreProductsInStorage";
 		public static final String NO_MORE_INGREDIENTS_IN_STORAGE = "noMoreIngredientsInStorage";
 		public static final String IS_PREPACKAGE_LIMIT = "isPrepackageLimit";

@@ -1,12 +1,9 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_NAMES;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +136,8 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 		Map<String, Boolean> notificationState = new HashMap<>();
 		notificationState.put(IS_COUNTER_EMPTY,
 				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0);
+		notificationState.put(IS_COUNTER_FULL,
+				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 40);
 		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
 				TypeCoordinator.newSelector(Product.class)) == 0);
 		notificationState.put(IS_ORDER_AVAILABLE,

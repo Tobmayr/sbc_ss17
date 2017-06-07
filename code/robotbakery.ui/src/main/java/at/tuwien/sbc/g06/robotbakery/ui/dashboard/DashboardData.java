@@ -219,6 +219,13 @@ public class DashboardData implements IChangeListener {
 
 		addOrUpdate(product, stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER));
 
+		for(ItemCount c: counterProductsCounterMap.values()) {
+			if(c.getAmount() < 10) return;
+		}
+
+		notificationSerivce
+				.sendNotification(new NotificationMessage(NotificationMessage.COUNTER_STOCK_FULL), null);
+
 	}
 
 	private void onProductRemovedFromCounter(Product product) {

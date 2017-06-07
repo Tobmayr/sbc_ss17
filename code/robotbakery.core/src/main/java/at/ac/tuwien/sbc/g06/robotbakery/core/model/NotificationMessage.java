@@ -12,6 +12,7 @@ public class NotificationMessage implements Serializable {
 	public static final int NO_MORE_ORDERS = 150;
 	public static final int PREPACKAGE_LIMIT_REACHED = 160;
 	public static final int NO_MORE_INGREDIENTS_IN_STORAGE = 170;
+	public static final int COUNTER_STOCK_FULL = 180;
 	private int messageTyp;
 
 	public NotificationMessage(int messageTyp) {

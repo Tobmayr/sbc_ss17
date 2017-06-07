@@ -1,11 +1,5 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +23,8 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
+
 /**
  * Service robot implementation for both implementations
  */
@@ -50,7 +46,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {
-			if (!notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE))
+			if (!notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE) && !notificationState.get(IS_COUNTER_FULL))
 				doTask(getProductFromStorage);
 
 			if (!notificationState.get(IS_COUNTER_EMPTY) && notificationState.get(IS_ORDER_AVAILABLE))
@@ -229,6 +225,8 @@ public class ServiceRobot extends Robot implements IChangeListener {
 				notificationState.put(IS_ORDER_AVAILABLE, false);
 			case NotificationMessage.PREPACKAGE_LIMIT_REACHED:
 				notificationState.put(IS_PREPACKAGE_LIMIT, true);
+				case NotificationMessage.COUNTER_STOCK_FULL:
+					notificationState.put(IS_COUNTER_FULL, true);
 			default:
 				break;
 			}
