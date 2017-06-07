@@ -29,7 +29,7 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	private MessageConsumer bakeroomQueueConsumer;
 
 	public JMSBakeRobotService() {
-		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
+		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
 
 		try {
 			bakeroomQueue = session.createQueue(JMSConstants.Queue.BAKEROOM);
@@ -63,8 +63,12 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 	}
 
 	@Override
-	public boolean putBakedProductsInStorage(Product nextProduct, ITransaction tx) {
-		return send(storageQueueProducer, nextProduct);
+	public boolean putBakedProductsInStorage(List<Product> products, ITransaction tx) {
+		for (Product product : products) {
+			if (!send(storageQueueProducer, product))
+				return false;
+		}
+		return true;
 	}
 
 	@Override

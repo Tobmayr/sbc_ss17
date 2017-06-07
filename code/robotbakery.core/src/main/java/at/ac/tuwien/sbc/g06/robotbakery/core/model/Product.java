@@ -31,6 +31,7 @@ public class Product implements Serializable {
 	private final String productName;
 	final Recipe recipe;
 	final double price;
+	final Integer baketime;
 	private BakeState type = BakeState.DOUGH;
 	private List<Contribution> contributions = new ArrayList<>();
 	private Timestamp timestamp;
@@ -41,6 +42,7 @@ public class Product implements Serializable {
 		this.productName = productName;
 		recipe = RecipeRegistry.getInstance().getRecipeForProduct(this);
 		this.price = recipe.getPricePerUnit();
+		this.baketime = recipe.getBakeTime();
 
 	}
 
@@ -52,12 +54,18 @@ public class Product implements Serializable {
 		this.timestamp = timestamp;
 	}
 
+	public Integer getBaketime() {
+		return baketime;
+	}
+
 	public Product(Recipe recipe) {
 		super();
 		id = UUID.randomUUID();
 		this.productName = recipe.getProductName();
 		this.recipe = recipe;
 		this.price = recipe.getPricePerUnit();
+		this.baketime = recipe.getBakeTime();
+
 	}
 
 	/**
@@ -97,8 +105,6 @@ public class Product implements Serializable {
 	public UUID getId() {
 		return id;
 	}
-	
-	
 
 	public double getPrice() {
 		return price;

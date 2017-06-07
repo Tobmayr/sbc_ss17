@@ -55,7 +55,7 @@ public class Recipe implements Serializable {
 	
 	
 
-	public int getBakeTime() {
+	public Integer getBakeTime() {
 		return bakeTime;
 	}
 

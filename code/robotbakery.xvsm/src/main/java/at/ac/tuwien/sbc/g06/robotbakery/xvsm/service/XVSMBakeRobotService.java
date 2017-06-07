@@ -72,8 +72,8 @@ public class XVSMBakeRobotService extends GenericXVSMService implements IBakeRob
 	}
 
 	@Override
-	public boolean putBakedProductsInStorage(Product nextProduct, ITransaction tx) {
-		return write(nextProduct, storageContainer, tx);
+	public boolean putBakedProductsInStorage(List<Product> products, ITransaction tx) {
+		return write(products, storageContainer, tx);
 	}
 
 	@Override

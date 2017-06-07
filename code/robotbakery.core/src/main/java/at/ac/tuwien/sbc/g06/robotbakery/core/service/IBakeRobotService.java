@@ -26,6 +26,6 @@ public interface IBakeRobotService extends IRobotService{
      * @param tx Transaction
      * @return true for successful insert or false for exception
      */
-    boolean putBakedProductsInStorage(Product nextProduct, ITransaction tx);
+    boolean putBakedProductsInStorage(List<Product> products, ITransaction tx);
 
 }
