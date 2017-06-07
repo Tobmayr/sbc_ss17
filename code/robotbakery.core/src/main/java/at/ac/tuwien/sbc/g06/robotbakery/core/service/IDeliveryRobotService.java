@@ -17,6 +17,4 @@ public interface IDeliveryRobotService extends IRobotService {
 	boolean deliverOrder(PackedOrder order);
 
 	boolean updateOrder(Order order);
-
-	Map<String, Boolean> getInitialState();
 }

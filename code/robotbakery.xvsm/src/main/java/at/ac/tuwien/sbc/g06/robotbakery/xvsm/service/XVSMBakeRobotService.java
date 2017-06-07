@@ -1,14 +1,15 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_BAKEROOM_EMPTY;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
+
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.Query;
 import org.mozartspaces.capi3.QueryCoordinator;
-import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -18,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
-import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -31,13 +30,12 @@ public class XVSMBakeRobotService extends GenericXVSMService implements IBakeRob
 	private static Logger logger = LoggerFactory.getLogger(XVSMKneadRobotService.class);
 	private final ContainerReference storageContainer;
 	private final ContainerReference bakeroomContainer;
-	private IRobotService robotService;
+
 
 	public XVSMBakeRobotService() {
 		super(new Capi(DefaultMzsCore.newInstance()));
 		bakeroomContainer = getContainer(XVSMConstants.BAKEROOM_CONTAINER_NAME);
 		storageContainer = getContainer(XVSMConstants.STORAGE_CONTAINER_NAME);
-		this.robotService = new XVSMRobotService(capi, BakeRobot.class.getSimpleName());
 
 	}
 
@@ -77,19 +75,7 @@ public class XVSMBakeRobotService extends GenericXVSMService implements IBakeRob
 	}
 
 	@Override
-	public void startRobot() {
-		robotService.startRobot();
-
-	}
-
-	@Override
-	public void shutdownRobot() {
-		robotService.shutdownRobot();
-
-	}
-
-	@Override
-	public Map<String, Boolean> getIntialState() {
+	public Map<String, Boolean> getInitialState() {
 		boolean noMoreProducts = test(bakeroomContainer, null, QueryCoordinator.newSelector(new Query())) <= 0;
 		Map<String, Boolean> map = new HashMap<>();
 		map.put(IS_BAKEROOM_EMPTY, noMoreProducts);

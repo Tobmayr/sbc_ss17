@@ -5,8 +5,8 @@ import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.PRODUCTS_N
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
-
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +23,13 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsConstants;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -40,15 +40,12 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	private final ContainerReference counterContainer;
 	private final ContainerReference terminalContainer;
 	private final ContainerReference storageContainer;
-	private XVSMRobotService robotService;
 
 	public XVSMServiceRobotService() {
 		super(new Capi(DefaultMzsCore.newInstance()));
 		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
 		terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
 		storageContainer = getContainer(XVSMConstants.STORAGE_CONTAINER_NAME);
-		this.robotService = new XVSMRobotService(capi, ServiceRobot.class.getSimpleName());
-
 	}
 
 	@Override
@@ -119,17 +116,6 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	}
 
 	@Override
-	public void startRobot() {
-		robotService.startRobot();
-	}
-
-	@Override
-	public void shutdownRobot() {
-		robotService.shutdownRobot();
-
-	}
-
-	@Override
 	public boolean returnOrder(Order currentOrder, ITransaction tx) {
 		return write(currentOrder, counterContainer, tx);
 	}
@@ -147,26 +133,26 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	}
 
 	@Override
-	public int readAllPrepackages() {
-		return test(terminalContainer, null,
-				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
+	public Map<String, Boolean> getInitialState() {
+		Query productQuery = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT));
+		Query highPriorityQuery = new Query().filter(Property.forName("*", "highPriority").equalTo(true));
+		Map<String, Boolean> notificationState = new HashMap<>();
+		notificationState.put(IS_COUNTER_EMPTY,
+				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0);
+		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
+				TypeCoordinator.newSelector(Product.class)) == 0);
+		notificationState.put(IS_ORDER_AVAILABLE,
+				test(counterContainer, null, TypeCoordinator.newSelector(Order.class)) > 0);
+		notificationState.put(IS_PREPACKAGE_LIMIT, test(terminalContainer, null,
+				TypeCoordinator.newSelector(Prepackage.class)) >= SBCConstants.PREPACKAGE_MAX_AMOUNT);
+		notificationState.put(IS_ORDER_PROCESSING_LOCKED, test(counterContainer, null,
+				QueryCoordinator.newSelector(highPriorityQuery), TypeCoordinator.newSelector(Order.class)) > 0);
+		return notificationState;
 	}
 
 	@Override
-	public Map<String, Boolean> getInitalState() {
-		Query productQuery = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT));
-		boolean storageEmpty = test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
-				TypeCoordinator.newSelector(Product.class)) == 0;
-		boolean counterEmpty = test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0;
-		boolean orderAvailable = test(counterContainer, null, TypeCoordinator.newSelector(Order.class)) > 0;
-		boolean prepackageLimit = test(terminalContainer, null,
-				TypeCoordinator.newSelector(Prepackage.class)) >= SBCConstants.PREPACKAGE_MAX_AMOUNT;
-		Map<String, Boolean> notificationState = new HashMap<>();
-		notificationState.put(IS_COUNTER_EMPTY, counterEmpty);
-		notificationState.put(IS_STORAGE_EMPTY, storageEmpty);
-		notificationState.put(IS_ORDER_AVAILABLE, orderAvailable);
-		notificationState.put(IS_PREPACKAGE_LIMIT, prepackageLimit);
-		return notificationState;
+	public boolean sendNotification(NotificationMessage notification, ITransaction tx) {
+		return write(notification, counterContainer, tx);
 	}
 
 }

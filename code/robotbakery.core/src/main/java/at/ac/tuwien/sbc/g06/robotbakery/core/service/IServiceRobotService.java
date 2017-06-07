@@ -12,10 +12,10 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 /**
  * Interface for service robot
  */
-public interface IServiceRobotService extends IRobotService {
+public interface IServiceRobotService extends IRobotService,INotificationService {
 
 	
-	Map<String,Boolean> getInitalState();
+
 	/**
 	 * get an open order
 	 * 
@@ -103,7 +103,7 @@ public interface IServiceRobotService extends IRobotService {
 	
 	boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx);
 
-	int readAllPrepackages();
+
 
 
 }

@@ -16,9 +16,7 @@ import org.mozartspaces.core.MzsCoreException;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.DeliveryRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
@@ -28,7 +26,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.xvsm.util.XVSMConstants;
  */
 public class XVSMDeliveryRobotService extends GenericXVSMService implements IDeliveryRobotService {
 
-	private XVSMRobotService robotService;
 	private ContainerReference terminalContainer;
 	private ContainerReference destinationContainer;
 	private ContainerReference counterContainer;
@@ -37,19 +34,9 @@ public class XVSMDeliveryRobotService extends GenericXVSMService implements IDel
 		super(new Capi(DefaultMzsCore.newInstance()));
 		this.terminalContainer = getContainer(XVSMConstants.TERMINAL_CONTAINER_NAME);
 		this.counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
-		this.robotService = new XVSMRobotService(capi, DeliveryRobot.class.getSimpleName());
 
 	}
 
-	@Override
-	public void startRobot() {
-		robotService.startRobot();
-	}
-
-	@Override
-	public void shutdownRobot() {
-		robotService.shutdownRobot();
-	}
 
 	@Override
 	public PackedOrder getPackedDeliveryOrder() {

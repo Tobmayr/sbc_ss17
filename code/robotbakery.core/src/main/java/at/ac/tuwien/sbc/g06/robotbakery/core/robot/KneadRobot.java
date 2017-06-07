@@ -1,6 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_INGREDIENTS_IN_STORAGE;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -29,7 +30,7 @@ public class KneadRobot extends Robot {
 		super(transactionManager, changeNotifer, id);
 		this.service = service;
 		notificationState = service.getInitialState();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
+	;
 	}
 
 	/**
@@ -123,9 +124,8 @@ public class KneadRobot extends Robot {
 
 	@Override
 	public void run() {
-		service.startRobot();
-		while (!Thread.interrupted()) {
-			if (!notificationState.get(IS_STORAGE_EMPTY)) {
+			while (!Thread.interrupted()) {
+			if (!notificationState.get(NO_MORE_INGREDIENTS_IN_STORAGE)) {
 				ProductChooser productChooser = new ProductChooser(service, null);
 				if (productChooser.correctlyInitialized()) {
 					nextProduct = productChooser.getFinishableBaseDough();
@@ -154,10 +154,10 @@ public class KneadRobot extends Robot {
 	@Override
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
 		if (added && object instanceof Ingredient && coordinationRoom == SBCConstants.COORDINATION_ROOM_STORAGE) {
-			notificationState.put(IS_STORAGE_EMPTY, false);
+			notificationState.put(NO_MORE_INGREDIENTS_IN_STORAGE, false);
 		} else if (object instanceof NotificationMessage
-				&& ((NotificationMessage) object).getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE) {
-			notificationState.put(IS_STORAGE_EMPTY, true);
+				&& ((NotificationMessage) object).getMessageTyp() == NotificationMessage.NO_MORE_INGREDIENTS_IN_STORAGE) {
+			notificationState.put(NO_MORE_INGREDIENTS_IN_STORAGE, true);
 		}
 	}
 

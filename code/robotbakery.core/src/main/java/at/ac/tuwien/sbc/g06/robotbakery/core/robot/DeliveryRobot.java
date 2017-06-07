@@ -24,13 +24,11 @@ public class DeliveryRobot extends Robot {
 		super(transactionManager, changeNotifer, id);
 		this.service = service;
 		notificationState = service.getInitialState();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
 
 	};
 
 	@Override
 	public void run() {
-		service.startRobot();
 		while (!Thread.interrupted()) {
 			if (notificationState.get(IS_DELIVERY_ORDER_AVAILABLE)) {
 				doTask(processNextDelivery);

@@ -41,16 +41,6 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
     }
 
     @Override
-    public void startRobot() {
-        notify(ServiceRobot.class.getSimpleName(), false, terminalQueue);
-    }
-
-    @Override
-    public void shutdownRobot() {
-        notify(ServiceRobot.class.getSimpleName(), true, terminalQueue);
-    }
-
-    @Override
     public PackedOrder getPackedDeliveryOrder() {
         return receive(deliveryOrderConsumer);
     }
@@ -90,6 +80,7 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
     public boolean updateOrder(Order order) {
         return notify(order, false, orderQueue);
     }
+
 
 	@Override
 	public Map<String, Boolean> getInitialState() {

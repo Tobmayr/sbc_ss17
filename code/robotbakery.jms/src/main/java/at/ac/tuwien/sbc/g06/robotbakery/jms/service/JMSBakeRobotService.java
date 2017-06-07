@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.BakeRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IBakeRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -71,20 +70,10 @@ public class JMSBakeRobotService extends AbstractJMSService implements IBakeRobo
 		return true;
 	}
 
-	@Override
-	public void startRobot() {
-		notify(BakeRobot.class.getSimpleName(), false, storageQueue);
-
-	}
+	
 
 	@Override
-	public void shutdownRobot() {
-		notify(BakeRobot.class.getSimpleName(), true, storageQueue);
-
-	}
-
-	@Override
-	public Map<String, Boolean> getIntialState() {
+	public Map<String, Boolean> getInitialState() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -14,7 +14,6 @@ public class PackedOrder extends Order implements Serializable {
 
 	private final List<Product> products;
 
-
 	public PackedOrder(Order order) {
 		super(order.getId());
 		this.products = new ArrayList<Product>();
@@ -26,7 +25,8 @@ public class PackedOrder extends Order implements Serializable {
 		setDelivery(order.isDelivery());
 		setDeliveryAddress(order.getDeliveryAddress());
 		setDeliveryRobotId(order.getDeliveryRobotId());
-		
+		setHighPriority(order.isHighPriority());
+
 	}
 
 	public void addAll(List<Product> products) {
@@ -49,5 +49,4 @@ public class PackedOrder extends Order implements Serializable {
 		return products;
 	}
 
-	
 }

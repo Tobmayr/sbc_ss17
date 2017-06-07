@@ -3,12 +3,15 @@ package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
@@ -40,22 +43,20 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			ITransactionManager transactionManager, String id) {
 		super(transactionManager, changeNotifer, id);
 		this.service = service;
-		notificationState = service.getInitalState();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
+		notificationState = service.getInitialState();
 
 	};
 
 	@Override
 	public void run() {
-		service.startRobot();
 		while (!Thread.interrupted()) {
-			if (!notificationState.get(IS_STORAGE_EMPTY))
+			if (!notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE))
 				doTask(getProductFromStorage);
 
 			if (!notificationState.get(IS_COUNTER_EMPTY) && notificationState.get(IS_ORDER_AVAILABLE))
 				doTask(processNextOrder);
 
-			if (!isPrepackagesLimit && !notificationState.get(IS_STORAGE_EMPTY)) {
+			if (!isPrepackagesLimit && !notificationState.get(NO_MORE_PRODUCTS_IN_STORAGE)) {
 				doTask(prepackProducts);
 			}
 
@@ -87,27 +88,52 @@ public class ServiceRobot extends Robot implements IChangeListener {
 		sleepFor(1000, 3000);
 		// Update contribution
 		packedOrder.getProducts().forEach(p -> p.addContribution(getId(), Product.PACK_UP, getClass()));
-
+		if (packedOrder.isHighPriority()) {
+			service.sendNotification(new NotificationMessage(NotificationMessage.ORDER_PROCESSING_FREE), tx);
+		}
 		return service.putPackedOrderInTerminal(packedOrder, tx);
 
 	};
+
+	private boolean waitForEnoughProducts() {
+		Map<String, Integer> counterStock = service.getCounterStock();
+		while (!enoughProducts(counterStock)) {
+			counterStock = service.getCounterStock();
+		}
+		return true;
+	}
+
+	private boolean enoughProducts(Map<String, Integer> counterStock) {
+		return currentOrder.getItemsMap().keySet().stream().allMatch((s) -> currentOrder.getItemsMap().get(s)
+				.getAmount() <= SBCConstants.COUNTER_MAX_CAPACITY - counterStock.get(s));
+	}
 
 	/**
 	 * get next order to work on
 	 */
 	ITransactionalTask processNextOrder = tx -> {
 		currentOrder = service.getNextOrder(tx);
-		if (currentOrder.isDelivery())
-			currentOrder.setState(OrderState.WAITING);
-			service.updateOrder(currentOrder, tx);
-		if (currentOrder == null) {
+		if (currentOrder == null
+				|| (notificationState.get(IS_ORDER_PROCESSING_LOCKED) && !currentOrder.isHighPriority())) {
 			return false;
+		}
+		if (currentOrder.isDelivery()) {
+			boolean maxWaitReached = System.currentTimeMillis()
+					- currentOrder.getTimestamp().getTime() >= SBCConstants.DELIVERY_MAX_WAIT;
+			currentOrder.setHighPriority(maxWaitReached);
+
+			if (maxWaitReached) {
+				service.sendNotification(new NotificationMessage(NotificationMessage.ORDER_PROCESSING_LOCKED), tx);
+				waitForEnoughProducts();
+
+			}
 		}
 
 		System.out.println("New order with id: " + currentOrder.getId() + " is now processed & prepared for packing");
 		if (!packOrderAndPutInTerminal(tx)) {
 			if (currentOrder.isDelivery()) {
 				System.out.println("Not enough products in stock. Delviery Order  is returned to the collection area!");
+				currentOrder.setState(OrderState.WAITING);
 				return service.returnOrder(currentOrder, tx);
 			} else {
 				System.out.println("Not enough products in stock. Order has been declined!");
@@ -117,7 +143,6 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 		}
 
-		notificationState.put(IS_ORDER_AVAILABLE, false);
 		return true;
 
 	};
@@ -155,7 +180,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	};
 
 	ITransactionalTask prepackProducts = tx -> {
-		if (service.readAllPrepackages() < SBCConstants.PREPACKAGE_MAX_AMOUNT) {
+		if (!notificationState.get(IS_PREPACKAGE_LIMIT)) {
 			List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
 			if (products == null || products.isEmpty())
 				return false;
@@ -164,17 +189,16 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			prepackage.setProducts(products);
 			prepackage.setServiceRobotId(this.getId());
 			return service.putPrepackageInTerminal(prepackage, tx);
-		} else {
-			notificationState.put(IS_PREPACKAGE_LIMIT, true);
-			return true;
 		}
+		return true;
+
 	};
 
 	@Override
 	public void onObjectChanged(Serializable object, String coordinationRoom, boolean added) {
 		if (added && object instanceof Product) {
 			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_STORAGE)) {
-				notificationState.put(IS_STORAGE_EMPTY, false);
+				notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, false);
 			} else if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
 				notificationState.put(IS_COUNTER_EMPTY, false);
 			}
@@ -187,11 +211,28 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			notificationState.put(IS_PREPACKAGE_LIMIT, false);
 		} else if (added && object instanceof NotificationMessage) {
 			NotificationMessage message = (NotificationMessage) object;
-			if (message.getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER) {
+
+			switch (message.getMessageTyp()) {
+			case NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER:
 				notificationState.put(IS_COUNTER_EMPTY, true);
-			} else if (message.getMessageTyp() == NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE) {
-				notificationState.put(IS_STORAGE_EMPTY, true);
+				break;
+			case NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE:
+				notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, true);
+				break;
+			case NotificationMessage.ORDER_PROCESSING_LOCKED:
+				notificationState.put(IS_ORDER_PROCESSING_LOCKED, true);
+				break;
+			case NotificationMessage.ORDER_PROCESSING_FREE:
+				notificationState.put(IS_ORDER_PROCESSING_LOCKED, false);
+				break;
+			case NotificationMessage.NO_MORE_ORDERS:
+				notificationState.put(IS_ORDER_AVAILABLE, false);
+			case NotificationMessage.PREPACKAGE_LIMIT_REACHED:
+				notificationState.put(IS_PREPACKAGE_LIMIT, true);
+			default:
+				break;
 			}
+
 		}
 
 	}

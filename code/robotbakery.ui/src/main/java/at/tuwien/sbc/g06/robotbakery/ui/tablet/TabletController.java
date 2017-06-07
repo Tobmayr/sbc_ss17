@@ -71,13 +71,13 @@ public class TabletController extends AbstractTabletController {
 
 	}
 
-	
-	
-
 	@FXML
 	public void onTakeButtonClicked() {
 		UUID packageId = prepackagesTable.getSelectionModel().getSelectedItem().getId();
 		Prepackage prepackage = service.getPrepackage(packageId);
+		prepackage.setCustomerId(customerId);
+		prepackage.setState(Prepackage.STATE_SOLD);
+		service.updatePrepackage(prepackage);
 		if (prepackage != null) {
 			prepackagesTable.getItems().remove(prepackage);
 			prepackageItemsTable.getItems().clear();

@@ -19,9 +19,9 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.util.RecipeRegistry;
  */
 @SuppressWarnings("serial")
 public class Order implements Serializable {
-	
+
 	public enum OrderState {
-		ORDERED,WAITING, PACKED, PAID, DELIVERED, UNDELIVERALBE, UNGRANTABLE;
+		ORDERED, WAITING, PACKED, PAID, DELIVERED, UNDELIVERALBE, UNGRANTABLE;
 	}
 
 	private final UUID orderID;
@@ -30,10 +30,11 @@ public class Order implements Serializable {
 	private OrderState state = OrderState.ORDERED;
 	private Timestamp timestamp;
 
+	private boolean highPriority = false;
 	private boolean delivery = false;
 	private URI deliveryAddress;
 	private UUID deliveryRobotId;
-	
+
 	private double totalSum;
 	private final Map<String, Item> itemsMap;
 
@@ -63,6 +64,15 @@ public class Order implements Serializable {
 		return item;
 	}
 
+	
+	public boolean isHighPriority() {
+		return highPriority;
+	}
+
+	public void setHighPriority(boolean highPriority) {
+		this.highPriority = highPriority;
+	}
+
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}
@@ -75,8 +85,6 @@ public class Order implements Serializable {
 		this.totalSum = totalSum;
 	}
 
-	
-	
 	public UUID getDeliveryRobotId() {
 		return deliveryRobotId;
 	}
@@ -132,8 +140,6 @@ public class Order implements Serializable {
 	public UUID getId() {
 		return orderID;
 	}
-	
-	
 
 	public boolean isDelivery() {
 		return delivery;

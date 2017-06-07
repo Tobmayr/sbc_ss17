@@ -74,6 +74,7 @@ public abstract class AbstractTabletController {
 	protected ITabletUIService service;
 	protected ObservableList<Item> itemsData;
 	protected PackedOrder packedOrder;
+	protected UUID customerId;
 
 	public void initialize(TabletData data, ITabletUIService uiService, UUID customerID) {
 
@@ -82,7 +83,7 @@ public abstract class AbstractTabletController {
 
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
-
+		this.customerId=customerID;
 		customerIdText.setText(customerID.toString());
 		order.setCustomerId(customerID);
 

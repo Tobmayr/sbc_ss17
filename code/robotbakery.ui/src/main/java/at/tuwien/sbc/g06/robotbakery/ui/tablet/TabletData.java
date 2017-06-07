@@ -50,7 +50,7 @@ public class TabletData implements IChangeListener {
 
 		});
 		prepackages.addAll(delegateController.getService().getInitialPrepackages());
-		
+
 	}
 
 	@Override
@@ -81,6 +81,8 @@ public class TabletData implements IChangeListener {
 	}
 
 	private void onPrepackageAdded(Prepackage prepackage) {
+		if (prepackage.getState().equals(Prepackage.STATE_SOLD))
+			return;
 		int index = prepackages.indexOf(prepackage);
 		if (index == -1)
 			prepackages.add(prepackage);

@@ -24,13 +24,11 @@ public class BakeRobot extends Robot {
 			String id) {
 		super(transactionManager, changeNotifer, id);
 		this.service = service;
-		notificationState = service.getIntialState();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdownRobot()));
+		notificationState = service.getInitialState();
 	};
 
 	@Override
 	public void run() {
-		service.startRobot();
 		while (!Thread.interrupted()) {
 			if (!notificationState.get(IS_BAKEROOM_EMPTY)) {
 				List<Product> products = service.getUnbakedProducts(null);

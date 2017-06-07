@@ -34,7 +34,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	private QueueBrowser counterQueueBrowser;
 
 	public JMSTabletUIService() {
-		super(false, Session.AUTO_ACKNOWLEDGE,JMSConstants.SERVER_ADDRESS);
+		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
 		try {
 			counterQueue = session.createQueue(JMSConstants.Queue.COUNTER);
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -100,6 +100,12 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	public URI getDeliveryURI() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean updatePrepackage(Prepackage prepackage) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -10,9 +10,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
  * Interface for BakeRoboter
  */
 public interface IBakeRobotService extends IRobotService{
-	
-	Map<String,Boolean> getIntialState();
-
     /**
      * Get unbaked products from bake room
      * @param tx Transaction

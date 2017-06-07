@@ -1,6 +1,6 @@
 package at.ac.tuwien.sbc.g06.robotbakery.xvsm.service;
 
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_STORAGE_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_INGREDIENTS_IN_STORAGE;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
@@ -49,7 +48,7 @@ public class XVSMKneadRobotService extends GenericXVSMService implements IKneadR
 		storageContainer = getContainer(XVSMConstants.STORAGE_CONTAINER_NAME);
 		counterContainer = getContainer(XVSMConstants.COUNTER_CONTAINER_NAME);
 		bakeroomContainer = getContainer(XVSMConstants.BAKEROOM_CONTAINER_NAME);
-		this.robotService = new XVSMRobotService(capi, KneadRobot.class.getSimpleName());
+
 	}
 
 	@Override
@@ -138,18 +137,6 @@ public class XVSMKneadRobotService extends GenericXVSMService implements IKneadR
 	}
 
 	@Override
-	public void startRobot() {
-		robotService.startRobot();
-
-	}
-
-	@Override
-	public void shutdownRobot() {
-		robotService.shutdownRobot();
-
-	}
-
-	@Override
 	public boolean takeFlourFromStorage(int amount, ITransaction tx) {
 		FlourPack pack = null;
 		while (amount > 0) {
@@ -178,12 +165,9 @@ public class XVSMKneadRobotService extends GenericXVSMService implements IKneadR
 
 	@Override
 	public Map<String, Boolean> getInitialState() {
-		Query productQuery = new Query().filter(Property.forName("*", "type").equalTo(BakeState.FINALPRODUCT));
-		boolean storageEmpty = test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
-				TypeCoordinator.newSelector(Product.class)) == 0;
-		
 		Map<String, Boolean> notificationState = new HashMap<>();
-		notificationState.put(IS_STORAGE_EMPTY, storageEmpty);
+		notificationState.put(NO_MORE_INGREDIENTS_IN_STORAGE,
+				test(storageContainer, null, TypeCoordinator.newSelector(Ingredient.class)) == 0);
 		return notificationState;
 	}
 }

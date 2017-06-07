@@ -44,6 +44,8 @@ public interface ITabletUIService  {
 
 	Prepackage getPrepackage(UUID packageId);
 	
+	boolean updatePrepackage(Prepackage prepackage);
+	
 	URI getDeliveryURI();
 
 

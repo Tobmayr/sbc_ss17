@@ -13,7 +13,6 @@ import org.mozartspaces.capi3.QueryCoordinator;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
-import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsConstants;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
@@ -81,13 +80,19 @@ public class XVSMTabletUIService extends GenericXVSMService implements ITabletUI
 
 	@Override
 	public List<Prepackage> getInitialPrepackages() {
-		return read(terminalContainer, null,
+		Query query = new Query().filter(Property.forName("*", "state").equalTo(Prepackage.STATE_IN_TERMINAL));
+		return read(terminalContainer, null, QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_MAX),
 				TypeCoordinator.newSelector(Prepackage.class, MzsConstants.Selecting.COUNT_MAX));
 	}
 
 	@Override
 	public URI getDeliveryURI() {
 		return capi.getCore().getConfig().getSpaceUri();
+	}
+
+	@Override
+	public boolean updatePrepackage(Prepackage prepackage) {
+		return write(prepackage, terminalContainer, null);
 	}
 
 }

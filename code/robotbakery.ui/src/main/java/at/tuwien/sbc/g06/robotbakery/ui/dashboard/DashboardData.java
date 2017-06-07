@@ -10,6 +10,7 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.FlourPack;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Ingredient;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
@@ -134,10 +135,6 @@ public class DashboardData implements IChangeListener {
 			}
 		} else if (object instanceof Prepackage) {
 			Prepackage prepackage = (Prepackage) object;
-			if (!added) {
-				prepackage.setState(Prepackage.STATE_SOLD);
-
-			}
 			onPrepackageAdded(prepackage);
 
 		}
@@ -150,6 +147,10 @@ public class DashboardData implements IChangeListener {
 			prepackages.add(prepackage);
 		else
 			prepackages.set(index, prepackage);
+		if (prepackages.size() == SBCConstants.PREPACKAGE_MAX_AMOUNT) {
+			notificationSerivce.sendNotification(new NotificationMessage(NotificationMessage.PREPACKAGE_LIMIT_REACHED),
+					null);
+		}
 
 	}
 
@@ -159,6 +160,11 @@ public class DashboardData implements IChangeListener {
 			orders.add(order);
 		else
 			orders.set(index, order);
+
+		if (!orders.stream()
+				.anyMatch((o) -> o.getState() == OrderState.ORDERED || o.getState() == OrderState.WAITING)) {
+			notificationSerivce.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_ORDERS), null);
+		}
 	}
 
 	private void onProductAddedToStorage(Product product) {
@@ -190,13 +196,14 @@ public class DashboardData implements IChangeListener {
 			}
 		}
 
-		if (stateToProductsMap.get(ProductState.PRODUCT_IN_STORAGE).isEmpty()) {
-			notificationSerivce
-					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE));
-		}
 		ProductState state = product.getType() == BakeState.DOUGH ? ProductState.DOUGH_IN_STORAGE
 				: ProductState.PRODUCT_IN_STORAGE;
 		stateToProductsMap.get(state).remove(product);
+
+		if (stateToProductsMap.get(ProductState.PRODUCT_IN_STORAGE).isEmpty()) {
+			notificationSerivce
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_STORAGE), null);
+		}
 
 	}
 
@@ -226,12 +233,11 @@ public class DashboardData implements IChangeListener {
 			}
 		}
 
+		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).remove(product);
 		if (stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).isEmpty()) {
 			notificationSerivce
-					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER));
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_COUNTER), null);
 		}
-
-		stateToProductsMap.get(ProductState.PRODUCT_IN_COUNTER).remove(product);
 	}
 
 	private void onProductAddedToBakeroom(Product product) {
@@ -243,7 +249,7 @@ public class DashboardData implements IChangeListener {
 		stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).remove(product);
 		if (stateToProductsMap.get(ProductState.DOUGH_IN_BAKEROOM).isEmpty()) {
 			notificationSerivce
-					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_BAKEROOM));
+					.sendNotification(new NotificationMessage(NotificationMessage.NO_MORE_PRODUCTS_IN_BAKEROOM), null);
 		}
 
 	}
@@ -293,6 +299,11 @@ public class DashboardData implements IChangeListener {
 			} else {
 				ingredients.remove(count);
 				ingredientsCounterMap.remove(count.itemName);
+			}
+
+			if (!ingredientsCounterMap.values().stream().anyMatch((i) -> i.getAmount() > 0)) {
+				notificationSerivce.sendNotification(
+						new NotificationMessage(NotificationMessage.NO_MORE_INGREDIENTS_IN_STORAGE), null);
 			}
 		}
 

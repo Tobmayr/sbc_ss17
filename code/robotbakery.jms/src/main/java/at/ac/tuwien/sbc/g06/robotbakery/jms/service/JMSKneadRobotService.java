@@ -23,7 +23,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product.BakeState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Recipe.IngredientType;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.WaterPipe;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.KneadRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IKneadRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -229,21 +228,13 @@ public class JMSKneadRobotService extends AbstractJMSService implements IKneadRo
 	}
 
 	@Override
-	public void startRobot() {
-		notify(KneadRobot.class.getSimpleName(), false, storageQueue);
-
-	}
-
-	@Override
-	public void shutdownRobot() {
-		notify(KneadRobot.class.getSimpleName(), true, storageQueue);
-
-	}
-
-	@Override
 	public Map<String, Boolean> getInitialState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
+
+	
 
 }

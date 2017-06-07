@@ -15,12 +15,12 @@ import javax.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
-import at.ac.tuwien.sbc.g06.robotbakery.core.robot.ServiceRobot;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.IServiceRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransaction;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
@@ -116,17 +116,6 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 		return receive(counterProductTypeConsumers.get(productName), amount);
 	}
 
-	@Override
-	public void startRobot() {
-		notify(ServiceRobot.class.getSimpleName(), false, storageQueue);
-
-	}
-
-	@Override
-	public void shutdownRobot() {
-		notify(ServiceRobot.class.getSimpleName(), true, storageQueue);
-
-	}
 
 	public Session getSession() {
 		return session;
@@ -155,16 +144,17 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 		return null;
 	}
 
+	
 	@Override
-	public int readAllPrepackages() {
-		//TODO: implement;
-				return -1;
+	public Map<String, Boolean> getInitialState() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public Map<String, Boolean> getInitalState() {
+	public boolean sendNotification(NotificationMessage notification, ITransaction tx) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 }
