@@ -33,9 +33,7 @@ public class PackedOrder extends Order implements Serializable {
 		this.products.addAll(products);
 	}
 
-	public UUID getCustomerID() {
-		return getCustomerID();
-	}
+	
 
 	public UUID getOrderID() {
 		return getId();

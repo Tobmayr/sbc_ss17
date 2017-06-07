@@ -1,6 +1,8 @@
 package at.ac.tuwien.sbc.g06.robotbakery.jms.service;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.COUNTER_MAX_CAPACITY;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_FULL;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
 import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
@@ -50,7 +52,7 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 	private QueueBrowser terminalQueueBrowser;
 
 	public JMSServiceRobotService() {
-		super(true, Session.SESSION_TRANSACTED, JMSConstants.SERVER_ADDRESS);
+		super(true, Session.CLIENT_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
 
 		try {
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -174,14 +176,16 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 		Map<String, Boolean> notificationState = new HashMap<>();
 		notificationState.put(IS_COUNTER_EMPTY, JMSUtil.test(productCounterQueueBrowser, JMSConstants.Property.CLASS,
 				Product.class.getSimpleName()) == 0);
-		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, JMSUtil.test(productCounterQueueBrowser,
-				JMSConstants.Property.CLASS, Product.class.getSimpleName()) == 0);
+		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE,
+				JMSUtil.test(storageQueueBrowser, JMSConstants.Property.CLASS, Product.class.getSimpleName()) == 0);
 		notificationState.put(IS_ORDER_AVAILABLE,
 				JMSUtil.test(orderQueueBrowser, JMSConstants.Property.CLASS, Order.class.getSimpleName()) > 0);
 		notificationState.put(IS_PREPACKAGE_LIMIT, JMSUtil.test(terminalQueueBrowser, JMSConstants.Property.CLASS,
 				Prepackage.class.getSimpleName()) >= SBCConstants.PREPACKAGE_MAX_AMOUNT);
 		notificationState.put(IS_ORDER_PROCESSING_LOCKED,
 				JMSUtil.test(orderQueueBrowser, JMSConstants.Property.HIGH_PRIORITY, "true") > 0);
+		notificationState.put(IS_COUNTER_FULL, JMSUtil.test(productCounterQueueBrowser, JMSConstants.Property.CLASS,
+				Product.class.getSimpleName()) == 5 * COUNTER_MAX_CAPACITY);
 		return notificationState;
 	}
 

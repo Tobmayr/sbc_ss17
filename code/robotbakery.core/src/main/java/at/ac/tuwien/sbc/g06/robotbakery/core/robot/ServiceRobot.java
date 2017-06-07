@@ -1,11 +1,16 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_EMPTY;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_COUNTER_FULL;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_AVAILABLE;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_ORDER_PROCESSING_LOCKED;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_PREPACKAGE_LIMIT;
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.NO_MORE_PRODUCTS_IN_STORAGE;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.listener.IChangeListener;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
@@ -22,8 +27,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.CollectionsUtil;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
-
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.*;
 
 /**
  * Service robot implementation for both implementations
@@ -205,6 +208,10 @@ public class ServiceRobot extends Robot implements IChangeListener {
 			}
 		} else if (!added && object instanceof Prepackage) {
 			notificationState.put(IS_PREPACKAGE_LIMIT, false);
+		} else if (!added && object instanceof Product) {
+			if (coordinationRoom.equals(SBCConstants.COORDINATION_ROOM_COUNTER)) {
+				notificationState.put(IS_COUNTER_FULL, false);
+			}
 		} else if (added && object instanceof NotificationMessage) {
 			NotificationMessage message = (NotificationMessage) object;
 
@@ -225,8 +232,8 @@ public class ServiceRobot extends Robot implements IChangeListener {
 				notificationState.put(IS_ORDER_AVAILABLE, false);
 			case NotificationMessage.PREPACKAGE_LIMIT_REACHED:
 				notificationState.put(IS_PREPACKAGE_LIMIT, true);
-				case NotificationMessage.COUNTER_STOCK_FULL:
-					notificationState.put(IS_COUNTER_FULL, true);
+			case NotificationMessage.COUNTER_STOCK_FULL:
+				notificationState.put(IS_COUNTER_FULL, true);
 			default:
 				break;
 			}

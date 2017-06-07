@@ -61,7 +61,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 		try {
 			MessageConsumer terminalOrderConsumer = session.createConsumer(terminalQueue,
 					String.format("%s= '%s' AND %s='%s' AND %s='%s'", JMSConstants.Property.CLASS,
-							PackedOrder.class.toString(), JMSConstants.Property.CUSTOMER_ID,
+							PackedOrder.class.getSimpleName(), JMSConstants.Property.CUSTOMER_ID,
 							order.getCustomerId().toString(), JMSConstants.Property.ORDER_ID,
 							order.getId().toString()));
 			return receive(terminalOrderConsumer);
@@ -87,14 +87,14 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public Prepackage getPrepackage(UUID packageId) {
-		try {
-		MessageConsumer terminalPrepackageConsumer=session.createConsumer(terminalQueue, String.format("%s= '%s'",JMSConstants.Property.CLASS,Prepackage.class.getSimpleName()));
-		return receive(terminalPrepackageConsumer);
-		} catch (JMSException e) {
-			e.printStackTrace();
+//		try {
+//		MessageConsumer terminalPrepackageConsumer=session.createConsumer(terminalQueue, String.format("%s= '%s'",JMSConstants.Property.CLASS,Prepackage.class.getSimpleName()));
+//		return receive(terminalPrepackageConsumer);
+//		} catch (JMSException e) {
+//			e.printStackTrace();
 			return null;
-
-		}
+//
+//		}
 	}
 
 	@Override

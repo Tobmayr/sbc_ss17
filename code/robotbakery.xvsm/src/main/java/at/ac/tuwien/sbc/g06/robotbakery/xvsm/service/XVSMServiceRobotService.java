@@ -137,7 +137,7 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 		notificationState.put(IS_COUNTER_EMPTY,
 				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0);
 		notificationState.put(IS_COUNTER_FULL,
-				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 40);
+				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 5*COUNTER_MAX_CAPACITY);
 		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
 				TypeCoordinator.newSelector(Product.class)) == 0);
 		notificationState.put(IS_ORDER_AVAILABLE,

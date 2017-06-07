@@ -6,11 +6,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Prepackage;
-import at.ac.tuwien.sbc.g06.robotbakery.core.model.Product;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.Item;
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.Order.OrderState;
+import at.ac.tuwien.sbc.g06.robotbakery.core.model.PackedOrder;
 import at.ac.tuwien.sbc.g06.robotbakery.core.service.ITabletUIService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
 import at.tuwien.sbc.g06.robotbakery.ui.tablet.TabletData.CounterInformation;
@@ -20,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -27,7 +26,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public abstract class AbstractTabletController {
@@ -83,7 +81,7 @@ public abstract class AbstractTabletController {
 
 		counterMap = data.getCounterProductsCounterMap();
 		service = uiService;
-		this.customerId=customerID;
+		this.customerId = customerID;
 		customerIdText.setText(customerID.toString());
 		order.setCustomerId(customerID);
 
@@ -189,12 +187,20 @@ public abstract class AbstractTabletController {
 
 	@FXML
 	public void onStatusButtonClicked() {
-		if (order.getState() == OrderState.ORDERED) {
+
+		if (order.getState() == OrderState.ORDERED || order.getState() == OrderState.UNGRANTABLE) {
 			if (orderValid()) {
+				order.setState(OrderState.ORDERED);
 				order.setTimestamp(new Timestamp(System.currentTimeMillis()));
 				service.addOrderToCounter(order);
 			} else
 				invalidOrderAlert.showAndWait();
+		} else if (order.getState() == OrderState.PACKED) {
+
+			packedOrder = service.getPackedOrder(order);
+			packedOrder.setState(OrderState.PAID);
+			service.payOrder(packedOrder);
+		
 		}
 
 	}
