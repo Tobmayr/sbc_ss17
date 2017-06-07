@@ -1,5 +1,7 @@
 package at.ac.tuwien.sbc.g06.robotbakery.core.robot;
 
+import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE;
+
 import java.io.Serializable;
 
 import at.ac.tuwien.sbc.g06.robotbakery.core.model.NotificationMessage;
@@ -11,7 +13,6 @@ import at.ac.tuwien.sbc.g06.robotbakery.core.service.IDeliveryRobotService;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionManager;
 import at.ac.tuwien.sbc.g06.robotbakery.core.transaction.ITransactionalTask;
 import at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants;
-import static at.ac.tuwien.sbc.g06.robotbakery.core.util.SBCConstants.NotificationKeys.IS_DELIVERY_ORDER_AVAILABLE;
 
 /**
  * DeliveryRobot to deliver orders to customers
@@ -34,7 +35,6 @@ public class DeliveryRobot extends Robot {
 		while (!Thread.interrupted()) {
 			if (notificationState.get(IS_DELIVERY_ORDER_AVAILABLE)) {
 				doTask(processNextDelivery);
-				notificationState.put(IS_DELIVERY_ORDER_AVAILABLE, false);
 			}
 
 		}

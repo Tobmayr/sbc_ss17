@@ -19,14 +19,18 @@ public class JMSTabletStartUp extends Application {
 		// Initialize Customer-instance and required ui listeners;
 		JMSServer server = new JMSServer();
 		int port = 0;
-        for(port=JMSConstants.PORT_RANGE_START; port<JMSConstants.PORT_RANGE_END; port++) {
-            if(JMSUtil.available(port)) break;
-        }
-        String address=JMSConstants.LOCALHOST_ADDRESS+port;
+		for (port = JMSConstants.PORT_RANGE_START; port < JMSConstants.PORT_RANGE_END; port++) {
+			if (JMSUtil.available(port))
+				break;
+		}
+		String address = JMSConstants.LOCALHOST_ADDRESS + port;
 		server.startUp(address);
 		TabletUIChangeNotifer changeNotifer = new JMSTabletUIChangeNotifier();
 		TabletUIChangeNotifer deliveryChangeNotifier = new JMSDeliveryTabletUIChangeNotifier();
-		TabletInitializer.initializeTabletStartUp(primaryStage, changeNotifer, deliveryChangeNotifier, new JMSTabletUIService(), new JMSDeliveryTabletUIService(address));
+		JMSTabletUIService tabletUIService = new JMSTabletUIService();
+		JMSDeliveryTabletUIService deliveryUIService = new JMSDeliveryTabletUIService(tabletUIService, address);
+		TabletInitializer.initializeTabletStartUp(primaryStage, changeNotifer, deliveryChangeNotifier, tabletUIService,
+				deliveryUIService);
 
 	}
 

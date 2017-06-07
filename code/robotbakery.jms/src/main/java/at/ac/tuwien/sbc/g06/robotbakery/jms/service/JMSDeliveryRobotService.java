@@ -41,7 +41,7 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
 	private QueueBrowser orderQueueBrowser;
 
 	public JMSDeliveryRobotService() {
-		super(false, Session.AUTO_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
+		super(true, Session.CLIENT_ACKNOWLEDGE, JMSConstants.SERVER_ADDRESS);
 
 		try {
 			orderQueue = session.createQueue(JMSConstants.Queue.ORDER);
@@ -49,7 +49,7 @@ public class JMSDeliveryRobotService extends AbstractJMSService implements IDeli
 
 			orderQueueBrowser = session.createBrowser(orderQueue);
 			terminalConsumer = session.createConsumer(terminalQueue,
-					String.format("%s='%s'", JMSConstants.Property.DELIVERY, Order.OrderState.WAITING));
+					String.format("%s='%s'", JMSConstants.Property.DELIVERY, "true"));
 
 		} catch (JMSException e) {
 			logger.error(e.getMessage());

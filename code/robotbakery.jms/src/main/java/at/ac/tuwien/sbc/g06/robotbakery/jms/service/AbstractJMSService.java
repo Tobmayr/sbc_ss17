@@ -75,10 +75,7 @@ public class AbstractJMSService {
 		if (modelObject instanceof PackedOrder) {
 			PackedOrder packedOrder = (PackedOrder) modelObject;
 			msg.setStringProperty(JMSConstants.Property.CLASS, PackedOrder.class.getSimpleName());
-			if (packedOrder.getCustomerID()!=null){
-				msg.setStringProperty(JMSConstants.Property.CUSTOMER_ID, packedOrder.getCustomerID().toString());
-			}
-			
+			msg.setStringProperty(JMSConstants.Property.CUSTOMER_ID, packedOrder.getCustomerId().toString());
 			msg.setStringProperty(JMSConstants.Property.ORDER_ID, packedOrder.getOrderID().toString());
 			msg.setStringProperty(JMSConstants.Property.STATE, packedOrder.getState().toString());
 			msg.setStringProperty(JMSConstants.Property.DELIVERY, "" + packedOrder.isDelivery());
