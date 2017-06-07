@@ -87,19 +87,20 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public Prepackage getPrepackage(UUID packageId) {
-//		try {
-//		MessageConsumer terminalPrepackageConsumer=session.createConsumer(terminalQueue, String.format("%s= '%s'",JMSConstants.Property.CLASS,Prepackage.class.getSimpleName()));
-//		return receive(terminalPrepackageConsumer);
-//		} catch (JMSException e) {
-//			e.printStackTrace();
+		try {
+			MessageConsumer terminalPrepackageConsumer = session.createConsumer(terminalQueue,
+					String.format("%s= '%s'", JMSConstants.Property.CLASS, Prepackage.class.getSimpleName()));
+			return receive(terminalPrepackageConsumer);
+		} catch (JMSException e) {
+			e.printStackTrace();
 			return null;
-//
-//		}
+
+		}
 	}
 
 	@Override
 	public List<Prepackage> getInitialPrepackages() {
-		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.toString(), null);
+		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.getSimpleName(), null);
 	}
 
 	@Override

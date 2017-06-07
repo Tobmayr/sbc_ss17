@@ -115,5 +115,23 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>deliver</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>at.ac.tuwien.sbc.g06.robotbakery.jms.startup.JMSRobotStartUp</mainClass>
+							<arguments>
+								<argument>deliver</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
