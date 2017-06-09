@@ -94,6 +94,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 	/**
 	 * service robot should wait for more products in counter
+	 * 
 	 * @return true if there enough products in stock
 	 */
 	private boolean waitForEnoughProducts() {
@@ -106,6 +107,7 @@ public class ServiceRobot extends Robot implements IChangeListener {
 
 	/**
 	 * checks if there are enough products for order in counter
+	 * 
 	 * @param counterStock
 	 * @return true if enough products are available
 	 */
@@ -189,14 +191,18 @@ public class ServiceRobot extends Robot implements IChangeListener {
 	 * prepack products from storage and put them in the terminal as prepackages
 	 */
 	ITransactionalTask prepackProducts = tx -> {
-		List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
-		if (products == null || products.isEmpty())
-			return false;
+		if (service.readPrepackages(tx).size() < SBCConstants.PREPACKAGE_MAX_AMOUNT) {
+			List<Product> products = service.getProductsFromStorage(SBCConstants.PREPACKAGE_SIZE, tx);
+			if (products == null || products.isEmpty())
+				return false;
 
-		Prepackage prepackage = new Prepackage();
-		prepackage.setProducts(products);
-		prepackage.setServiceRobotId(this.getId());
-		return service.putPrepackageInTerminal(prepackage, tx);
+			Prepackage prepackage = new Prepackage();
+			prepackage.setProducts(products);
+			prepackage.setServiceRobotId(this.getId());
+			return service.putPrepackageInTerminal(prepackage, tx);
+		}
+		return false;
+
 	};
 
 	@Override

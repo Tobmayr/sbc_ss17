@@ -98,6 +98,8 @@ public class AbstractJMSService {
 		} else if (modelObject instanceof WaterPipe) {
 			msg.setStringProperty(JMSConstants.Property.CLASS, WaterPipe.class.getSimpleName());
 		} else if (modelObject instanceof Prepackage) {
+			Prepackage prepackage = (Prepackage) modelObject;
+			msg.setStringProperty(JMSConstants.Property.ID, prepackage.getId().toString());
 			msg.setStringProperty(JMSConstants.Property.CLASS, Prepackage.class.getSimpleName());
 		}
 		return msg;
@@ -105,9 +107,13 @@ public class AbstractJMSService {
 
 	/**
 	 * sends message to producer
-	 * @param producer producer which should consume message
-	 * @param messageObject object that should be a message
-	 * @param <T> serializable class
+	 * 
+	 * @param producer
+	 *            producer which should consume message
+	 * @param messageObject
+	 *            object that should be a message
+	 * @param <T>
+	 *            serializable class
 	 * @return true if success, else false
 	 */
 	public <T extends Serializable> boolean send(MessageProducer producer, T messageObject) {
@@ -124,9 +130,13 @@ public class AbstractJMSService {
 
 	/**
 	 * sends multiple messages to producer
-	 * @param producer producer which should consume message
-	 * @param messageObjects list of objects that should be a message
-	 * @param <T> serializable class
+	 * 
+	 * @param producer
+	 *            producer which should consume message
+	 * @param messageObjects
+	 *            list of objects that should be a message
+	 * @param <T>
+	 *            serializable class
 	 * @return true if success, else false
 	 */
 	public <T extends Serializable> boolean send(MessageProducer producer, List<T> messageObjects) {
@@ -156,7 +166,6 @@ public class AbstractJMSService {
 				originalDestination != null ? originalDestination.toString() : "unavailable");
 	}
 
-	
 	public <T extends Serializable> T receive(MessageConsumer consumer) {
 		try {
 			Message msg = consumer.receiveNoWait();
@@ -176,9 +185,13 @@ public class AbstractJMSService {
 
 	/**
 	 * receive multiple elements
-	 * @param consumer consumer which receives messages
-	 * @param amount amount of messages
-	 * @param <T> serializable class
+	 * 
+	 * @param consumer
+	 *            consumer which receives messages
+	 * @param amount
+	 *            amount of messages
+	 * @param <T>
+	 *            serializable class
 	 * @return list with objects
 	 */
 	public <T extends Serializable> List<T> receive(MessageConsumer consumer, int amount) {

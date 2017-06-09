@@ -59,8 +59,11 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	@Override
 	public PackedOrder getPackedOrder(Order order) {
 		try {
+			List<Order> test = JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS,
+					PackedOrder.class.getSimpleName(), null);
 			MessageConsumer terminalOrderConsumer = session.createConsumer(terminalQueue,
-					String.format("%s= '%s' AND %s='%s' ", JMSConstants.Property.CUSTOMER_ID,
+					String.format("%s= '%s' AND %s= '%s' AND %s='%s' ", JMSConstants.Property.CLASS,
+							PackedOrder.class.getSimpleName(), JMSConstants.Property.CUSTOMER_ID,
 							order.getCustomerId().toString(), JMSConstants.Property.ORDER_ID,
 							order.getId().toString()));
 			return receive(terminalOrderConsumer);
@@ -87,8 +90,11 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	@Override
 	public Prepackage getPrepackage(UUID packageId) {
 		try {
+			List<Order> test = JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.ID, packageId.toString(),
+					null);
 			MessageConsumer terminalPrepackageConsumer = session.createConsumer(terminalQueue,
-					String.format("%s= '%s'", JMSConstants.Property.CLASS, Prepackage.class.getSimpleName()));
+					String.format("%s= '%s' AND %s= '%s'  ", JMSConstants.Property.CLASS,
+							Prepackage.class.getSimpleName(), JMSConstants.Property.ID, packageId.toString()));
 			return receive(terminalPrepackageConsumer);
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -99,7 +105,8 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 
 	@Override
 	public List<Prepackage> getInitialPrepackages() {
-		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.getSimpleName(), null);
+		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.getSimpleName(),
+				null);
 	}
 
 	@Override

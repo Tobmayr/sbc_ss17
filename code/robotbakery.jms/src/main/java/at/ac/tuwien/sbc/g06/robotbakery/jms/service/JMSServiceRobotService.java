@@ -194,4 +194,10 @@ public class JMSServiceRobotService extends AbstractJMSService implements IServi
 		return notify(notification, false, counterQueue);
 	}
 
+	@Override
+	public List<Prepackage> readPrepackages(ITransaction tx) {
+		return JMSUtil.toList(terminalQueueBrowser, JMSConstants.Property.CLASS, Prepackage.class.getSimpleName(),
+				null);
+	}
+
 }

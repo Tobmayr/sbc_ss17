@@ -102,6 +102,8 @@ public interface IServiceRobotService extends IRobotService,INotificationService
 	boolean returnOrder(Order currentOrder, ITransaction tx);
 	
 	boolean putPrepackageInTerminal(Prepackage prepackage, ITransaction tx);
+	
+ 	List<Prepackage> readPrepackages(ITransaction tx) ;
 
 
 

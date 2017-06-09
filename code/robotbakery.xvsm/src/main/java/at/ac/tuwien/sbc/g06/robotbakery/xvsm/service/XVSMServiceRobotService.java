@@ -137,9 +137,9 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 		notificationState.put(IS_COUNTER_EMPTY,
 				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 0);
 		notificationState.put(IS_COUNTER_FULL,
-				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 5*COUNTER_MAX_CAPACITY);
-		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, test(storageContainer, null, QueryCoordinator.newSelector(productQuery),
-				TypeCoordinator.newSelector(Product.class)) == 0);
+				test(counterContainer, null, TypeCoordinator.newSelector(Product.class)) == 5 * COUNTER_MAX_CAPACITY);
+		notificationState.put(NO_MORE_PRODUCTS_IN_STORAGE, test(storageContainer, null,
+				QueryCoordinator.newSelector(productQuery), TypeCoordinator.newSelector(Product.class)) == 0);
 		notificationState.put(IS_ORDER_AVAILABLE,
 				test(counterContainer, null, TypeCoordinator.newSelector(Order.class)) > 0);
 		notificationState.put(IS_PREPACKAGE_LIMIT, test(terminalContainer, null,
@@ -152,6 +152,11 @@ public class XVSMServiceRobotService extends GenericXVSMService implements IServ
 	@Override
 	public boolean sendNotification(NotificationMessage notification, ITransaction tx) {
 		return write(notification, counterContainer, tx);
+	}
+
+	@Override
+	public List<Prepackage> readPrepackages(ITransaction tx) {
+		return read(terminalContainer, tx, TypeCoordinator.newSelector(Prepackage.class,MzsConstants.Selecting.COUNT_MAX));
 	}
 
 }

@@ -321,9 +321,8 @@ public class DashboardController {
 			Platform.runLater(() -> {
 				if (newPackage != null) {
 					prepackageItemsTable.setItems(FXCollections.observableArrayList(newPackage.getProducts()));
-					if (newPackage.getCustomerId() != null) {
-						prepackageCustomerId.setText(newPackage.getCustomerId().toString());
-					}
+					String customerId = newPackage.getCustomerId() == null ? "" : newPackage.getCustomerId().toString();
+					prepackageCustomerId.setText(customerId);
 					prepackageServiceRobotId.setText(newPackage.getServiceRobotId().toString());
 
 				}
