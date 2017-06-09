@@ -156,6 +156,7 @@ public class AbstractJMSService {
 				originalDestination != null ? originalDestination.toString() : "unavailable");
 	}
 
+	
 	public <T extends Serializable> T receive(MessageConsumer consumer) {
 		try {
 			Message msg = consumer.receiveNoWait();

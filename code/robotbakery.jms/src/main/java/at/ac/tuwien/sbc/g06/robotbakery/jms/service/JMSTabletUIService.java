@@ -60,8 +60,7 @@ public class JMSTabletUIService extends AbstractJMSService implements ITabletUIS
 	public PackedOrder getPackedOrder(Order order) {
 		try {
 			MessageConsumer terminalOrderConsumer = session.createConsumer(terminalQueue,
-					String.format("%s= '%s' AND %s='%s' AND %s='%s'", JMSConstants.Property.CLASS,
-							PackedOrder.class.getSimpleName(), JMSConstants.Property.CUSTOMER_ID,
+					String.format("%s= '%s' AND %s='%s' ", JMSConstants.Property.CUSTOMER_ID,
 							order.getCustomerId().toString(), JMSConstants.Property.ORDER_ID,
 							order.getId().toString()));
 			return receive(terminalOrderConsumer);
