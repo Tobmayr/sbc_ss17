@@ -1,11 +1,17 @@
 This repository contains the solution for the lab part of the course "Distributed Programming with Space Based Computing Middleware"  (University of Technology Vienna, summerterm 2017).
 
 ## Documentation
-The bpnm model has been created with the website [bpnm.io](https://bpmn.io/)
+In the "documentation" directory the assignment descriptions can be found. Addionally, it contains a BPMN model and slides for the final presentation.
+
+The BPMN model has been created with the website [bpnm.io](https://bpmn.io/)
 
 ## Startup
-1. Make a mvn clean install in the code directory
-2. There are 2 directories in scripts. One is for the SBC approch and the other one is for JMS.
+Before you start make sure to initiate a maven clean install either with your IDE or via comandline with the command:
+'cd code
+mvn clean install
+'
+
+2. In the directory "scripts" are startup scripts for both the XVSM implementation and the JMS implementation.
 3. Start up the bakery with Bakery.bat in the scripts directory. 
 The bakery must be fully initialized before actors can be started!
 4. Start up the robots with the scripts or do it yourself with: 
